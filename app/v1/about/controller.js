@@ -24,7 +24,7 @@ exports.getInfo = function (req, res, next) {
 		"cache_module": config.cacheModule,
 		"auth_type": config.authType,
 		"auto_approve_all_apps": config.autoApproveAllApps,
-		"base_url": protocol + config.policyServerHost + concatPort
+		"base_url": protocol + config.policyServerHost + concatPort //TODO get full base_url from environment variables if given.
 	};
 
 	requestjs({

@@ -1,4 +1,11 @@
-require('dotenv').config();
+if (process.env.SDL_SERVER_ENV_PATH)
+{
+    require('dotenv').config(process.env.SDL_SERVER_ENV_PATH);
+}
+else {
+    require('dotenv').config();
+}
+
 
 module.exports = {
     //name of the folder in the `databases` folder that you want to use as the module of

@@ -11,3 +11,6 @@ dist/
 *.ntvs*
 *.njsproj
 *.sln
+
+.env*
+!.env-example
