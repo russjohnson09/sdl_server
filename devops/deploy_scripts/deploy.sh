@@ -8,7 +8,7 @@ cd ..
 cd ..
 dir="$(pwd)"
 echo $dir
-echo whoami
+whoami
 
 sudo cp .env-2 .env
 git pull
