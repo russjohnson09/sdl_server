@@ -1,6 +1,8 @@
 if (process.env.SDL_SERVER_ENV_PATH)
 {
-    require('dotenv').config(process.env.SDL_SERVER_ENV_PATH);
+    let path = process.env.SDL_SERVER_ENV_PATH;
+    console.log(`using path ${path}`);
+    require('dotenv').config({path});
 }
 else {
     require('dotenv').config();
