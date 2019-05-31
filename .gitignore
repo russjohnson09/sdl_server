@@ -15,3 +15,4 @@ dist/
 .env*
 !.env-example
 
+*active.pm2.config.js

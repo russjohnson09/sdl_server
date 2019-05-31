@@ -13,8 +13,6 @@ module.exports = {
 
             //any non-sensitive environment variables should be stored here
             env: {
-                POLICY_SERVER_PORT: 5005,
-                SDL_SERVER_ENV_PATH: '.env',
             },
         }
     ]
