@@ -11,6 +11,8 @@ echo $dir
 echo whoami
 
 sudo cp .env-2 .env
+git pull
+npm install
 npm run db-migrate-up
 npm run build
 

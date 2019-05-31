@@ -3,11 +3,19 @@ https://www.digitalocean.com/community/tutorials/how-to-install-and-use-postgres
 sudo apt update
 sudo apt install postgresql postgresql-contrib
 
-sudo -i -u postgres
+sudo -u postgres psql
 
 
-psql
+```sql
+CREATE DATABASE sdl_server;
+CREATE USER livio WITH PASSWORD 'password';
+GRANT ALL PRIVILEGES ON DATABASE sdl_server TO livio;
+```
 
+
+
+
+sudo -u postgres psql
 
 createuser --interactive
 
