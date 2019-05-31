@@ -4,6 +4,11 @@ dir="$(pwd)"
 cd $dir
 
 
+#sudo apt-get install apache2-utils
+#sudo htpasswd -c /etc/nginx/.oem-pass admin
+#admin
+
+
 sudo cp "./oem.greatlakescode.us.conf" "/etc/nginx/sites-available/oem.greatlakescode.us.conf" -vvv
 sudo ln -s "/etc/nginx/sites-available/oem.greatlakescode.us.conf" "/etc/nginx/sites-enabled/oem.greatlakescode.us.conf" || true
 
