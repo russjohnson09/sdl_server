@@ -60,6 +60,7 @@ function validatePassthroughPost (req, res) {
 
 function validateWebHook (req, res) {
 	if(req.headers["public_key"] != app.locals.config.shaidPublicKey){
+	    console.log(app.locals.config.shaidPublicKey,req.headers["public_key"]);
 		// request cannot be verified as authentic
         res.parcel.setStatus(401).setMessage("Unable to validate webhook with SHAID public key");
 	}
