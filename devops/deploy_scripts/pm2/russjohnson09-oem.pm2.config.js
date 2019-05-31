@@ -3,7 +3,7 @@ let script = __dirname + './../../../index.js';
 module.exports = {
     apps: [
         {
-            name: 'glc-oem',
+            name: 'russjohnson09-oem',
             "script": script,
             min_uptime: "1m",
             max_restarts: "10",
