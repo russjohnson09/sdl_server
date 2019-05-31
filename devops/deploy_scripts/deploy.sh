@@ -10,7 +10,7 @@ dir="$(pwd)"
 echo $dir
 whoami
 
-sudo cp .env-2 .env
+#.env must be configured
 git pull
 npm install
 npm run db-migrate-up
