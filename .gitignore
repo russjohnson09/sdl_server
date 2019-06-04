@@ -16,3 +16,6 @@ dist/
 !.env-example
 
 *active.pm2.config.js
+
+
+!.gitignore
