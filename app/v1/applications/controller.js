@@ -22,6 +22,8 @@ function get (req, res, next) {
 		chosenFlow = helper.createAppInfoFlow('multiFilter');
 	}
 	chosenFlow(function (err, apps) {
+		//at this point apps is parsed out as a json object for the response
+		console.log(`applications/controller->get createAppInfoFlow callback`,JSON.stringify(apps,null,' '));
 		if (err) {
 			app.locals.log.error(err);
 			res.parcel.setStatus(500);
@@ -243,6 +245,7 @@ function putServicePermission (req, res, next) {
 
 //expects a POST from SHAID
 function webhook (req, res, next) {
+	console.log(`webhook`);
     helper.validateWebHook(req, res);
     if (res.parcel.message) {
         return res.parcel.deliver();

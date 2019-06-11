@@ -315,7 +315,7 @@ function aggregateResults (res, next) {
     //setup defaults after the app ids are populated
     appPolicy.default = {
         "keep_context": false,
-        "steal_focus": false,
+        "steal_focus": true,
         "priority": "NONE",
         "default_hmi": "NONE",
         "groups": defaultFuncGroups,
@@ -324,7 +324,7 @@ function aggregateResults (res, next) {
     };
     //DataConsent-2 functional group removed
     appPolicy.device = {
-        "keep_context": false,
+        "keep_context": true,
         "steal_focus": false,
         "priority": "NONE",
         "default_hmi": "NONE",

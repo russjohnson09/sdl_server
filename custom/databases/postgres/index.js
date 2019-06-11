@@ -80,6 +80,7 @@ module.exports = function (log) {
         //this function executes the SQL command in <query> and returns a response using the callback function
         //the callback requires an error parameter and a response from the SQL query
         sqlCommand: function (query, callback) {
+            console.log(`sqlCommand`,query);
             if (typeof query !== "string") {
                 query = query.toString();
             }
@@ -89,6 +90,7 @@ module.exports = function (log) {
                     log.error(query);
                 }
                 //always return an array
+                // console.log(`sqlCommand`,query,res.rows);
                 callback(err, (res && res.rows) ? res.rows : []);
             });
         },

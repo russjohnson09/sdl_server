@@ -36,6 +36,7 @@ function postAppPolicy (req, res, next) {
 }
 
 function handlePolicyTableFlow (res, encrypt = false, err, pieces) {
+    console.log(`handlePolicyTableFlow`);
     if (err) {
         app.locals.log.error(err);
         return res.parcel.setStatus(500).deliver();
@@ -43,7 +44,13 @@ function handlePolicyTableFlow (res, encrypt = false, err, pieces) {
     res.parcel
         .setStatus(200)
         .setData(createPolicyTableResponse(pieces, encrypt));
-    return res.parcel.deliver();
+    console.log(`handlePolicyTableFlow deliver`);
+
+    res.parcel.deliver();
+
+    console.log(`handlePolicyTableFlow deliver post`);
+
+    return;
 }
 
 function createPolicyTableResponse (pieces, encrypt = false) {

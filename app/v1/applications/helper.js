@@ -71,7 +71,7 @@ function validateWebHook (req, res) {
 //gets back app information depending on the filters passed in
 function createAppInfoFlow (filterTypeFunc, value) {
 	const getAppFlow = app.locals.flow({
-		appBase: setupSql.bind(null, sql.getApp.base[filterTypeFunc](value)),
+		appBase: setupSql.bind(null, sql.getApp.base[filterTypeFunc](value)), //create a new function
 		appCountries: setupSql.bind(null, sql.getApp.countries[filterTypeFunc](value)),
 		appDisplayNames: setupSql.bind(null, sql.getApp.displayNames[filterTypeFunc](value)),
 		appPermissions: setupSql.bind(null, sql.getApp.permissions[filterTypeFunc](value)),
@@ -86,7 +86,12 @@ function createAppInfoFlow (filterTypeFunc, value) {
 		appPassthrough: setupSql.bind(null, sql.getApp.passthrough[filterTypeFunc](value))
 	}, {method: 'parallel', eventLoop: true});
 
-	return app.locals.flow([getAppFlow, model.constructFullAppObjs], {method: "waterfall", eventLoop: true});
+	//
+	let appFlowObj = app.locals.flow([getAppFlow, model.constructFullAppObjs], {method: "waterfall", eventLoop: true});
+
+	console.log(`createAppInfoFlow`,appFlowObj);
+	// log.info(`createAppInfoFlow`,obj);
+	return appFlowObj;
 }
 
 //application store functions

@@ -9,6 +9,7 @@ const sql = require('./sql.js');
 
 //takes SQL data and converts it into a response for the UI to consume
 function constructFullAppObjs (res, next) {
+    // console.log(`constructFullAppObjs`,res);
     //hash the below data for fast access later
     const hashedCategories = hashify({}, res.appCategories, elem => ({
         location: [elem.id],
@@ -119,6 +120,14 @@ function constructFullAppObjs (res, next) {
     for (let id in hashedApps) {
         fullApps.push(hashedApps[id]);
     }
+
+    // console.log(`constructFullAppObjs`,`fullApps`,res);
+
+    // console.log(`constructFullAppObjs`,`res`,JSON.stringify(res,null,' '));
+
+    // console.log(`constructFullAppObjs`,`hashedApps`,JSON.stringify(hashedApps,null,' '));
+    // console.log(`constructFullAppObjs`,`fullApps`,JSON.stringify(fullApps,null,' '));
+
     next(null, fullApps);
 }
 

@@ -62,6 +62,7 @@ const self = module.exports = {
         readRecurse();
         function readRecurse () {
             //read the applications
+            console.log(`getApplications`,shaid.entity.application,queryObj);
             shaid.read(shaid.entity.application, queryObj, function (err, res) {
                 const appsInQuery = res.data.applications;
                 apps = apps.concat(appsInQuery); //add to the total apps found
@@ -75,12 +76,14 @@ const self = module.exports = {
                     readRecurse();
                 }
                 else { //got all the rest of the apps back
+                    console.log(`getApplications`,shaid.entity.application,queryObj,apps);
                     next(null, apps);
                 }
             });
         }
     },
     getPermissions: function (queryObj, callback) {
+        console.log(`getPermissions`,shaid.entity.permission,queryObj);
         shaid.read(shaid.entity.permission, queryObj, function (err, res) {
             //parse through the first array of objects and extract just the permissions
             let permissions = [];
@@ -91,6 +94,7 @@ const self = module.exports = {
                 }
                 next();
             }, function () {
+                console.log(`getPermissions`,shaidInitObj,shaid.entity.permission,queryObj,permissions);
                 callback(null, permissions);
             });
         });
@@ -100,6 +104,7 @@ const self = module.exports = {
             shaid.entity.service,
             queryObj,
             function (err, res) {
+                console.log(`getServices`,shaidInitObj,shaid.entity.service,queryObj,res.data.services);
                 callback(err, res.data.services);
             }
         );
