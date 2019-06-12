@@ -19,6 +19,7 @@ import HmiSelector from './components/common/HmiSelector'
 import MessageItem from './components/common/MessageItem'
 import CardItem from './components/common/CardItem'
 import PatternInput from './components/common/PatternInput'
+import LineChart from './components/common/reporting/LineChart'
 
 Vue.use(BootstrapVue);
 Vue.use(VueSession);
@@ -32,6 +33,9 @@ import 'bootstrap-vue/dist/bootstrap-vue.css'
 import './assets/css/font-awesome.min.css'
 import './assets/css/style.css'
 import async from 'async';
+import BarChart from "./components/common/reporting/BarChart";
+import DoughnutChart from "./components/common/reporting/DoughnutChart";
+import PieChart from "./components/common/reporting/PieChart";
 Object.defineProperty(Vue.prototype, '$async', { value: async });
 
 Vue.component("vue-ladda", VueLadda);
@@ -46,6 +50,11 @@ Vue.component("hmi-selector", HmiSelector);
 Vue.component("message-item", MessageItem);
 Vue.component("card-item", CardItem);
 Vue.component("pattern-input", PatternInput);
+
+Vue.component("line-chart", LineChart);
+Vue.component("bar-chart", BarChart);
+Vue.component("doughnut-chart", DoughnutChart);
+Vue.component("pie-chart", PieChart);
 
 Vue.http.options.root = '/api/v1';
 

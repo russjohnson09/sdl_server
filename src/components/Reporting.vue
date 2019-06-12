@@ -16,6 +16,19 @@
                         <div class="row">
                             <div class="col-sm-12">
 
+                                Line Chart
+                                <pre>{{reports}}</pre>
+<!--                                <line-chart :options={aggregateReport._reports[0].options} />-->
+                                <line-chart v-bind:options="reports[0].options" />
+
+                                Bar Chart
+                                <bar-chart />
+
+                                Doughnut
+                                <doughnut-chart />
+
+                                Pie
+                                <pie-chart />
 
 
                             </div>
@@ -35,10 +48,65 @@
 </template>
 
 <script>
-    export default {
+
+    // import { Bar } from 'vue-chartjs'
+
+    // import LineChart from './common/reporting/LineChart';
+
+    let getReports = function (aggregateData)
+    {
+        return [
+            {
+                type: 'line-chart',
+                options: {
+                    datasets: [
+                        {
+                            label: 'GitHub Commits',
+                            backgroundColor: '#f87979',
+                            data: [
+                                {x:'2016-12-25', y:20},
+                                {x:'2016-12-26', y:10},
+                                {
+                                    x: '2016-12-27',
+                                    y: 10
+                                }
+
+                            ]
+
+                            // data: [40, 20, 12, 39, 10, 40, 39, 80, 40, 20, 12, 11]
+                        }
+                    ]
+                }
+            }
+
+        ]
+    };
+
+    let obj = {
         data () {
             return {
                 "aggregateReport": null,
+                "reports": null,
+                "lineChartOptions1": {
+                    // labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
+                    datasets: [
+                        {
+                            label: 'GitHub Commits',
+                            backgroundColor: '#f87979',
+                            data: [
+                                {x:'2016-12-25', y:20},
+                                {x:'2016-12-26', y:10},
+                                {
+                                    x: '2016-12-27',
+                                    y: 10
+                                }
+
+                            ]
+
+                            // data: [40, 20, 12, 39, 10, 40, 39, 80, 40, 20, 12, 11]
+                        }
+                    ]
+                }
             }
         },
         computed: {
@@ -53,7 +121,8 @@
         methods: {
         },
         created (){
-            this.httpRequest("get", "reporting/aggregate-report", {}, (err, response) => {
+            let self = this;
+            self.httpRequest("get", "reporting/aggregate-report", {}, (err, response) => {
                 if(err){
                     // error
                     console.log("Error receiving about info.");
@@ -62,7 +131,9 @@
                     // success
                     response.json().then(parsed => {
                         console.log(`got parse json`,parsed);
-                        this.aggregateReport = parsed.data;
+                        self.aggregateReport = parsed.data;
+
+                        self.reports = getReports(self.aggregateReport);
 
                         // this.about = parsed.data;
                         // this.about.webhook_url = this.about.base_url + "/api/v1/webhook";
@@ -74,5 +145,10 @@
         },
         beforeDestroy () {
         }
-    }
+    };
+
+
+    export default obj;
+
+
 </script>
