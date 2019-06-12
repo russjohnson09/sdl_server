@@ -14,32 +14,39 @@
                     <div class="form-row mb-0">
                         <h4 for="name">Report for the Last {{aggregateReport.report_days}} Days</h4>
 
-<pre>{{aggregateReportString}}
-</pre>
+<!--<pre>{{aggregateReportString}}-->
+<!--</pre>-->
                         <div class="row">
                             <div class="col-sm-12">
 
                                 Daily Policy Table Updates
-                                <bar-chart v-bind:options="stackedPTUReport" />
+<!--                                <chart type="bar-chart" v-bind:options="stackedPTUReport" />-->
 
-                                Chart
-                                <chart type="line-chart"
-                                       v-bind:options="reports[0].options"
-                                />
+                                <div>
+                                    <div v-for="barChart in exampleBarCharts">
+                                        <chart  v-bind:chart="barChart" />
 
-                                Line Chart
-                                <pre>{{reports}}</pre>
-<!--                                <line-chart :options={aggregateReport._reports[0].options} />-->
-                                <line-chart v-bind:options="reports[0].options" />
+                                    </div>
+                                </div>
 
-                                Bar Chart
-                                <bar-chart />
+<!--                                Chart-->
+<!--                                <chart type="line-chart"-->
+<!--                                       v-bind:options="reports[0].options"-->
+<!--                                />-->
 
-                                Doughnut
-                                <doughnut-chart />
+<!--                                Line Chart-->
+<!--                                <pre>{{reports}}</pre>-->
+<!--&lt;!&ndash;                                <line-chart :options={aggregateReport._reports[0].options} />&ndash;&gt;-->
+<!--                                <line-chart v-bind:options="reports[0].options" />-->
 
-                                Pie
-                                <pie-chart />
+<!--                                Bar Chart-->
+<!--                                <bar-chart />-->
+
+<!--                                Doughnut-->
+<!--                                <doughnut-chart />-->
+
+<!--                                Pie-->
+<!--                                <pie-chart />-->
 
 
                             </div>
@@ -62,8 +69,12 @@
 
     // import LineChart from './common/reporting/LineChart';
 
+    import Chart from "./common/reporting/Chart";
+
     let getReports = function (aggregateData)
     {
+        let {policy_table_updates_by_trigger} = self.aggregateReport;
+
         return [
             {
                 type: 'line-chart',
@@ -115,7 +126,10 @@
                             // data: [40, 20, 12, 39, 10, 40, 39, 80, 40, 20, 12, 11]
                         }
                     ]
-                }
+                },
+                "exampleBarCharts": [
+                    Chart.exampleCharts.stackedTimeSeries,
+                ]
             }
         },
         computed: {
@@ -128,12 +142,41 @@
             },
             stackedPTUReport: function()
             {
+                console.log(`stackedPTUReport`,this);
+
+
+                let {policy_table_updates_by_trigger} = this.aggregateReport;
+
+                let datasets = [];
+
+
+                for (let history in policy_table_updates_by_trigger)
+                {
+
+                }
+
+                for (let type in policy_table_updates_by_trigger)
+                {
+                    // let data;
+                    // let byDay = policy_table_updates_by_trigger[type];
+                    //
+                    // for (let date of byDay)
+                    // {
+                    //
+                    // }
+
+                    let dataset = {
+                        label: type,
+                        // data
+                    }
+                }
+
                 console.log(`get stackedPTUReport`,this.aggregateReport);
                 let report = {
                     // labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
                     datasets: [
                         {
-                            label: 'GitHub Commits',
+                            label: 'Days',
                             backgroundColor: '#f87979',
                             data: [
                                 {x:'2016-12-25', y:20},
@@ -149,6 +192,9 @@
                         }
                     ]
                 };
+
+                console.log(`get stackedPTUReport`,report);
+
 
                 return report;
             }
@@ -168,7 +214,11 @@
                         console.log(`got parse json`,parsed);
                         self.aggregateReport = parsed.data;
 
-                        self.reports = getReports(self.aggregateReport);
+                        // let {policy_table_updates_by_trigger} = self.aggregateReport;
+
+
+
+                        // self.reports = getReports(self.aggregateReport);
 
                         // this.about = parsed.data;
                         // this.about.webhook_url = this.about.base_url + "/api/v1/webhook";
