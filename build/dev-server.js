@@ -22,10 +22,16 @@ const port = settings.policyServerPort;
 const autoOpenBrowser = !!config.dev.autoOpenBrowser
 // Define HTTP proxies to your custom API backend
 // https://github.com/chimurai/http-proxy-middleware
-const proxyTable = config.dev.proxyTable
+// const proxyTable = config.dev.proxyTable
+
+// console.log(`proxyTable`,proxyTable);
+
+// process.exit(0);
 
 const app = express()
 const compiler = webpack(webpackConfig)
+
+
 
 const devMiddleware = require('webpack-dev-middleware')(compiler, {
   publicPath: webpackConfig.output.publicPath,
@@ -50,20 +56,21 @@ const hotMiddleware = require('webpack-hot-middleware')(compiler, {
 // compilation error display
 app.use(hotMiddleware)
 
-// proxy api requests
-Object.keys(proxyTable).forEach(function (context) {
-  const options = proxyTable[context]
-  if (typeof options === 'string') {
-    options = { target: options }
-  }
-  app.use(proxyMiddleware(options.filter || context, options))
-})
 
+//TODO this causes requests via postman to fail...
 // handle fallback for HTML5 history API
-app.use(require('connect-history-api-fallback')())
+// app.use(require('connect-history-api-fallback')())
 
 // serve webpack bundle output
 app.use(devMiddleware)
+
+process.env.OVERRIDE_ENTRY_POINT = true;
+const main = require('../index.js'); //entry point to start the API server
+main(app); //pass in the express app for use instead
+// if (autoOpenBrowser && process.env.NODE_ENV !== 'testing') {
+  //opn(uri)
+// }
+
 
 // serve pure static assets
 const staticPath = path.posix.join(config.dev.assetsPublicPath, config.dev.assetsSubDirectory)
@@ -84,15 +91,12 @@ portfinder.basePort = port
 
 console.log('> Starting dev server...')
 
-devMiddleware.waitUntilValid(() => {
-  //override index.js by not running it without invoking a function
-  process.env.OVERRIDE_ENTRY_POINT = true;
-  const main = require('../index.js'); //entry point to start the API server
-  main(app); //pass in the express app for use instead
-  if (autoOpenBrowser && process.env.NODE_ENV !== 'testing') {
-    //opn(uri)
-  }
-})
+
+// devMiddleware.waitUntilValid(() => {
+//override index.js by not running it without invoking a function
+// })
+
+
 
 /*
 devMiddleware.waitUntilValid(() => {
