@@ -19,7 +19,10 @@
                         <div class="row">
                             <div class="col-sm-12">
 
-                                <policy-table-update-report v-bind:policy_table_updates_by_trigger="aggregateReport.policy_table_updates_by_trigger"  />
+                                <policy-table-update-report v-bind:policy_table_updates_by_trigger="aggregateReport.policy_table_updates_by_trigger"
+                                                            v-bind:total_policy_table_updates_by_trigger="aggregateReport.total_policy_table_updates_by_trigger"
+
+                                />
 
 
 

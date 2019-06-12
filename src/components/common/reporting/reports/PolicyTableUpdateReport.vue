@@ -3,7 +3,9 @@
         <div>
 
             Daily Policy Table Updates
-            <chart  v-bind:chart="stackedTimeSeries" />
+<!--            <chart  v-bind:chart="stackedTimeSeries" />-->
+
+            <chart v-if="ptuPieChart" v-bind:chart="ptuPieChart"></chart>
 
             <chart v-if="ptuChartStacked" v-bind:chart="ptuChartStacked"></chart>
 
@@ -15,16 +17,22 @@
     import Chart from "../Chart";
 
     let obj = {
-        props: ['policy_table_updates_by_trigger'],
+        props: ['policy_table_updates_by_trigger','total_policy_table_updates_by_trigger'],
         data () {
             let obj = {
                 stackedTimeSeries: Chart.exampleCharts.stackedTimeSeries,
-                ptuChartStacked: null
+                ptuChartStacked: null,
+                ptuPieChart: null
             };
 
             return obj;
         },
         mounted (){
+
+            if (this.total_policy_table_updates_by_trigger)
+            {
+                this.ptuPieChart = Chart.getBasicPieChartFromJson(this.total_policy_table_updates_by_trigger);
+            }
 
             let ptuChartStacked;
 

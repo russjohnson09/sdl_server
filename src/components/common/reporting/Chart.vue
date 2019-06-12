@@ -8,8 +8,9 @@
     <div v-else-if="chart.type === 'bar-chart'">
         <bar-chart v-bind:chart="chart"/>
     </div>
-    <div v-else-if="chart.type === 'C'">
-        C
+    <div v-else-if="chart.type === 'pie-chart'">
+        <pie-chart v-bind:chart="chart"/>
+
     </div>
     <div v-else>
         Not A/B/C
@@ -122,6 +123,64 @@
 
     let obj =
     {
+        getBasicPieChartFromJson(json)
+        {
+            let data = [];
+            let labels = [];
+            let backgroundColor = [];
+            //
+            // if (!false)
+            // {
+            //     return {
+            //         type: 'pie-chart',
+            //         options: {
+            //
+            //         },
+            //         data: {
+            //             datasets: [
+            //                 {
+            //                     data: [1,3,4],
+            //                     backgroundColor: [
+            //                         chartColors[0],
+            //                         chartColors[1],
+            //                         chartColors[2],
+            //
+            //
+            //                     ]
+            //                 }
+            //             ],
+            //             labels: ['l1','l2']
+            //         },
+            //     }
+            // }
+
+            for (let key in json)
+            {
+                labels.push(key);
+                backgroundColor.push(chartColors[data.length]);
+                data.push(json[key]);
+            }
+
+            let chart = {
+                type: 'pie-chart',
+                options: {
+
+                },
+                data: {
+                    datasets: [
+                        {
+                            data,
+                            backgroundColor
+                        }
+                    ],
+                    labels
+                },
+            };
+
+            return chart
+
+
+        },
         extends: Chart,
         props: ['chart'],
         mounted() {

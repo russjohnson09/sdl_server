@@ -5,9 +5,9 @@
 
     export default {
         extends: Pie,
-        props: ['data', 'options'],
+        props: ['chart'],
         mounted () {
-            this.renderChart(this.data, this.options)
+            this.renderChart(this.chart.data, this.chart.options)
         }
     }
 </script>

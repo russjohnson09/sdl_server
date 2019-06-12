@@ -124,7 +124,7 @@ module.exports = class ReportingController
 
         let policy_table_updates_by_trigger = this.getPolicyTableUpdatesByTrigger(policy_table_update_history);
 
-        // let total_policy_table_updates_by_trigger = this.getTotalPolicyUpdatesByTrigger(policy_table_update_history);
+        let total_policy_table_updates_by_trigger = this.getTotalPolicyUpdatesByTrigger(policy_table_update_history);
 
 
 
@@ -133,7 +133,7 @@ module.exports = class ReportingController
             report_days: 30,
             policy_table_update_history,
             policy_table_updates_by_trigger,
-            // total_policy_table_updates_by_trigger,
+            total_policy_table_updates_by_trigger,
             device_model_counts: {
                 "iPhone 8": 10,
                 "Nexus 7": 5,
