@@ -54,15 +54,15 @@ const hotMiddleware = require('webpack-hot-middleware')(compiler, {
 
 // enable hot-reload and state-preserving
 // compilation error display
-app.use(hotMiddleware)
 
 
-//TODO this causes requests via postman to fail...
+//TODO this causes requests to api to fail. Needed for the hotreload on the frontend
 // handle fallback for HTML5 history API
 app.use(require('connect-history-api-fallback')())
+app.use(hotMiddleware)
 
 // serve webpack bundle output
-app.use(devMiddleware)
+app.use(devMiddleware);
 
 process.env.OVERRIDE_ENTRY_POINT = true;
 const main = require('../index.js'); //entry point to start the API server

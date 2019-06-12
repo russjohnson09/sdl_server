@@ -36,6 +36,7 @@ import async from 'async';
 import BarChart from "./components/common/reporting/BarChart";
 import DoughnutChart from "./components/common/reporting/DoughnutChart";
 import PieChart from "./components/common/reporting/PieChart";
+import Chart from "./components/common/reporting/Chart";
 Object.defineProperty(Vue.prototype, '$async', { value: async });
 
 Vue.component("vue-ladda", VueLadda);
@@ -55,6 +56,7 @@ Vue.component("line-chart", LineChart);
 Vue.component("bar-chart", BarChart);
 Vue.component("doughnut-chart", DoughnutChart);
 Vue.component("pie-chart", PieChart);
+Vue.component("chart", Chart);
 
 Vue.http.options.root = '/api/v1';
 

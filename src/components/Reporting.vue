@@ -13,8 +13,19 @@
 
                     <div class="form-row mb-0">
                         <h4 for="name">Report for the Last {{aggregateReport.report_days}} Days</h4>
+
+<pre>{{aggregateReportString}}
+</pre>
                         <div class="row">
                             <div class="col-sm-12">
+
+                                Daily Policy Table Updates
+                                <bar-chart v-bind:options="stackedPTUReport" />
+
+                                Chart
+                                <chart type="line-chart"
+                                       v-bind:options="reports[0].options"
+                                />
 
                                 Line Chart
                                 <pre>{{reports}}</pre>
@@ -36,10 +47,6 @@
                     </div>
 
 
-<pre>{{aggregateReportString}}
-</pre>
-
-
                 </div>
 
             </main>
@@ -48,6 +55,8 @@
 </template>
 
 <script>
+
+    //http://demo.vue-chartjs.org/
 
     // import { Bar } from 'vue-chartjs'
 
@@ -116,6 +125,32 @@
             aggregateReportString: function()
             {
                 return JSON.stringify(this.aggregateReport,null,' ');
+            },
+            stackedPTUReport: function()
+            {
+                console.log(`get stackedPTUReport`,this.aggregateReport);
+                let report = {
+                    // labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
+                    datasets: [
+                        {
+                            label: 'GitHub Commits',
+                            backgroundColor: '#f87979',
+                            data: [
+                                {x:'2016-12-25', y:20},
+                                {x:'2016-12-26', y:10},
+                                {
+                                    x: '2016-12-27',
+                                    y: 10
+                                }
+
+                            ]
+
+                            // data: [40, 20, 12, 39, 10, 40, 39, 80, 40, 20, 12, 11]
+                        }
+                    ]
+                };
+
+                return report;
             }
         },
         methods: {
