@@ -55,6 +55,7 @@ export const eventBus = new Vue();
 Vue.mixin({
 	methods: {
 		"httpRequest": function (action, route, options = {}, cb) {
+			console.log(`httpRequest`,action,route);
 			if(!options){
 				options = {};
 			}

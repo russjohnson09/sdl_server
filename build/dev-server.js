@@ -59,7 +59,7 @@ app.use(hotMiddleware)
 
 //TODO this causes requests via postman to fail...
 // handle fallback for HTML5 history API
-// app.use(require('connect-history-api-fallback')())
+app.use(require('connect-history-api-fallback')())
 
 // serve webpack bundle output
 app.use(devMiddleware)
