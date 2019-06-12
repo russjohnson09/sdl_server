@@ -20,6 +20,7 @@ import MessageItem from './components/common/MessageItem'
 import CardItem from './components/common/CardItem'
 import PatternInput from './components/common/PatternInput'
 import LineChart from './components/common/reporting/LineChart'
+import PolicyTableUpdateReport from './components/common/reporting/reports/PolicyTableUpdateReport'
 
 Vue.use(BootstrapVue);
 Vue.use(VueSession);
@@ -57,6 +58,7 @@ Vue.component("bar-chart", BarChart);
 Vue.component("doughnut-chart", DoughnutChart);
 Vue.component("pie-chart", PieChart);
 Vue.component("chart", Chart);
+Vue.component("policy-table-update-report", PolicyTableUpdateReport);
 
 Vue.http.options.root = '/api/v1';
 

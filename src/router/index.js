@@ -16,7 +16,7 @@ import PolicyTable from '@/components/PolicyTable'
 import User from '@/components/User'
 import Invite from '@/components/Invite'
 import NotFound from '@/components/NotFound'
-import Reporting from "../components/Reporting";
+import Reporting from "../components/reporting/Reporting";
 
 var authType = AUTH_TYPE; // defined via webpack build
 

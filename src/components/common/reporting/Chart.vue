@@ -6,7 +6,6 @@
 
     </div>
     <div v-else-if="chart.type === 'bar-chart'">
-        bar chart
         <bar-chart v-bind:chart="chart"/>
     </div>
     <div v-else-if="chart.type === 'C'">
@@ -34,6 +33,7 @@
     };
 
     chartColors = {
+        0: chartColors.brown,
         1: chartColors.red,
         2: chartColors.green,
         3: chartColors.orange,
@@ -128,6 +128,7 @@
             // this.type = this.chart.type
         },
         defaultOptions,
+        chartColors,
         exampleCharts: {
             stackedTimeSeries: {
                 type: 'bar-chart',

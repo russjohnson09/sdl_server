@@ -19,15 +19,19 @@
                         <div class="row">
                             <div class="col-sm-12">
 
-                                Daily Policy Table Updates
-<!--                                <chart type="bar-chart" v-bind:options="stackedPTUReport" />-->
+                                <policy-table-update-report v-bind:policy_table_updates_by_trigger="aggregateReport.policy_table_updates_by_trigger"  />
 
-                                <div>
-                                    <div v-for="barChart in exampleBarCharts">
-                                        <chart  v-bind:chart="barChart" />
 
-                                    </div>
-                                </div>
+
+<!--                                Daily Policy Table Updates-->
+<!--&lt;!&ndash;                                <chart type="bar-chart" v-bind:options="stackedPTUReport" />&ndash;&gt;-->
+
+<!--                                <div>-->
+<!--                                    <div v-for="barChart in exampleBarCharts">-->
+<!--                                        <chart  v-bind:chart="barChart" />-->
+
+<!--                                    </div>-->
+<!--                                </div>-->
 
 <!--                                Chart-->
 <!--                                <chart type="line-chart"-->
@@ -65,11 +69,9 @@
 
     //http://demo.vue-chartjs.org/
 
-    // import { Bar } from 'vue-chartjs'
 
-    // import LineChart from './common/reporting/LineChart';
 
-    import Chart from "./common/reporting/Chart";
+    import Chart from "../common/reporting/Chart";
 
     let getReports = function (aggregateData)
     {
