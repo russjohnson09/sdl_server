@@ -14,12 +14,10 @@
             <div v-if="modelPie" >
 
                 Models
-<!--                <pie-chart-->
-<!--                        :width="300" :height="300"-->
-<!--                        v-if="modelPie" v-bind:chart="modelPie"></pie-chart>-->
                 <chart
                         :width="300" :height="300"
                         v-if="modelPie" v-bind:chart="modelPie"></chart>
+                <chart v-if="modelPie" v-bind:chart="modelPie"></chart>
 
             </div>
 
@@ -33,8 +31,7 @@
             Daily Policy Table Updates
 
             <chart v-if="modelPie" v-bind:chart="modelPie"></chart>
-
-            <!--            <chart  v-bind:chart="stackedTimeSeries" />-->
+            <chart v-if="modelPie" v-bind:chart="modelPie"></chart>
 
             <chart v-if="ptuDonutChart" v-bind:chart="ptuDonutChart"></chart>
             <chart v-if="ptuPieChart" v-bind:chart="ptuPieChart"></chart>
