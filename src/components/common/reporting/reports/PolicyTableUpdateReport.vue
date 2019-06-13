@@ -2,31 +2,66 @@
 
         <div>
 
-            <div v-if="carrierPolar" >
 
-                Carriers
+            <div v-if="ptuChartStacked" >
+
+                Policy Table Updates
                 <chart
-                        :width="300" :height="300"
-                        v-if="carrierPolar" v-bind:chart="carrierPolar"></chart>
+                        v-if="ptuChartStacked" v-bind:chart="ptuChartStacked"></chart>
+
+
 
             </div>
+
+            <div v-if="ptuPieChart" >
+
+                Policy Table Update Event Triggers
+
+
+                <chart
+                        v-bind:width="defaultWidth" v-bind:height="defaultHeight"
+                        v-if="ptuPieChart" v-bind:chart="ptuPieChart"></chart>
+
+            </div>
+
 
             <div v-if="modelPie" >
-
-                Models
+                Device Models
                 <chart
-                        :width="300" :height="300"
+                        v-bind:width="defaultWidth" v-bind:height="defaultHeight"
                         v-if="modelPie" v-bind:chart="modelPie"></chart>
-                <chart v-if="modelPie" v-bind:chart="modelPie"></chart>
-
             </div>
+
 
             <div v-if="deviceOsPie" >
 
                 Device OS
-                <chart v-if="deviceOsPie" v-bind:chart="deviceOsPie"></chart>
+                <chart
+                        v-bind:width="defaultWidth" v-bind:height="defaultHeight"
+
+                        v-if="deviceOsPie" v-bind:chart="deviceOsPie"></chart>
 
             </div>
+
+            <div v-if="deviceOsDonut" >
+                Device OS
+                <chart
+                        v-bind:width="defaultWidth" v-bind:height="defaultHeight"
+
+                        v-if="deviceOsDonut" v-bind:chart="deviceOsDonut"></chart>
+            </div>
+
+
+            <div v-if="carrierPolar" >
+
+                Carriers
+                <chart
+                        v-bind:width="defaultWidth" v-bind:height="defaultHeight"
+
+                        v-if="carrierPolar" v-bind:chart="carrierPolar"></chart>
+            </div>
+
+
 
             Daily Policy Table Updates
 
@@ -34,9 +69,7 @@
             <chart v-if="modelPie" v-bind:chart="modelPie"></chart>
 
             <chart v-if="ptuDonutChart" v-bind:chart="ptuDonutChart"></chart>
-            <chart v-if="ptuPieChart" v-bind:chart="ptuPieChart"></chart>
 
-            <chart v-if="ptuChartStacked" v-bind:chart="ptuChartStacked"></chart>
 
 
 
@@ -46,6 +79,9 @@
 
 <script>
     import Chart from "../Chart";
+
+    let defaultWidth,defaultHeight;
+    defaultWidth = defaultHeight = 300;
 
     let obj = {
         props: ['policy_table_updates_by_trigger','total_policy_table_updates_by_trigger',
@@ -61,6 +97,9 @@
                 deviceOsPie: null,
                 modelPie: null,
                 carrierPolar: null,
+                deviceOsDonut: null,
+                defaultWidth,
+                defaultHeight
 
             };
 
@@ -78,6 +117,7 @@
             if (this.total_device_os)
             {
                 this.deviceOsPie = Chart.getBasicPieChartFromJson(this.total_device_os);
+                this.deviceOsDonut = Chart.getBasicDonutChartFromJson(this.total_device_os);
             }
             if (this.total_device_model)
             {

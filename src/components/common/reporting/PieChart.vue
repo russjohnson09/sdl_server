@@ -2,7 +2,7 @@
 
 
     import { Pie } from 'vue-chartjs'
-    import 'chartjs-plugin-labels';
+    // import 'chartjs-plugin-labels';
     //chart sizing
     //https://github.com/apertureless/vue-chartjs/issues/17
 
@@ -22,6 +22,10 @@
             options.pieceLabel = null;
             // options.maintainAspectRatio = false;
             console.log(`pie chart options`,options,options.pieceLabel,options.labels);
+
+
+            options.response = false;
+            options.maintainAspectRatio = false;
 
             this.renderChart(this.chart.data, options)
         }

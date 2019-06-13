@@ -126,8 +126,8 @@ Vue.mixin({
 	}
 })
 
-// import ChartJsPluginDataLabels from 'chartjs-plugin-datalabels';
-// import 'chartjs-plugin-labels';
+import 'chartjs-plugin-labels';
+
 
 /* eslint-disable no-new */
 new Vue({
