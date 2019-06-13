@@ -4,7 +4,6 @@
 
 
             <div v-if="ptuChartStacked" >
-
                 Policy Table Updates
                 <chart
                         v-if="ptuChartStacked" v-bind:chart="ptuChartStacked"></chart>
@@ -13,17 +12,14 @@
 
             </div>
 
-            <div v-if="ptuPieChart" >
+            <div v-if="ptuDonutChart" >
 
                 Policy Table Update Event Triggers
-
-
                 <chart
                         v-bind:width="defaultWidth" v-bind:height="defaultHeight"
-                        v-if="ptuPieChart" v-bind:chart="ptuPieChart"></chart>
+                        v-if="ptuDonutChart" v-bind:chart="ptuDonutChart"></chart>
 
             </div>
-
 
             <div v-if="modelPie" >
                 Device Models
@@ -60,15 +56,6 @@
 
                         v-if="carrierPolar" v-bind:chart="carrierPolar"></chart>
             </div>
-
-
-
-            Daily Policy Table Updates
-
-            <chart v-if="modelPie" v-bind:chart="modelPie"></chart>
-            <chart v-if="modelPie" v-bind:chart="modelPie"></chart>
-
-            <chart v-if="ptuDonutChart" v-bind:chart="ptuDonutChart"></chart>
 
 
 

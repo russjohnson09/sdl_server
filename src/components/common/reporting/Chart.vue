@@ -10,14 +10,19 @@
                    v-bind:chart="chart"/>
     </div>
     <div v-else-if="chart.type === 'pie-chart'">
-        <pie-chart v-bind:chart="chart"
+        <pie-chart
+                v-bind:chart="chart"
                     v-bind:height="height"
                    v-bind:width="width"
         />
 
     </div>
     <div v-else-if="chart.type === 'donut-chart'">
-        <donut-chart v-bind:chart="chart"/>
+        <donut-chart
+                v-bind:chart="chart"
+                v-bind:height="height"
+                v-bind:width="width"
+                />
 
     </div>
     <div v-else-if="chart.type === 'polar-chart'">
