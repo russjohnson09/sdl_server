@@ -134,14 +134,23 @@ module.exports = class ReportingController
             policy_table_update_history,
             policy_table_updates_by_trigger,
             total_policy_table_updates_by_trigger,
-            device_model_counts: {
+            total_device_model: { //totals by model
                 "iPhone 8": 10,
                 "Nexus 7": 5,
                 "unknown": 1,
             },
-            app_opens: {
-
+            total_device_os: {
+                "Android": 5,
+                "iOS": 10
             },
+            total_device_carrier: {
+                "Verizon": 5,
+                "Sprint": 10,
+                'T-Mobile': 2
+            },
+            // app_opens: { //app level
+
+            // },
             rejected_rpcs: { //Aggregate count of rejected RPCs, over the retention period
                 unknown: 10,
                 getTires: 10

@@ -35,9 +35,11 @@ import './assets/css/font-awesome.min.css'
 import './assets/css/style.css'
 import async from 'async';
 import BarChart from "./components/common/reporting/BarChart";
-import DoughnutChart from "./components/common/reporting/DoughnutChart";
+import DonutChart from "./components/common/reporting/DonutChart";
 import PieChart from "./components/common/reporting/PieChart";
 import Chart from "./components/common/reporting/Chart";
+import PolarChart from "./components/common/reporting/PolarChart";
+import PieChartWithLabels from "./components/common/reporting/PieChartWithLabels";
 Object.defineProperty(Vue.prototype, '$async', { value: async });
 
 Vue.component("vue-ladda", VueLadda);
@@ -55,10 +57,12 @@ Vue.component("pattern-input", PatternInput);
 
 Vue.component("line-chart", LineChart);
 Vue.component("bar-chart", BarChart);
-Vue.component("doughnut-chart", DoughnutChart);
+Vue.component("donut-chart", DonutChart);
 Vue.component("pie-chart", PieChart);
 Vue.component("chart", Chart);
 Vue.component("policy-table-update-report", PolicyTableUpdateReport);
+Vue.component("polar-chart", PolarChart);
+Vue.component("pie-chart-with-labels", PieChartWithLabels);
 
 Vue.http.options.root = '/api/v1';
 
@@ -122,11 +126,15 @@ Vue.mixin({
 	}
 })
 
+// import ChartJsPluginDataLabels from 'chartjs-plugin-datalabels';
+import 'chartjs-plugin-labels';
 
 /* eslint-disable no-new */
 new Vue({
   el: '#app',
   router,
   template: '<App/>',
-  components: { App }
+  components: { App,
+	  // ChartJsPluginDataLabels
+  }
 })

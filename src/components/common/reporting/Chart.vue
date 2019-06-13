@@ -12,15 +12,26 @@
         <pie-chart v-bind:chart="chart"/>
 
     </div>
-    <div v-else>
-        Not A/B/C
+    <div v-else-if="chart.type === 'donut-chart'">
+        <donut-chart v-bind:chart="chart"/>
 
-        {{type}}
+    </div>
+    <div v-else-if="chart.type === 'polar-chart'">
+        <polar-chart v-bind:chart="chart"/>
+
+    </div>
+    <div v-else>
+        {{chart.type}} not supported
     </div>
 
 </template>
 
 <script>
+    // Can not find Chart object.
+    // (anonymous)
+    // import 'chartjs-plugin-labels';
+    //chartjs-plugin-labels
+
     //https://coolors.co/app
     import {Chart} from 'vue-chartjs'
 
@@ -121,8 +132,23 @@
         }
     };
 
+    //https://codepen.io/kasiditp/pen/jwBqBZ
+    //pie chart label
+    //npm install chartjs-plugin-labels
     let obj =
     {
+        getBasicDonutChartFromJson(json)
+        {
+            let chart = obj.getBasicPieChartFromJson(json);
+            chart.type = 'donut-chart';
+            return chart;
+        },
+        getBasicPolarChartFromJson(json)
+        {
+          let chart = obj.getBasicPieChartFromJson(json);
+          chart.type = 'polar-chart';
+          return chart;
+        },
         getBasicPieChartFromJson(json)
         {
             let data = [];
@@ -164,7 +190,29 @@
             let chart = {
                 type: 'pie-chart',
                 options: {
-
+                    maintainAspectRatio: false, //allow resizing
+                    pieceLabel: {
+                        mode: 'percentage',
+                        precision: 1
+                    },
+                    tooltips: {
+                        // enabled: false
+                    },
+                    plugins: {
+                        datalabels: {
+                            formatter: (value, ctx) => {
+                                console.log(`get datalabel`,value)
+                                let sum = 0;
+                                let dataArr = ctx.chart.data.datasets[0].data;
+                                dataArr.map(data => {
+                                    sum += data;
+                                });
+                                let percentage = (value*100 / sum).toFixed(2)+"%";
+                                return percentage;
+                            },
+                            color: '#fff',
+                        }
+                    }
                 },
                 data: {
                     datasets: [
