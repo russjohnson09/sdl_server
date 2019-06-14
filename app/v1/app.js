@@ -85,7 +85,7 @@ async function  exposeRoutes () {
 	app.get('/about', auth.validateAuth, about.getInfo);
 
 	await (async () => {
-		let d1 = Date.now();
+		let t1 = Date.now();
 		let route = '/reporting';
 		let router = express.Router();
 		app.use(route, router);
@@ -94,7 +94,7 @@ async function  exposeRoutes () {
 			parcel,
 			router
 		});
-
+		let d1 = Date.now() - t1;
 		log.info(`initialized route ${route} in ${d1} (ms)`);
 
 	})();
