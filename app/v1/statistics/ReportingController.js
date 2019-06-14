@@ -13,6 +13,59 @@ module.exports = class ReportingController
     // };
 
 
+    generateTestUsageAndErrorCountsHistory()
+    {
+        let usage_and_error_counts_history = [];
+        let date = moment().subtract(30,'days');
+
+        //number of times the app has been opened
+        //for each day get count_of_rejected_rpcs_calls, count_of_user_selections
+
+        //TODO can we get times for the requests or just use aggregates
+        let report_days = 30;
+        for (let i = 0; i < report_days; i++)
+        {
+            let reportDate = moment(date).add(i,'days');
+
+            let count_of_rejected_rpcs_calls = 1;
+            let count_of_user_selections = 1;
+
+
+            if (i % 2 === 0)
+            {
+                count_of_user_selections++;
+            }
+
+            if (i % 3 === 0)
+            {
+                count_of_rejected_rpcs_calls++;
+            }
+
+
+            if (i % 4 === 0)
+            {
+                count_of_user_selections++;
+            }
+
+
+            //2 or more datasets
+            usage_and_error_counts_history.push({
+                created_date: reportDate,
+                count_of_rejected_rpcs_calls,
+                count_of_user_selections,
+                minutes_in_hmi_background: 10,
+                minutes_in_hmi_full: 20,
+                minutes_in_hmi_limited: 40,
+                minutes_in_hmi_none: 50
+            });
+
+
+        }
+
+        return usage_and_error_counts_history;
+    }
+
+
     generateTestPolicyTableUpdateHistory()
     {
         let ptu_history = [];
@@ -164,34 +217,60 @@ module.exports = class ReportingController
 
 
     //https://github.com/smartdevicelink/sdl_evolution/blob/master/proposals/0233-policy-server-statistics-recording-visualizations.md
-    getTestDataByAppId(appId)
+    async getTestDataByAppId(appId)
     {
+        let usage_and_error_counts = {
+            minutes_in_hmi_background: 10,
+            minutes_in_hmi_full: 20,
+            minutes_in_hmi_limited: 40,
+            minutes_in_hmi_none: 50
+        };
+
+        let usage_and_error_counts_history = await this.generateTestUsageAndErrorCountsHistory();
+
         //stored data, computed data.
         let obj = {
+            app: {
+                name: 'TEST APP'
+            },
             //Number of daily PTUs during the retention period, stacked by the triggering event (miles, days, ignition cycles)
             report_days: 30,
-            total_policy_table_updates_by_trigger:
-                {
-                    unknown: 10,
-                    mileage: 10,
-                    days: 10,
-                    ignition_cycles: 10,
-
-                },
-            device_model_counts: {
-                "iPhone 8": 10,
-                "Nexus 7": 5,
-                "unknown": 1,
-            },
-            app_opens: {
-
-            },
-            rejected_rpcs: { //Aggregate count of rejected RPCs, over the retention period
-                unknown: 10,
-                getTires: 10
-            },
+            usage_and_error_counts_history
+            // minutes_in_hmi: { //minutes on each hmi level report.
+            //     background: usage_and_error_counts.minutes_in_hmi_background,
+            //     full: usage_and_error_counts.minutes_in_hmi_full,
+            //     limited: usage_and_error_counts.minutes_in_hmi_limited,
+            //     none: usage_and_error_counts.minutes_in_hmi_none
+            //     },
+            // | minutes_in_hmi_background | Number | Number of minutes the application is in the HMI_BACKGROUND state. |
+    // | minutes_in_hmi_full | Number | Number of minutes the application is in the HMI_FULL state. |
+    // | minutes_in_hmi_limited | Number | Number of minutes the application is in the HMI_LIMITED state. |
+    // | minutes_in_hmi_none | Number | Number of minutes the application is in the HMI_NONE state. |
+    //         total_policy_table_updates_by_trigger:
+    //             {
+    //                 unknown: 10,
+    //                 mileage: 10,
+    //                 days: 10,
+    //                 ignition_cycles: 10,
+    //
+    //             },
+    //         device_model_counts: {
+    //             "iPhone 8": 10,
+    //             "Nexus 7": 5,
+    //             "unknown": 1,
+    //         },
+    //         app_opens: {
+    //
+    //         },
+    //         rejected_rpcs: { //Aggregate count of rejected RPCs, over the retention period
+    //             unknown: 10,
+    //             getTires: 10
+    //         },
 
         };
+
+
+        return obj;
 
 
     }
@@ -233,6 +312,28 @@ module.exports = class ReportingController
         }
     }
 
+    getTestAppReportRoute()
+    {
+
+        let self = this;
+        return async function(req,res) {
+            try {
+                console.log(`fetch test data`)
+                let testData = await self.getTestDataByAppId(req.params.id);
+                // return res.send('ok');
+                return res.parcel.setStatus(200)
+                    .setData(testData)
+                    .deliver();
+            }
+            catch (e)
+            {
+                console.error(e);
+                return res.setStatus(500).send();
+            }
+
+        }
+    }
+
 
 
     async init()
@@ -248,7 +349,12 @@ module.exports = class ReportingController
         if (self.useTestData)
         {
             // router.get('/',self.getTestDataRoute());
-            router.get('/aggregate-report',self.getTestDataRoute())
+            router.get('/aggregate-report',self.getTestDataRoute());
+
+            router.get('/application-report/:id',self.getTestAppReportRoute());
+
+            // router.get('/application-report',self.getTestAppReportRoute())
+
         }
         else {
             // router.get('/',self.getTestDataRoute())
