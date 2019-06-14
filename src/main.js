@@ -21,6 +21,7 @@ import CardItem from './components/common/CardItem'
 import PatternInput from './components/common/PatternInput'
 import LineChart from './components/common/reporting/LineChart'
 import PolicyTableUpdateReport from './components/common/reporting/reports/PolicyTableUpdateReport'
+import ApplicationReports from './components/common/reporting/reports/ApplicationReports'
 
 Vue.use(BootstrapVue);
 Vue.use(VueSession);
@@ -63,6 +64,7 @@ Vue.component("chart", Chart);
 Vue.component("policy-table-update-report", PolicyTableUpdateReport);
 Vue.component("polar-chart", PolarChart);
 Vue.component("pie-chart-with-labels", PieChartWithLabels);
+Vue.component("application-reports", ApplicationReports);
 
 Vue.http.options.root = '/api/v1';
 
@@ -135,6 +137,8 @@ new Vue({
   router,
   template: '<App/>',
   components: { App,
-	  // ChartJsPluginDataLabels
   }
-})
+});
+
+
+console.log(`'vue-environment`,process.env)

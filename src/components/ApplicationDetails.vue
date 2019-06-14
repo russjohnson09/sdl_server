@@ -36,7 +36,10 @@
                 <div class="app-table">
                     <h4>General App Info<a class="fa fa-question-circle color-primary doc-link" v-b-tooltip.hover title="Click here for more info about this page" href="https://smartdevicelink.com/en/guides/sdl-server/user-interface/applications/" target="_blank"></a></h4>
 
-                    <router-link tag="div" class="nav-item" v-bind:to="`/applications/${app.id}/reporting`" active-class="active">
+<!--                    TODO link to reports when activated on the backend-->
+                    <router-link
+                            v-if="ENABLE_REPORTING"
+                            tag="div" class="nav-item" v-bind:to="`/applications/${app.id}/reporting`" active-class="active">
                         <a>Reporting</a>
                     </router-link>
                     <div class="table-responsive">
@@ -365,6 +368,7 @@ export default {
             "class": "dropdown-red"
         };
         return {
+            "ENABLE_REPORTING": process.env.ENABLE_REPORTING,
             "environment": "STAGING",
             "environmentOptions": [
                 {

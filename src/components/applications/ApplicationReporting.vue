@@ -9,16 +9,14 @@
             <main class="col-sm-9 ml-sm-auto col-md-10 pt-3 main-content" role="main">
                 <h4>Reporting</h4>
 
-                <div class="functional-content" v-if="aggregateReport">
+                <div class="functional-content" v-if="appReport">
 
                     <div class="form-row mb-0">
                         <h4 for="name"> application reports
-
-                            <!--                            for the Last {{aggregateReport.report_days}} Days-->
+                            <application-reports
+                            v-bind:usage_and_error_counts_history="appReport.usage_and_error_counts_history"
+                            />
                         </h4>
-
-                        <!--<pre>{{aggregateReportString}}-->
-                        <!--</pre>-->
                         <div class="row">
                             <div class="col-sm-12">
 
@@ -75,31 +73,7 @@
     let obj = {
         data() {
             return {
-                "aggregateReport": null,
-                "reports": null,
-                "lineChartOptions1": {
-                    // labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
-                    datasets: [
-                        {
-                            label: 'GitHub Commits',
-                            backgroundColor: '#f87979',
-                            data: [
-                                {x: '2016-12-25', y: 20},
-                                {x: '2016-12-26', y: 10},
-                                {
-                                    x: '2016-12-27',
-                                    y: 10
-                                }
-
-                            ]
-
-                            // data: [40, 20, 12, 39, 10, 40, 39, 80, 40, 20, 12, 11]
-                        }
-                    ]
-                },
-                "exampleBarCharts": [
-                    Chart.exampleCharts.stackedTimeSeries,
-                ]
+                "appReport": null,
             }
         },
         computed: {},
@@ -119,6 +93,46 @@
                             });
                         }
                     });
+            },
+            getStackedReportFromHistoryReport(report)
+            {
+                let datasetsIndex = {};
+                let datasets = [];
+                if (report)
+                {
+                    for (let date in report)
+                    {
+
+                        let record = report[date];
+                        for (let type in record)
+                        {
+                            if (datasetsIndex[type] == undefined)
+                            {
+                                datasetsIndex[type] = datasets.length;
+                                datasets.push({
+                                    label: type,
+                                    backgroundColor: Chart.chartColors[datasets.length],
+                                    data: []
+                                })
+                            }
+                            let dataset = datasets[datasetsIndex[type]];
+
+                            dataset.data.push({
+                                x: date,
+                                y: record[type]
+                            })
+                        }
+                    }
+                }
+
+                let barchartStacked = {
+                    type: 'bar-chart',
+                    options: Chart.defaultOptions.stackedTimeSeries,
+                    data: {
+                        datasets,
+                    }
+                };
+                return barchartStacked;
             }
         },
         created() {

@@ -14,12 +14,9 @@
                     <div class="form-row mb-0">
                         <h4 for="name">Report for the Last {{aggregateReport.report_days}} Days</h4>
 
-<!--<pre>{{aggregateReportString}}-->
-<!--</pre>-->
                         <div class="row">
                             <div class="col-sm-12">
 
-<!--                                <pie-chart-with-labels />-->
 
                                 <policy-table-update-report v-bind:policy_table_updates_by_trigger="aggregateReport.policy_table_updates_by_trigger"
                                                             v-bind:total_policy_table_updates_by_trigger="aggregateReport.total_policy_table_updates_by_trigger"
@@ -30,37 +27,6 @@
 
 
                                 />
-
-
-
-<!--                                Daily Policy Table Updates-->
-<!--&lt;!&ndash;                                <chart type="bar-chart" v-bind:options="stackedPTUReport" />&ndash;&gt;-->
-
-<!--                                <div>-->
-<!--                                    <div v-for="barChart in exampleBarCharts">-->
-<!--                                        <chart  v-bind:chart="barChart" />-->
-
-<!--                                    </div>-->
-<!--                                </div>-->
-
-<!--                                Chart-->
-<!--                                <chart type="line-chart"-->
-<!--                                       v-bind:options="reports[0].options"-->
-<!--                                />-->
-
-<!--                                Line Chart-->
-<!--                                <pre>{{reports}}</pre>-->
-<!--&lt;!&ndash;                                <line-chart :options={aggregateReport._reports[0].options} />&ndash;&gt;-->
-<!--                                <line-chart v-bind:options="reports[0].options" />-->
-
-<!--                                Bar Chart-->
-<!--                                <bar-chart />-->
-
-<!--                                Doughnut-->
-<!--                                <doughnut-chart />-->
-
-<!--                                Pie-->
-<!--                                <pie-chart />-->
 
 
                             </div>
@@ -147,68 +113,6 @@
         computed: {
             fieldsDisabled: function () {
                 return true;
-            },
-            aggregateReportString: function()
-            {
-                return JSON.stringify(this.aggregateReport,null,' ');
-            },
-            stackedPTUReport: function()
-            {
-                console.log(`stackedPTUReport`,this);
-
-
-                let {policy_table_updates_by_trigger} = this.aggregateReport;
-
-                let datasets = [];
-
-
-                for (let history in policy_table_updates_by_trigger)
-                {
-
-                }
-
-                for (let type in policy_table_updates_by_trigger)
-                {
-                    // let data;
-                    // let byDay = policy_table_updates_by_trigger[type];
-                    //
-                    // for (let date of byDay)
-                    // {
-                    //
-                    // }
-
-                    let dataset = {
-                        label: type,
-                        // data
-                    }
-                }
-
-                console.log(`get stackedPTUReport`,this.aggregateReport);
-                let report = {
-                    // labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
-                    datasets: [
-                        {
-                            label: 'Days',
-                            backgroundColor: '#f87979',
-                            data: [
-                                {x:'2016-12-25', y:20},
-                                {x:'2016-12-26', y:10},
-                                {
-                                    x: '2016-12-27',
-                                    y: 10
-                                }
-
-                            ]
-
-                            // data: [40, 20, 12, 39, 10, 40, 39, 80, 40, 20, 12, 11]
-                        }
-                    ]
-                };
-
-                console.log(`get stackedPTUReport`,report);
-
-
-                return report;
             }
         },
         methods: {

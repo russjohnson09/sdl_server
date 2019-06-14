@@ -2,12 +2,20 @@
 
 
     <div v-if="chart.type === 'line-chart'">
-        <line-chart/>
+        <line-chart
+
+                v-bind:chart="chart"
+                v-bind:height="height"
+                v-bind:width="width"
+        />
 
     </div>
     <div v-else-if="chart.type === 'bar-chart'">
         <bar-chart
-                   v-bind:chart="chart"/>
+                v-bind:chart="chart"
+                v-bind:height="height"
+                v-bind:width="width"
+        />
     </div>
     <div v-else-if="chart.type === 'pie-chart'">
         <pie-chart
@@ -120,7 +128,6 @@
 
 
     //https://coolors.co/app
-    import {Chart} from 'vue-chartjs'
 
     // let colors = Chart.helpers.color;
     //https://coolors.co/export/pdf/aeb4a9-e0c1b3-d89a9e-c37d92-846267
@@ -361,7 +368,6 @@
 
 
             },
-            extends: Chart,
             props: ['chart',
             'height',
                 'width'

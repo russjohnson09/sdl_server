@@ -15,7 +15,8 @@ module.exports = class ReportingController
 
     generateTestUsageAndErrorCountsHistory()
     {
-        let usage_and_error_counts_history = [];
+        // let usage_and_error_counts_history = [];
+        let usage_and_error_counts_history = {};
         let date = moment().subtract(30,'days');
 
         //number of times the app has been opened
@@ -49,15 +50,27 @@ module.exports = class ReportingController
 
 
             //2 or more datasets
-            usage_and_error_counts_history.push({
-                created_date: reportDate,
+            // usage_and_error_counts_history.push({
+            //     created_date: reportDate,
+            //     count_of_rejected_rpcs_calls,
+            //     count_of_user_selections,
+            //     minutes_in_hmi_background: 10,
+            //     minutes_in_hmi_full: 20,
+            //     minutes_in_hmi_limited: 40,
+            //     minutes_in_hmi_none: 50
+            // });
+
+
+            usage_and_error_counts_history[moment(reportDate).format('YYYY-MM-DD')] =
+                {
+                // created_date: reportDate,
                 count_of_rejected_rpcs_calls,
                 count_of_user_selections,
                 minutes_in_hmi_background: 10,
                 minutes_in_hmi_full: 20,
                 minutes_in_hmi_limited: 40,
                 minutes_in_hmi_none: 50
-            });
+            };
 
 
         }
