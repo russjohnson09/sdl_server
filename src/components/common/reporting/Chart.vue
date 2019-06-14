@@ -127,10 +127,6 @@
     };
 
 
-    //https://coolors.co/app
-
-    // let colors = Chart.helpers.color;
-    //https://coolors.co/export/pdf/aeb4a9-e0c1b3-d89a9e-c37d92-846267
     let chartColors = {
         green: '#41B883',
         orange: '#E46651',
@@ -230,9 +226,6 @@
         }
     };
 
-    //https://codepen.io/kasiditp/pen/jwBqBZ
-    //pie chart label
-    //npm install chartjs-plugin-labels
     let obj =
         {
             getBasicDonutChartFromJson(json) {
@@ -383,8 +376,6 @@
                 if (!this.chart.options.plugins) {
                     this.chart.options.plugins = plugins_no_label;
                 }
-
-                console.log(`plugins`, this.chart.options);
             },
             mounted() {
             },

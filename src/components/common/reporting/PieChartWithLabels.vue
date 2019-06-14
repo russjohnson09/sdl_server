@@ -2,23 +2,6 @@
 
 
     import {Pie} from 'vue-chartjs'
-
-    //chart sizing
-    //https://github.com/apertureless/vue-chartjs/issues/17
-    //https://github.com/emn178/chartjs-plugin-labels/issues/47
-    //https://github.com/chartjs/chartjs-plugin-datalabels/issues/10#
-
-    // import ChartJsPluginDataLabels from 'chartjs-plugin-datalabels';
-    //
-    // var app = new Vue({
-    //     el: '#app',
-    //     data: {
-    //         message: 'Hello Vue!'
-    //     },
-    //     components: {
-    //         ChartJsPluginDataLabels,
-    //     },
-    // })
     /**
      * Example Pie Chart
      */

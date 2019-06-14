@@ -71,7 +71,6 @@
         methods: {
             getStackedReportFromHistoryReport(report,validTypes)
             {
-                let datasetsIndex = {};
                 let datasets = this.getDataSetsFromHistoryReport(report,validTypes);
 
                 let barchartStacked = {
@@ -122,7 +121,6 @@
             },
             getLineChartFromHistoryReport(report,validTypes)
             {
-                let datasetsIndex = {};
                 let datasets = this.getDataSetsFromHistoryReport(report,validTypes);
 
                 let chart = {

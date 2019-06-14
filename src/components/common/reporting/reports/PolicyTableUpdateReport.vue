@@ -115,13 +115,11 @@
             if (this.total_device_carrier)
             {
                 this.carrierPolar = Chart.getBasicPolarChartFromJson(this.total_device_carrier);
-                console.log(`carrierPolar`,this.total_device_carrier);
             }
 
             let ptuChartStacked;
 
             let ptu = this.policy_table_updates_by_trigger;
-            console.log(`policy-table-update-report`,ptu);
 
             let datasetsIndex = {};
             let datasets = [];
@@ -166,9 +164,6 @@
                     datasets,
                 }
             };
-
-            console.log(`policy-table-update-report`,datasets,ptuChartStacked);
-
 
             this.ptuChartStacked = ptuChartStacked
         },

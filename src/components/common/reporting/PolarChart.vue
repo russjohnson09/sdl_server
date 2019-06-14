@@ -10,7 +10,6 @@
         props: ['chart'],
         mounted () {
             let options = this.chart.options;
-            // options.maintainAspectRatio = false;
             this.renderChart(this.chart.data, options)
         }
     }
