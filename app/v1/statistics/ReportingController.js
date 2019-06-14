@@ -1,16 +1,7 @@
 const moment = require('moment');
 
 module.exports = class ReportingController
-    // extends BaseController
 {
-
-    // router;
-    // useTestData = true;
-    //
-    //
-    // testData = {
-    //     popular_models:  []
-    // };
 
 
     generateTestUsageAndErrorCountsHistory()
@@ -229,15 +220,8 @@ module.exports = class ReportingController
     }
 
 
-    //https://github.com/smartdevicelink/sdl_evolution/blob/master/proposals/0233-policy-server-statistics-recording-visualizations.md
     async getTestDataByAppId(appId)
     {
-        let usage_and_error_counts = {
-            minutes_in_hmi_background: 10,
-            minutes_in_hmi_full: 20,
-            minutes_in_hmi_limited: 40,
-            minutes_in_hmi_none: 50
-        };
 
         let usage_and_error_counts_history = await this.generateTestUsageAndErrorCountsHistory();
 
@@ -249,36 +233,6 @@ module.exports = class ReportingController
             //Number of daily PTUs during the retention period, stacked by the triggering event (miles, days, ignition cycles)
             report_days: 30,
             usage_and_error_counts_history
-            // minutes_in_hmi: { //minutes on each hmi level report.
-            //     background: usage_and_error_counts.minutes_in_hmi_background,
-            //     full: usage_and_error_counts.minutes_in_hmi_full,
-            //     limited: usage_and_error_counts.minutes_in_hmi_limited,
-            //     none: usage_and_error_counts.minutes_in_hmi_none
-            //     },
-            // | minutes_in_hmi_background | Number | Number of minutes the application is in the HMI_BACKGROUND state. |
-    // | minutes_in_hmi_full | Number | Number of minutes the application is in the HMI_FULL state. |
-    // | minutes_in_hmi_limited | Number | Number of minutes the application is in the HMI_LIMITED state. |
-    // | minutes_in_hmi_none | Number | Number of minutes the application is in the HMI_NONE state. |
-    //         total_policy_table_updates_by_trigger:
-    //             {
-    //                 unknown: 10,
-    //                 mileage: 10,
-    //                 days: 10,
-    //                 ignition_cycles: 10,
-    //
-    //             },
-    //         device_model_counts: {
-    //             "iPhone 8": 10,
-    //             "Nexus 7": 5,
-    //             "unknown": 1,
-    //         },
-    //         app_opens: {
-    //
-    //         },
-    //         rejected_rpcs: { //Aggregate count of rejected RPCs, over the retention period
-    //             unknown: 10,
-    //             getTires: 10
-    //         },
 
         };
 
@@ -361,16 +315,11 @@ module.exports = class ReportingController
 
         if (self.useTestData)
         {
-            // router.get('/',self.getTestDataRoute());
             router.get('/aggregate-report',self.getTestDataRoute());
 
             router.get('/application-report/:id',self.getTestAppReportRoute());
-
-            // router.get('/application-report',self.getTestAppReportRoute())
-
         }
         else {
-            // router.get('/',self.getTestDataRoute())
         }
 
 
