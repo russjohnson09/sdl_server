@@ -1,4 +1,6 @@
 <!-- Copyright (c) 2018, Livio, Inc. -->
+
+<!--https://community.rstudio.com/t/how-can-i-generate-this-kind-of-polar-chart-in-r-studio/2158/4-->
 <template>
     <div class="container-fluid color-bg-gray">
         <div class="row">
@@ -18,23 +20,52 @@
                             <div class="row">
                                 <div class="col-sm-12">
 
-
-
                                     <vue-plotly v-if="ptuChartStacked"
-                                                  v-bind:data="ptuChartStacked.data"
-                                                  v-bind:layout="ptuChartStacked.layout"
-                                                  v-bind:options="ptuChartStacked.options"
+                                                :data="ptuChartStacked.data"
+                                                :layout="ptuChartStacked.layout"
+                                                :options="ptuChartStacked.options"
 
                                     />
 
-<!--                                    https://plot.ly/javascript/pie-charts/-->
-<!--                                    https://plot.ly/~yusuf.sultan/119/pie-charts-5-labels-text-hoverinf/#/-->
+
+<!--                                    <vue-plotly v-if="ptuChartStacked"-->
+<!--                                                  v-bind:data="ptuChartStacked.data"-->
+<!--                                                  v-bind:layout="ptuChartStacked.layout"-->
+<!--                                                  v-bind:options="ptuChartStacked.options"-->
+
+<!--                                    />-->
+
+<!--&lt;!&ndash;                                    https://plot.ly/javascript/pie-charts/&ndash;&gt;-->
+<!--&lt;!&ndash;                                    https://plot.ly/~yusuf.sultan/119/pie-charts-5-labels-text-hoverinf/#/&ndash;&gt;-->
                                     <vue-plotly v-if="ptuPieChart"
-                                                v-bind:data="ptuPieChart.data"
-                                                v-bind:layout="ptuPieChart.layout"
-                                                v-bind:options="ptuPieChart.options"
+                                                :data="ptuPieChart.data"
+                                                :layout="ptuPieChart.layout"
+                                                :options="ptuPieChart.options"
 
                                     />
+
+                                    <vue-plotly v-if="deviceOsPie"
+                                                :data="deviceOsPie.data"
+                                                :layout="deviceOsPie.layout"
+                                                :options="deviceOsPie.options"
+
+                                    />
+
+                                    <vue-plotly v-if="modelPie"
+                                                :data="modelPie.data"
+                                                :layout="modelPie.layout"
+                                                :options="modelPie.options"
+
+                                    />
+
+                                    <vue-plotly v-if="carrierPie"
+                                                :data="carrierPie.data"
+                                                :layout="carrierPie.layout"
+                                                :options="carrierPie.options"
+
+                                    />
+
+
 
                                                                     <policy-table-update-report v-bind:policy_table_updates_by_trigger="aggregateReport.policy_table_updates_by_trigger"
                                                                                                 v-bind:total_policy_table_updates_by_trigger="aggregateReport.total_policy_table_updates_by_trigger"
@@ -42,8 +73,6 @@
                                                                                                 v-bind:total_device_os="aggregateReport.total_device_os"
                                                                                                 v-bind:total_device_model="aggregateReport.total_device_model"
                                                                                                 v-bind:total_device_carrier="aggregateReport.total_device_carrier"
-
-
                                                                     />
 
 
@@ -86,7 +115,12 @@
 
                 ptuChartStacked: null,
                 ptuPieChart: null,
-                ptuDonutChart: null
+                ptuDonutChart: null,
+
+                deviceOsPie: null,
+                modelPie: null,
+
+                carrierPie: null,
 
 
             }
@@ -100,7 +134,10 @@
             populateCharts() {
                 let aggregateReport = this.aggregateReport;
                 let {
-                    total_policy_table_updates_by_trigger
+                    total_policy_table_updates_by_trigger,
+                    total_device_os,
+                    total_device_carrier,
+                    total_device_model,
                 } = this.aggregateReport;
 
 
@@ -211,6 +248,8 @@
                 if (total_policy_table_updates_by_trigger)
                 {
                     this.ptuPieChart = PlotlyHelper.getPieChartFromJson(total_policy_table_updates_by_trigger,labelMapping);
+                    // this.ptuPieChart = PlotlyHelper.getDonutChartFromJson(total_policy_table_updates_by_trigger,labelMapping);
+
                     // this.ptuPieChart.data.push(this.ptuChartStacked.data[0]);
                     this.ptuPieChart.layout = {
                         title: 'Policy Table Updates By Trigger',
@@ -229,6 +268,65 @@
                     // this.ptuDonutChart = Chart.getBasicDonutChartFromJson(this.total_policy_table_updates_by_trigger);
 
                 }
+
+
+                if (total_device_os)
+                {
+
+                    let pieChart = PlotlyHelper.getPieChartFromJson(total_device_os,labelMapping);
+                    pieChart.layout = {
+                        title: 'Device OS',
+                    };
+                    pieChart.options = {
+                        toImageButtonOptions: {
+                            filename: pieChart.layout.title,
+                            width: 800,
+                            height: 600,
+                            format: 'png'
+                        }
+                    };
+                    this.deviceOsPie = pieChart;
+                }
+
+
+                if (total_device_model)
+                {
+                    let pieChart = PlotlyHelper.getPieChartFromJson(total_device_model,labelMapping);
+                    pieChart.layout = {
+                        title: 'Device Model',
+                    };
+                    pieChart.options = {
+                        toImageButtonOptions: {
+                            filename: pieChart.layout.title,
+                            width: 800,
+                            height: 600,
+                            format: 'png'
+                        }
+                    };
+                    this.modelPie = pieChart;
+
+                    // this.modelPie = Chart.getBasicPieChartFromJson(this.total_device_model);
+
+                }
+
+                //https://community.rstudio.com/t/how-can-i-generate-this-kind-of-polar-chart-in-r-studio/2158/5
+                if (total_device_carrier)
+                {
+                    let pieChart = PlotlyHelper.getPieChartFromJson(total_device_carrier,labelMapping);
+                    pieChart.layout = {
+                        title: 'Device Carrier',
+                    };
+                    pieChart.options = {
+                        toImageButtonOptions: {
+                            filename: pieChart.layout.title,
+                            width: 800,
+                            height: 600,
+                            format: 'png'
+                        }
+                    };
+                    this.carrierPie = pieChart;
+                }
+
             }
         },
         created (){

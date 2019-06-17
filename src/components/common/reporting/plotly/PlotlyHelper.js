@@ -1,7 +1,18 @@
-let obj =
+let self =
     {
-        getPieChartFromJson(obj,labelMapping)
+        getBasicPolarChartFromJson(jsonObj,labelMapping)
         {
+
+        },
+        getDonutChartFromJson(jsonObj,labelMapping){
+            return self.getPieChartFromJson(jsonObj,labelMapping, {
+                hole: 0.4
+            });
+
+        },
+        getPieChartFromJson(obj,labelMapping,options)
+        {
+            options = options || {};
             let values = [];
             let labels = [];
 
@@ -23,6 +34,7 @@ let obj =
                     values,
                     labels,
                     type: 'pie',
+                    hole: options.hole || 0,
                     // 'textinfo' : 'label+text+value+percent',
                     'textinfo' : 'label+text+percent'
 
@@ -46,4 +58,4 @@ let obj =
     };
 
 
-export default obj;
+export default self;

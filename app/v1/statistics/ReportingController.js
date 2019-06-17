@@ -207,6 +207,25 @@ module.exports = class ReportingController
                 "iPhone 8": 10,
                 "Nexus 7": 5,
                 "unknown": 1,
+                "Nexus 1": 5,
+                "Nexus 2": 5,
+                "Nexus 3": 5,
+                "Nexus 4": 5,
+                "Nexus 5": 5,
+                "Nexus 6": 5,
+                "Liquid Zest": 5,
+                "Liquid Jade Z": 5,
+                "Liquid Jade X": 5,
+                "Small 1": 1,
+                "Small 2": 1,
+                "Small 3": 1,
+                "Small 4": 1,
+                "Small 5": 1,
+                "Small 6": 1,
+                "Small 7": 1,
+                "Small 8": 1,
+                "Small 9": 1,
+                "Small 10": 1,
             },
             total_device_os: {
                 "Android": 5,
@@ -234,6 +253,8 @@ module.exports = class ReportingController
             },
 
         };
+
+
 
 
         return obj;
