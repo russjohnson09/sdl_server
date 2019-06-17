@@ -45,6 +45,7 @@ import PieChartWithLabels from "./components/common/reporting/PieChartWithLabels
 import PlotlyChart from "./components/common/reporting/plotly/PlotlyChart";
 import PlotlyBarChart from "./components/common/reporting/plotly/PlotlyBarChart";
 
+import VuePlotly from '@statnett/vue-plotly'
 
 
 Object.defineProperty(Vue.prototype, '$async', { value: async });
@@ -74,6 +75,7 @@ Vue.component("application-reports", ApplicationReports);
 
 Vue.component("plotly-chart", PlotlyChart);
 Vue.component("plotly-bar-chart", PlotlyBarChart);
+Vue.component("vue-plotly", VuePlotly);
 
 
 Vue.http.options.root = '/api/v1';

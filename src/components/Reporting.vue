@@ -18,27 +18,33 @@
                             <div class="row">
                                 <div class="col-sm-12">
 
-<!--                                    <plotly-chart-->
-<!--                                    v-bind:data="[{ x: [1, 3], y: [2, 4] }]"-->
-<!--                                    />-->
-<!--                                    <plotly-bar-chart />-->
 
-                                    <plotly-chart v-if="ptuChartStacked"
-                                            v-bind:data="ptuChartStacked.data"
-                                            v-bind:layout="ptuChartStacked.layout"
-                                            v-bind:options="ptuChartStacked.options"
+
+                                    <vue-plotly v-if="ptuChartStacked"
+                                                  v-bind:data="ptuChartStacked.data"
+                                                  v-bind:layout="ptuChartStacked.layout"
+                                                  v-bind:options="ptuChartStacked.options"
 
                                     />
 
-<!--                                                                    <policy-table-update-report v-bind:policy_table_updates_by_trigger="aggregateReport.policy_table_updates_by_trigger"-->
-<!--                                                                                                v-bind:total_policy_table_updates_by_trigger="aggregateReport.total_policy_table_updates_by_trigger"-->
+<!--                                    https://plot.ly/javascript/pie-charts/-->
+<!--                                    https://plot.ly/~yusuf.sultan/119/pie-charts-5-labels-text-hoverinf/#/-->
+                                    <vue-plotly v-if="ptuPieChart"
+                                                v-bind:data="ptuPieChart.data"
+                                                v-bind:layout="ptuPieChart.layout"
+                                                v-bind:options="ptuPieChart.options"
 
-<!--                                                                                                v-bind:total_device_os="aggregateReport.total_device_os"-->
-<!--                                                                                                v-bind:total_device_model="aggregateReport.total_device_model"-->
-<!--                                                                                                v-bind:total_device_carrier="aggregateReport.total_device_carrier"-->
+                                    />
+
+                                                                    <policy-table-update-report v-bind:policy_table_updates_by_trigger="aggregateReport.policy_table_updates_by_trigger"
+                                                                                                v-bind:total_policy_table_updates_by_trigger="aggregateReport.total_policy_table_updates_by_trigger"
+
+                                                                                                v-bind:total_device_os="aggregateReport.total_device_os"
+                                                                                                v-bind:total_device_model="aggregateReport.total_device_model"
+                                                                                                v-bind:total_device_carrier="aggregateReport.total_device_carrier"
 
 
-<!--                                                                    />-->
+                                                                    />
 
 
                                 </div>
@@ -70,6 +76,7 @@
 
 
     import Chart from "./common/reporting/Chart";
+    import PlotlyHelper from "./common/reporting/plotly/PlotlyHelper";
 
     let obj = {
         data () {
@@ -78,6 +85,8 @@
                 "aggregateReport": null,
 
                 ptuChartStacked: null,
+                ptuPieChart: null,
+                ptuDonutChart: null
 
 
             }
@@ -90,6 +99,19 @@
         methods: {
             populateCharts() {
                 let aggregateReport = this.aggregateReport;
+                let {
+                    total_policy_table_updates_by_trigger
+                } = this.aggregateReport;
+
+
+
+
+
+                let labelMapping = {
+                    'mileage': 'Mileage',
+                    'days': 'Days',
+                    'ignition_cycle': 'Ignition Cycle'
+                }
 
                 let ptu = aggregateReport.policy_table_updates_by_trigger;
 
@@ -111,12 +133,17 @@
                         let record = ptu[date];
                         for (let type in record)
                         {
-                            if (datasetsIndex[type] == undefined)
+                            let label = type;
+                            if (labelMapping && labelMapping[type]) {
+                                label = labelMapping[type];
+                            }
+
+                            if (datasetsIndex[label] == undefined)
                             {
-                                datasetsIndex[type] = datasets.length;
+                                datasetsIndex[label] = datasets.length;
                                 datasets.push({
                                     type: 'bar',
-                                    name: type,
+                                    name: label,
                                     marker: {
                                         color: Chart.chartColors[datasets.length],
                                     },
@@ -126,31 +153,11 @@
                                     y: []
                                 })
                             }
-                            let dataset = datasets[datasetsIndex[type]];
+                            let dataset = datasets[datasetsIndex[label]];
+
+
                             dataset.x.push(date);
-                            dataset.y.push(record[type]);
-
-
-                            // var trace1 = {
-                            //     x: [1995, 1996, 1997, 1998, 1999, 2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012],
-                            //     y: [219, 146, 112, 127, 124, 180, 236, 207, 236, 263, 350, 430, 474, 526, 488, 537, 500, 439],
-                            //     name: 'Rest of world',
-                            //     marker: {color: 'rgb(55, 83, 109)'},
-                            //     type: 'bar'
-                            // };
-                            //
-                            // var trace2 = {
-                            //     x: [1995, 1996, 1997, 1998, 1999, 2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012],
-                            //     y: [16, 13, 10, 11, 28, 37, 43, 55, 56, 88, 105, 156, 270, 299, 340, 403, 549, 499],
-                            //     name: 'China',
-                            //     marker: {color: 'rgb(26, 118, 255)'},
-                            //     type: 'bar'
-                            // };
-                            //
-                            // dataset.data.push({
-                            //     x: date,
-                            //     y: record[type]
-                            // })
+                            dataset.y.push(ptu[date][type]);
                         }
                     }
                 }
@@ -189,6 +196,20 @@
                 //         datasets,
                 //     }
                 // };
+
+
+
+                if (total_policy_table_updates_by_trigger)
+                {
+                    this.ptuPieChart = PlotlyHelper.getPieChartFromJson(total_policy_table_updates_by_trigger,labelMapping);
+                    // this.ptuPieChart.data.push(this.ptuChartStacked.data[0]);
+                    this.ptuPieChart.layout = {
+                        title: 'Policy Table Updates By Trigger',
+                    }
+                    // this.ptuPieChart = Chart.getBasicPieChartFromJson(this.total_policy_table_updates_by_trigger);
+                    // this.ptuDonutChart = Chart.getBasicDonutChartFromJson(this.total_policy_table_updates_by_trigger);
+
+                }
             }
         },
         created (){
