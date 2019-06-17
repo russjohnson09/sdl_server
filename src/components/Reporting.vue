@@ -11,15 +11,15 @@
             <main class="col-sm-9 ml-sm-auto col-md-10 pt-3 main-content" role="main">
 
                 <div v-if="ENABLE_REPORTING">
-                    <h1>Reporting</h1>
-<!--                    class="functional-content" v-if="aggregateReport"-->
+                    <h2>Reporting</h2>
+                    <!--                    class="functional-content" v-if="aggregateReport"-->
                     <div v-if="aggregateReport">
 
-<!--                         class="form-row mb-0"-->
+                        <!--                         class="form-row mb-0"-->
                         <div>
-                            <h2>Policy Table Updates</h2>
+                            <h3>Policy Table Updates</h3>
 
-<!--                            <h4 for="name">Report for the Last {{aggregateReport.report_days}} Days</h4>-->
+                            <!--                            <h4 for="name">Report for the Last {{aggregateReport.report_days}} Days</h4>-->
 
                             <div class="row">
                                 <div class="col-sm-12">
@@ -59,18 +59,18 @@
                                 </div>
                             </div>
 
+                            <h3>Devices</h3>
                             <div class="row">
-                                <div class="col-sm-12">
+                                <div class="col-sm-6">
+                                    <vue-plotly v-if="deviceOsPie"
+                                                :data="deviceOsPie.data"
+                                                :layout="deviceOsPie.layout"
+                                                :options="deviceOsPie.options"
 
+                                    />
 
-                                    <div>
-                                        <vue-plotly v-if="deviceOsPie"
-                                                    :data="deviceOsPie.data"
-                                                    :layout="deviceOsPie.layout"
-                                                    :options="deviceOsPie.options"
-
-                                        />
-                                    </div>
+                                </div>
+                                <div class="col-sm-6">
 
 
                                     <vue-plotly v-if="modelPie"
@@ -79,6 +79,16 @@
                                                 :options="modelPie.options"
 
                                     />
+                                </div>
+
+
+
+                            </div>
+
+                            <div class="row">
+
+                                <div class="col-sm-6">
+
 
                                     <vue-plotly v-if="carrierPie"
                                                 :data="carrierPie.data"
@@ -86,25 +96,25 @@
                                                 :options="carrierPie.options"
 
                                     />
-
-
-                                    <policy-table-update-report
-                                            v-bind:policy_table_updates_by_trigger="aggregateReport.policy_table_updates_by_trigger"
-                                            v-bind:total_policy_table_updates_by_trigger="aggregateReport.total_policy_table_updates_by_trigger"
-
-                                            v-bind:total_device_os="aggregateReport.total_device_os"
-                                            v-bind:total_device_model="aggregateReport.total_device_model"
-                                            v-bind:total_device_carrier="aggregateReport.total_device_carrier"
-                                    />
-
-
                                 </div>
                             </div>
                         </div>
-
-
                     </div>
+
+
+
+<!--                    <policy-table-update-report-->
+<!--                            v-bind:policy_table_updates_by_trigger="aggregateReport.policy_table_updates_by_trigger"-->
+<!--                            v-bind:total_policy_table_updates_by_trigger="aggregateReport.total_policy_table_updates_by_trigger"-->
+
+<!--                            v-bind:total_device_os="aggregateReport.total_device_os"-->
+<!--                            v-bind:total_device_model="aggregateReport.total_device_model"-->
+<!--                            v-bind:total_device_carrier="aggregateReport.total_device_carrier"-->
+<!--                    />-->
+
                 </div>
+
+
 
                 <div v-if="!ENABLE_REPORTING">
                     Reporting is disabled.
@@ -235,7 +245,9 @@
                         yaxis: {
                             fixedrange: true
                         },
-                        dragmode: 'pan'
+                        dragmode: 'pan',
+                        responsive: true,
+
                     }
 
                     // options: Chart.defaultOptions.stackedTimeSeries,
@@ -291,10 +303,10 @@
                 if (total_device_os) {
 
                     let pieChart = PlotlyHelper.getPieChartFromJson(total_device_os, labelMapping);
-                    pieChart.layout = {
-                        title: 'Device OS',
-                    };
+                    pieChart.layout.title ='Device OS';
                     pieChart.options = {
+                        responsive: true,
+
                         toImageButtonOptions: {
                             filename: pieChart.layout.title,
                             width: 800,
@@ -308,10 +320,14 @@
 
                 if (total_device_model) {
                     let pieChart = PlotlyHelper.getPieChartFromJson(total_device_model, labelMapping);
-                    pieChart.layout = {
-                        title: 'Device Model',
-                    };
+                    pieChart.layout.title = 'Device Model';
+
+                    // pieChart.layout = {
+                    //     title:
+                    // };
                     pieChart.options = {
+                        responsive: true,
+
                         toImageButtonOptions: {
                             filename: pieChart.layout.title,
                             width: 800,
@@ -328,10 +344,14 @@
                 //https://community.rstudio.com/t/how-can-i-generate-this-kind-of-polar-chart-in-r-studio/2158/5
                 if (total_device_carrier) {
                     let pieChart = PlotlyHelper.getPieChartFromJson(total_device_carrier, labelMapping);
-                    pieChart.layout = {
-                        title: 'Device Carrier',
-                    };
+                    pieChart.layout.title = 'Device Carrier';
+
+                    // pieChart.layout = {
+                    //     title: 'Device Carrier',
+                    // };
                     pieChart.options = {
+                        responsive: true,
+
                         toImageButtonOptions: {
                             filename: pieChart.layout.title,
                             width: 800,

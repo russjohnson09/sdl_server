@@ -1,3 +1,5 @@
+<script>
+
 let self =
     {
         getBasicPolarChartFromJson(jsonObj,labelMapping)
@@ -16,8 +18,11 @@ let self =
             let values = [];
             let labels = [];
 
+            let keyCount = 0;
+
             for (let key in obj)
             {
+                keyCount++;
                 values.push(obj[key]);
 
                 if (labelMapping && labelMapping[key])
@@ -29,6 +34,12 @@ let self =
                     labels.push(key);
                 }
             }
+
+            let textinfo = 'label+percent';
+            if (keyCount > 3)
+            {
+                textinfo = 'text';
+            }
             let data = [
                 {
                     values,
@@ -36,7 +47,7 @@ let self =
                     type: 'pie',
                     hole: options.hole || 0,
                     // 'textinfo' : 'label+text+value+percent',
-                    'textinfo' : 'label+text+percent'
+                    textinfo
 
                 }
             ];
@@ -46,16 +57,31 @@ let self =
             //     type: 'pie'
             // }];
 
-            var layout = {
-                height: 400,
-                width: 500
-            };
+            // var layout = {
+            //     height: 400,
+            //     width: 500
+            // };
 
+            //https://github.com/plotly/plotly.js/issues/53
             return {
-                data
+                data,
+                layout: {
+                    showlegend: true,
+                    legend: {
+                        // xanchor:"center",
+                        // yanchor:"top",
+                        // y:-1.3, // play with it
+                        // x:0.5,   // play with it
+                        orientation: 'h',
+                        // x: 0,
+                        // y: 1
+                    }
+                }
             }
         }
     };
 
 
 export default self;
+
+</script>
