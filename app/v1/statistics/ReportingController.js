@@ -80,6 +80,14 @@ module.exports = class ReportingController
 
         for (let i = 0; i < report_days; i++)
         {
+            if (i % 9 === 0)
+            {
+                continue;
+                // ptu_history.push({
+                //     created_date: reportDate,
+                //     update_type: 'days',
+                // });
+            }
             let reportDate = moment(date).add(i,'days');
 
 
@@ -103,6 +111,8 @@ module.exports = class ReportingController
                 created_date: reportDate,
                 update_type: 'mileage',
             });
+
+
 
             if (i % 2 === 0)
             {

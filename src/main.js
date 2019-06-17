@@ -41,6 +41,12 @@ import PieChart from "./components/common/reporting/PieChart";
 import Chart from "./components/common/reporting/Chart";
 import PolarChart from "./components/common/reporting/PolarChart";
 import PieChartWithLabels from "./components/common/reporting/PieChartWithLabels";
+
+import PlotlyChart from "./components/common/reporting/plotly/PlotlyChart";
+import PlotlyBarChart from "./components/common/reporting/plotly/PlotlyBarChart";
+
+
+
 Object.defineProperty(Vue.prototype, '$async', { value: async });
 
 Vue.component("vue-ladda", VueLadda);
@@ -65,6 +71,10 @@ Vue.component("policy-table-update-report", PolicyTableUpdateReport);
 Vue.component("polar-chart", PolarChart);
 Vue.component("pie-chart-with-labels", PieChartWithLabels);
 Vue.component("application-reports", ApplicationReports);
+
+Vue.component("plotly-chart", PlotlyChart);
+Vue.component("plotly-bar-chart", PlotlyBarChart);
+
 
 Vue.http.options.root = '/api/v1';
 
