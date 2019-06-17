@@ -162,9 +162,11 @@
                     }
                 }
 
+                let ptuTableTitle = 'Policy Table Updates By Trigger'
                 this.ptuChartStacked = {
                     data: datasets,
                     layout : {barmode: 'stack',
+                        title: ptuTableTitle,
 
                         xaxis: {range: ['2019-06-01','2019-07-01']},
 
@@ -187,6 +189,13 @@
                     // }
                 };
 
+                this.ptuChartStacked.options.toImageButtonOptions = {
+                    filename: ptuTableTitle,
+                    width: 800,
+                    height: 600,
+                    format: 'png'
+                };
+
                 // let data = [trace1,trace2];
                 //
                 // ptuChartStacked = {
@@ -205,7 +214,17 @@
                     // this.ptuPieChart.data.push(this.ptuChartStacked.data[0]);
                     this.ptuPieChart.layout = {
                         title: 'Policy Table Updates By Trigger',
+                    };
+
+                    this.ptuPieChart.options = {
+                        toImageButtonOptions: {
+                            filename: this.ptuPieChart.layout.title,
+                            width: 800,
+                            height: 600,
+                            format: 'png'
+                        }
                     }
+
                     // this.ptuPieChart = Chart.getBasicPieChartFromJson(this.total_policy_table_updates_by_trigger);
                     // this.ptuDonutChart = Chart.getBasicDonutChartFromJson(this.total_policy_table_updates_by_trigger);
 
