@@ -11,11 +11,15 @@
             <main class="col-sm-9 ml-sm-auto col-md-10 pt-3 main-content" role="main">
 
                 <div v-if="ENABLE_REPORTING">
-                    <h4>Reporting</h4>
-                    <div class="functional-content" v-if="aggregateReport">
+                    <h1>Reporting</h1>
+<!--                    class="functional-content" v-if="aggregateReport"-->
+                    <div v-if="aggregateReport">
 
-                        <div class="form-row mb-0">
-                            <h4 for="name">Report for the Last {{aggregateReport.report_days}} Days</h4>
+<!--                         class="form-row mb-0"-->
+                        <div>
+                            <h2>Policy Table Updates</h2>
+
+<!--                            <h4 for="name">Report for the Last {{aggregateReport.report_days}} Days</h4>-->
 
                             <div class="row">
                                 <div class="col-sm-12">
@@ -26,30 +30,48 @@
                                                 :options="ptuChartStacked.options"
 
                                     />
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-4">
 
 
-<!--                                    <vue-plotly v-if="ptuChartStacked"-->
-<!--                                                  v-bind:data="ptuChartStacked.data"-->
-<!--                                                  v-bind:layout="ptuChartStacked.layout"-->
-<!--                                                  v-bind:options="ptuChartStacked.options"-->
+                                    <!--                                    <vue-plotly v-if="ptuChartStacked"-->
+                                    <!--                                                  v-bind:data="ptuChartStacked.data"-->
+                                    <!--                                                  v-bind:layout="ptuChartStacked.layout"-->
+                                    <!--                                                  v-bind:options="ptuChartStacked.options"-->
 
-<!--                                    />-->
+                                    <!--                                    />-->
 
-<!--&lt;!&ndash;                                    https://plot.ly/javascript/pie-charts/&ndash;&gt;-->
-<!--&lt;!&ndash;                                    https://plot.ly/~yusuf.sultan/119/pie-charts-5-labels-text-hoverinf/#/&ndash;&gt;-->
-                                    <vue-plotly v-if="ptuPieChart"
-                                                :data="ptuPieChart.data"
-                                                :layout="ptuPieChart.layout"
-                                                :options="ptuPieChart.options"
+                                    <!--&lt;!&ndash;                                    https://plot.ly/javascript/pie-charts/&ndash;&gt;-->
+                                    <!--&lt;!&ndash;                                    https://plot.ly/~yusuf.sultan/119/pie-charts-5-labels-text-hoverinf/#/&ndash;&gt;-->
 
-                                    />
+                                    <div
+                                            v-if="ptuPieChart">
+                                        <vue-plotly v-if="ptuPieChart"
+                                                    :data="ptuPieChart.data"
+                                                    :layout="ptuPieChart.layout"
+                                                    :options="ptuPieChart.options"
 
-                                    <vue-plotly v-if="deviceOsPie"
-                                                :data="deviceOsPie.data"
-                                                :layout="deviceOsPie.layout"
-                                                :options="deviceOsPie.options"
+                                        />
+                                    </div>
 
-                                    />
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-sm-12">
+
+
+                                    <div>
+                                        <vue-plotly v-if="deviceOsPie"
+                                                    :data="deviceOsPie.data"
+                                                    :layout="deviceOsPie.layout"
+                                                    :options="deviceOsPie.options"
+
+                                        />
+                                    </div>
+
 
                                     <vue-plotly v-if="modelPie"
                                                 :data="modelPie.data"
@@ -66,14 +88,14 @@
                                     />
 
 
+                                    <policy-table-update-report
+                                            v-bind:policy_table_updates_by_trigger="aggregateReport.policy_table_updates_by_trigger"
+                                            v-bind:total_policy_table_updates_by_trigger="aggregateReport.total_policy_table_updates_by_trigger"
 
-                                                                    <policy-table-update-report v-bind:policy_table_updates_by_trigger="aggregateReport.policy_table_updates_by_trigger"
-                                                                                                v-bind:total_policy_table_updates_by_trigger="aggregateReport.total_policy_table_updates_by_trigger"
-
-                                                                                                v-bind:total_device_os="aggregateReport.total_device_os"
-                                                                                                v-bind:total_device_model="aggregateReport.total_device_model"
-                                                                                                v-bind:total_device_carrier="aggregateReport.total_device_carrier"
-                                                                    />
+                                            v-bind:total_device_os="aggregateReport.total_device_os"
+                                            v-bind:total_device_model="aggregateReport.total_device_model"
+                                            v-bind:total_device_carrier="aggregateReport.total_device_carrier"
+                                    />
 
 
                                 </div>
@@ -86,9 +108,12 @@
 
                 <div v-if="!ENABLE_REPORTING">
                     Reporting is disabled.
-                    <a class="fa fa-question-circle color-primary doc-link" v-b-tooltip.hover title="Click here for more info about this page" href="https://smartdevicelink.com/en/guides/sdl-server/getting-started/installation/" target="_blank"></a>
-<!--                    <h4>About this Policy Server-->
-<!--                       </h4>-->
+                    <a class="fa fa-question-circle color-primary doc-link" v-b-tooltip.hover
+                       title="Click here for more info about this page"
+                       href="https://smartdevicelink.com/en/guides/sdl-server/getting-started/installation/"
+                       target="_blank"></a>
+                    <!--                    <h4>About this Policy Server-->
+                    <!--                       </h4>-->
 
                 </div>
 
@@ -103,12 +128,11 @@
     //http://demo.vue-chartjs.org/
 
 
-
     import Chart from "./common/reporting/Chart";
     import PlotlyHelper from "./common/reporting/plotly/PlotlyHelper";
 
     let obj = {
-        data () {
+        data() {
             return {
                 ENABLE_REPORTING: ENABLE_REPORTING,
                 "aggregateReport": null,
@@ -141,9 +165,6 @@
                 } = this.aggregateReport;
 
 
-
-
-
                 let labelMapping = {
                     'mileage': 'Mileage',
                     'days': 'Days',
@@ -162,21 +183,17 @@
                  *
                  * TODO does it make sense to do this in the frontend?
                  */
-                if (ptu)
-                {
-                    for (let date in ptu)
-                    {
+                if (ptu) {
+                    for (let date in ptu) {
 
                         let record = ptu[date];
-                        for (let type in record)
-                        {
+                        for (let type in record) {
                             let label = type;
                             if (labelMapping && labelMapping[type]) {
                                 label = labelMapping[type];
                             }
 
-                            if (datasetsIndex[label] == undefined)
-                            {
+                            if (datasetsIndex[label] == undefined) {
                                 datasetsIndex[label] = datasets.length;
                                 datasets.push({
                                     type: 'bar',
@@ -199,13 +216,14 @@
                     }
                 }
 
-                let ptuTableTitle = 'Policy Table Updates By Trigger'
+                let ptuTableTitle = 'Policy Table Updates By Trigger';
                 this.ptuChartStacked = {
                     data: datasets,
-                    layout : {barmode: 'stack',
+                    layout: {
+                        barmode: 'stack',
                         title: ptuTableTitle,
 
-                        xaxis: {range: ['2019-06-01','2019-07-01']},
+                        xaxis: {range: ['2019-06-01', '2019-07-01']},
 
                         yaxis: {
                             fixedrange: true
@@ -220,7 +238,7 @@
                         dragmode: 'pan'
                     }
 
-                // options: Chart.defaultOptions.stackedTimeSeries,
+                    // options: Chart.defaultOptions.stackedTimeSeries,
                     // data: {
                     //     datasets,
                     // }
@@ -244,10 +262,8 @@
                 // };
 
 
-
-                if (total_policy_table_updates_by_trigger)
-                {
-                    this.ptuPieChart = PlotlyHelper.getPieChartFromJson(total_policy_table_updates_by_trigger,labelMapping);
+                if (total_policy_table_updates_by_trigger) {
+                    this.ptuPieChart = PlotlyHelper.getPieChartFromJson(total_policy_table_updates_by_trigger, labelMapping);
                     // this.ptuPieChart = PlotlyHelper.getDonutChartFromJson(total_policy_table_updates_by_trigger,labelMapping);
 
                     // this.ptuPieChart.data.push(this.ptuChartStacked.data[0]);
@@ -255,7 +271,9 @@
                         title: 'Policy Table Updates By Trigger',
                     };
 
+                    //https://plot.ly/javascript/responsive-fluid-layout/
                     this.ptuPieChart.options = {
+                        responsive: true,
                         toImageButtonOptions: {
                             filename: this.ptuPieChart.layout.title,
                             width: 800,
@@ -270,10 +288,9 @@
                 }
 
 
-                if (total_device_os)
-                {
+                if (total_device_os) {
 
-                    let pieChart = PlotlyHelper.getPieChartFromJson(total_device_os,labelMapping);
+                    let pieChart = PlotlyHelper.getPieChartFromJson(total_device_os, labelMapping);
                     pieChart.layout = {
                         title: 'Device OS',
                     };
@@ -289,9 +306,8 @@
                 }
 
 
-                if (total_device_model)
-                {
-                    let pieChart = PlotlyHelper.getPieChartFromJson(total_device_model,labelMapping);
+                if (total_device_model) {
+                    let pieChart = PlotlyHelper.getPieChartFromJson(total_device_model, labelMapping);
                     pieChart.layout = {
                         title: 'Device Model',
                     };
@@ -310,9 +326,8 @@
                 }
 
                 //https://community.rstudio.com/t/how-can-i-generate-this-kind-of-polar-chart-in-r-studio/2158/5
-                if (total_device_carrier)
-                {
-                    let pieChart = PlotlyHelper.getPieChartFromJson(total_device_carrier,labelMapping);
+                if (total_device_carrier) {
+                    let pieChart = PlotlyHelper.getPieChartFromJson(total_device_carrier, labelMapping);
                     pieChart.layout = {
                         title: 'Device Carrier',
                     };
@@ -329,14 +344,14 @@
 
             }
         },
-        created (){
+        created() {
             let self = this;
             self.httpRequest("get", "reporting/aggregate-report", {}, (err, response) => {
-                if(err){
+                if (err) {
                     // error
                     console.error("Error receiving about info.");
                     console.error(response);
-                }else{
+                } else {
                     // success
                     response.json().then(parsed => {
                         self.aggregateReport = parsed.data;
@@ -345,9 +360,9 @@
                 }
             });
         },
-        mounted (){
+        mounted() {
         },
-        beforeDestroy () {
+        beforeDestroy() {
         }
     };
 
