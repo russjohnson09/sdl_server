@@ -55,6 +55,12 @@ async function  exposeRoutes () {
 	//app.post('/register', register.post);
 	app.post('/login', login.validateAuth);
 	app.get('/applications', auth.validateAuth, applications.get);
+
+	//TODO
+	// app.get('/applications/report', auth.validateAuth, applications.get);
+	// app.get('/module/report', auth.validateAuth, moduleConfig.get);
+
+
 	app.post('/applications/action', auth.validateAuth, applications.actionPost);
 	app.post('/applications/auto', auth.validateAuth, applications.autoPost);
 	app.post('/applications/administrator', auth.validateAuth, applications.administratorPost);
@@ -83,6 +89,9 @@ async function  exposeRoutes () {
 	app.post('/module', auth.validateAuth, moduleConfig.post);
 	app.post('/module/promote', auth.validateAuth, moduleConfig.promote);
 	app.get('/about', auth.validateAuth, about.getInfo);
+	//
+	// router.get('/aggregate-report',self.getTestDataRoute());
+	// router.get('/application-report/:id',self.getTestAppReportRoute());
 
 	await (async () => {
 		let t1 = Date.now();

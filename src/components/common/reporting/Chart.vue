@@ -127,23 +127,82 @@
     };
 
 
+    // #SDL Server
+    // ##Statistics Recording & Visualizations - UI Colors
+
     let chartColors = {
-        green: '#41B883',
-        orange: '#E46651',
-        blue: '#00D8FF',
-        red: '#DD1B16'
+        positive: `#76c26a`,
+        negative: `#ff5e71`,
+        neutral: `#b8c5cf`,
+        // red: '#DD1B16'
         // green: '#aeb4a9',
         // red: '#c37d92',
         // orange: '#e0c1b3',
         // brown: '#846267'
     };
+    // __Pos__
+    //     `#76c26a`
+    //
+    // __Neg__
+    //     `#ff5e71`
+    //
+    // __Null__
+    //     `#b8c5cf`
 
-    chartColors = {
-        0: chartColors.green,
-        1: chartColors.red,
-        2: chartColors.blue,
-        3: chartColors.orange,
-    };
+    // ####Sequential Hierarchical Datasets
+        let sequential_colors = [
+        `#f68b47`,
+
+        `#43a37b`,
+
+        `#3e566a`,
+
+        `#07151f`,
+
+        `#b8c5cf`,
+
+        `#50bbb8`,
+
+        `#5c93ca`,
+
+        `#ffc45c`,
+
+        `#98c8e8`,
+
+        `#c58dbf`,
+
+        `#f0576b`,
+
+        `#ffa2d3`,
+
+        `#adadad`,
+
+        `#245996`,
+
+        `#a1c9ff`,
+
+        `#ff978a`,
+
+        `#8198aa`,
+
+        `#aba6ff`,
+
+        `#d3b38e`,
+
+        `#007d92`,
+            ];
+
+    chartColors = Object.assign(chartColors,sequential_colors);
+
+
+
+
+    // chartColors = {
+    //     0: chartColors.green,
+    //     1: chartColors.red,
+    //     2: chartColors.blue,
+    //     3: chartColors.orange,
+    // };
 
     let defaultOptions = {
         stackedTimeSeries:

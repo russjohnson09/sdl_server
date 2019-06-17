@@ -75,7 +75,9 @@ module.exports = class ReportingController
         let ptu_history = [];
         let date = moment().subtract(30,'days');
 
-        let report_days = 30;
+        // let report_days = 30;
+        let report_days = 90;
+
         for (let i = 0; i < report_days; i++)
         {
             let reportDate = moment(date).add(i,'days');
@@ -203,7 +205,15 @@ module.exports = class ReportingController
             total_device_carrier: {
                 "Verizon": 5,
                 "Sprint": 10,
-                'T-Mobile': 2
+                'T-Mobile': 2,
+                // "Ting": 2,
+                // "1": 1,
+                // "2": 1,
+                // "3": 1,
+                // "4": 1,
+                // "5": 1,
+                // "6": 1,
+
             },
             // app_opens: { //app level
 
