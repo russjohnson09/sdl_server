@@ -367,7 +367,7 @@ export default {
             "class": "dropdown-red"
         };
         return {
-            "ENABLE_REPORTING": process.env.ENABLE_REPORTING,
+            "ENABLE_REPORTING": ENABLE_REPORTING,
             "environment": "STAGING",
             "environmentOptions": [
                 {
