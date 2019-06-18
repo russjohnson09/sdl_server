@@ -7,18 +7,45 @@
 
         <h4>Application Report For Past {{appReport.report_days}} Days</h4>
 
-<!--        <h5>App Usage</h5>-->
-        <div v-if="usageTimeReport" >
-            <vue-plotly v-if="usageTimeReport"
-                        :data="usageTimeReport.data"
-                        :layout="usageTimeReport.layout"
-                        :options="usageTimeReport.options"
 
-            />
+        <div class="row">
+            <div class="col-sm-4"
+                 style="min-width:350px"
+            >
+                <div v-if="usageTimeReport" >
+                    <vue-plotly v-if="usageTimeReport"
+                                :data="usageTimeReport.data"
+                                :layout="usageTimeReport.layout"
+                                :options="usageTimeReport.options"
+
+                    />
+                </div>
+                <div v-else >
+                    <img src="~@/assets/images/black_graphs/bargraphtall_blank.png" alt="No data"/>
+                </div>
+
+            </div>
+
+            <div class="col-sm-4"
+                 style="min-width:350px"
+            >
+                <div v-if="miscStats" >
+                    <vue-plotly v-if="miscStats"
+                                :data="miscStats.data"
+                                :layout="miscStats.layout"
+                                :options="miscStats.options"
+
+                    />
+                </div>
+                <div v-else >
+                    <img src="~@/assets/images/black_graphs/bargraphtall_blank.png" alt="No data"/>
+                </div>
+
+            </div>
         </div>
-        <div v-else >
-           <img src="~@/assets/images/black_graphs/bargraphtall_blank.png" alt="No data"/>
-        </div>
+
+<!--        <h5>App Usage</h5>-->
+
 
 
         <div v-if="stackedCountsReport" >
@@ -76,6 +103,7 @@
         data () {
             let obj = {
                 usageTimeReport: null,
+                miscStats: null,
                 stackedCountsReport: null,
                 lineChartRejectedRPCCalls: null,
                 lineChartUserSelectionCounts: null,
@@ -138,20 +166,6 @@
 
                 return datasets;
             },
-            getLineChartFromHistoryReport(report,validTypes)
-            {
-                let datasets = this.getDataSetsFromHistoryReport(report,validTypes);
-
-                let chart = {
-                    type: 'line-chart',
-                    options: Chart.defaultOptions.stackedTimeSeries,
-                    data: {
-                        datasets,
-                    }
-                };
-                return chart;
-
-            }
         },
 
         mounted (){
@@ -159,16 +173,45 @@
             if (this.appReport)
             {
                 let {app,report_days,aggregate_counts} = this.appReport;
-                let {usage_time} = aggregate_counts;
+                let {usage_time,count_of_user_selections,count_of_rejected_rpcs_calls} = aggregate_counts;
 
                 if (usage_time)
                 {
-                    this.usageTimeReport = Chart.getSmartChartFromJson(usage_time,{
-                        title: 'App Usage Time',
-                        plot_bgcolor: '#FFFFFF',
-                        paper_bgcolor: '#FFFFFF'
-                    })
+                    let usePie = true;
+                    if (usePie)
+                    {
+                        this.usageTimeReport = Chart.getSmartChartFromJson(usage_time,{
+                            title: 'App Usage Time',
+                            plot_bgcolor: '#FFFFFF',
+                            paper_bgcolor: '#FFFFFF'
+                        });
+                    }
+                    else {
+                        this.usageTimeReport = Chart.getBarChartFromJson(usage_time,{
+                            title: 'App Usage Time',
+                            plot_bgcolor: '#FFFFFF',
+                            paper_bgcolor: '#FFFFFF'
+                        })
+                    }
                 }
+
+                if (count_of_user_selections)
+                {
+                    this.miscStats = Chart.getTableFromJson({
+                        count_of_user_selections,
+                        count_of_rejected_rpcs_calls
+                    },{
+                        isPercent: false,
+                        title: 'Other Stats',
+                        plot_bgcolor: '#FFFFFF',
+                        paper_bgcolor: '#FFFFFF',
+                        labelMapping: {
+                            count_of_user_selections: 'User Selections',
+                            count_of_rejected_rpcs_calls: 'RPC Rejections',
+                        }
+                    });
+                }
+
 
             }
 
