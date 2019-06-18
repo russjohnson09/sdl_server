@@ -162,7 +162,8 @@
                             </div>
                             <div class="row">
 
-                                <div class="col-sm-6" style="width:550px"
+<!--                                 style="width:550px"-->
+                                <div class="col-sm-6"
                                 >
 
 
@@ -494,10 +495,17 @@
                     //
                     // });
 
-                    this.carrierChart3 = Chart.getHorizontalStackedBarPlotly(total_device_carrier,{
+                    this.carrierChart3 = Chart.getBarChartPlotly(total_device_carrier,{
                         name: 'Device Breakdown',
+                        title: 'Carriers By %',
+                        xTitle: ''
 
                     });
+
+                    // this.carrierChart3 = Chart.getHorizontalStackedBarPlotly(total_device_carrier,{
+                    //     name: 'Device Breakdown',
+                    //
+                    // });
 
                 }
 

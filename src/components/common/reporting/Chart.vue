@@ -405,6 +405,136 @@
                 }
                 return chart;
             },
+            getBarChartPlotly(json,options)
+            {
+                options = options || {};
+                let defaultOptions = {
+                    sort: true,
+                    isPercent: true,
+                    title: ''
+                };
+
+                options = Object.assign({
+
+                },defaultOptions,options);
+                let {name} = options;
+
+                let dataAry = [];
+                let total = 0;
+                for (let key in json)
+                {
+                    let record = {
+                        key: key,
+                        value: json[key]
+                    };
+                    dataAry.push(record)
+                    total += record.value;
+                }
+
+                // return {};
+
+
+
+
+                if (options.sort)
+                {
+                    dataAry.sort(function(a,b) {
+                        // return b.value - a.value;
+                        return a.value - b.value;
+                    });
+                }
+
+                name = name || '';
+
+                let data = [
+                    {
+                        x: [],
+                        y: [],
+                        text: [],
+                        type: 'bar',
+                        marker: {
+                            color: []
+                        },
+                        textposition: 'auto',
+                        // textposition: 'top',
+                        // textposition: 'outside',
+
+                        orientation: 'h',
+                        hoverinfo: 'x'
+
+
+                        // 'textinfo' : 'label',
+                    }
+                ];
+                // let labels = [];
+                // let backgroundColor = [];
+
+                for (let i in dataAry) {
+                    let record = dataAry[i];
+
+                    record.percent = ((record.value / total) * 100).toFixed(2);
+
+                    data[0].y.push(record.key);
+                    // data[0].y.push(record.value);
+
+                    if (options.isPercent)
+                    {
+                        data[0].x.push(record.percent);
+                        // data[0].text.push(record.percent + `% (${record.value})`);
+                        data[0].text.push(record.percent + `%`);
+                    }
+                    else {
+                        data[0].x.push(record.value);
+                        // data[0].text.push(record.percent + `% (${record.value})`);
+                        data[0].text.push(record.value);
+                    }
+
+
+                    data[0].marker.color.push(chartColors[i])
+
+                }
+
+                //https://plot.ly/javascript/figure-labels/
+                //https://stackoverflow.com/questions/36596947/long-tick-labels-getting-cut-off-in-plotly-js-chart
+                //https://plot.ly/python/hover-text-and-formatting/
+                //https://codepen.io/etpinard/pen/NaVrZz?editors=0010
+                //https://plot.ly/javascript/setting-graph-size/
+                let chart = {
+                    layout: {
+                        title: options.title,
+                        hovermode: false, //No tooltip is required
+                        // hovermode: 'closest',
+
+                        // width: 700,
+                        height: 700,
+                        autosize: true,
+                        xaxis: {
+                            title: {
+                                text: options.xTitle, //options.isPercent ? '%' : 'Total'
+                            },
+                            automargin: true,
+
+                        },
+                        yaxis: {
+                            automargin: true,
+                        }
+
+                    },
+                    data,
+                    options: {
+                        toImageButtonOptions: {
+                            filename: options.title,
+                            width: 800,
+                            height: 600,
+                            format: 'png'
+                        }
+                    }
+                };
+
+                console.log(`chart`,chart);
+
+                return chart;
+            },
             getStackedBarPlotly(json,options)
             {
                 options = options || {};
