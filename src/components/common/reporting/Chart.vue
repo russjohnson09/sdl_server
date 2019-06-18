@@ -194,15 +194,10 @@
 
     chartColors = Object.assign(chartColors,sequential_colors);
 
-
-
-
-    // chartColors = {
-    //     0: chartColors.green,
-    //     1: chartColors.red,
-    //     2: chartColors.blue,
-    //     3: chartColors.orange,
-    // };
+    let defaultLayout = {
+        plot_bgcolor: '#F4F5F7',
+        paper_bgcolor: "#F4F5F7",
+    }
 
     let defaultOptions = {
         stackedTimeSeries:
@@ -285,125 +280,317 @@
         }
     };
 
-    let obj =
+    let self;
+    let obj = self =
         {
-            getHorizontalStackedBarPlotly(json,options)
+            getTimeSeriesStackedFromJson(json,options)
             {
-
-                var trace1 = {
-                    x: [20, 14, 23],
-                    y: ['giraffes', 'orangutans', 'monkeys'],
-                    name: 'SF Zoo',
-                    orientation: 'h',
-                    marker: {
-                        color: 'rgba(55,128,191,0.6)',
-                        width: 1
-                    },
-                    type: 'bar'
-                };
-
-                var trace2 = {
-                    x: [12, 18, 29],
-                    y: ['giraffes', 'orangutans', 'monkeys'],
-                    name: 'LA Zoo',
-                    orientation: 'h',
-                    type: 'bar',
-                    marker: {
-                        color: 'rgba(255,153,51,0.6)',
-                        width: 1
-                    }
-                };
-
-                var d = [trace1, trace2];
-
-                var layout = {
-                    title: 'Colored Bar Chart',
-                    barmode: 'stack'
-                };
-
-                return {
-                    data: d,
-                    layout
-                }
-
-                // Plotly.newPlot('myDiv', data, layout);
-
                 options = options || {};
                 let defaultOptions = {
-                    sort: true,
+                    title: ''
                 };
+                options = Object.assign({
+
+                },defaultOptions,options);
+                let {name,labelMapping} = options;
+
+                let datasetsIndex = {};
+                let datasets = [];
+
+                let start_x;
+                let end_x;
+
+                let dates = [];
+                /**
+                 * json is indexed by date and then type. We want to split
+                 * this into datasets by type
+                 *
+                 * assumes date is already sorted at this point.
+                 *
+                 */
+                for (let date in json) {
+                    dates.push(date);
+                    // if (!start_x)
+                    // {
+                    //     start_x = end_x = date;
+                    // }
+                    // else {
+                    //     end_x = date;
+                    // }
+
+                    let record = json[date];
+                    for (let type in record) {
+                        let label = type;
+                        if (labelMapping && labelMapping[type]) {
+                            label = labelMapping[type];
+                        }
+
+                        if (datasetsIndex[label] == undefined) {
+                            datasetsIndex[label] = datasets.length;
+                            datasets.push({
+                                type: 'bar',
+                                name: label,
+                                marker: {
+                                    color: chartColors[datasets.length],
+                                },
+                                x: [],
+                                y: []
+                            })
+                        }
+                        let dataset = datasets[datasetsIndex[label]];
+
+
+                        dataset.x.push(date);
+                        dataset.y.push(json[date][type]);
+                    }
+                }
+
+                //get the 30 most recent days.
+                let end_date = dates.pop();
+                let start_date = dates[Math.max(0,dates.length - 30)];
+
+
+                let chart = {
+                    data: datasets,
+
+                    layout: {
+                        plot_bgcolor: '#F4F5F7',
+                        paper_bgcolor: "#F4F5F7",
+                        barmode: 'stack',
+                        title: options.title,
+
+                        xaxis: {range: [start_date, end_date]},
+
+                        yaxis: {
+                            fixedrange: true
+                        },
+                        dragmode: 'pan'
+
+                    },
+                    options: {
+                        yaxis: {
+                            fixedrange: true
+                        },
+                        dragmode: 'pan',
+                        responsive: true,
+                        toImageButtonOptions: {
+                            filename: options.title,
+                                width: 800,
+                                height: 600,
+                                format: 'png'
+                        }
+                    }
+
+                };
+
+
+                return chart;
+
+
+
+
+
+            },
+            getTableFromJson(obj,options)
+            {
+                options = options || {};
+
+                let defaultOptions = {
+
+                };
+
+                let headers = options.headerValues || (function() {
+                    return [
+                        // options.title,
+                        'Name',
+                        'Percent',
+                        'Count',
+                    ]
+                })();
+
+                let total = 0;
+
+                let labelMapping = {options};
+
+
+                let percentValues = [];
+
+                let itemNames = [];
+
+
+
+                let values = [];
+
+                let keyCount = 0;
+
+                for (let key in obj)
+                {
+                    keyCount++;
+                    let value = +obj[key];
+                    total += value;
+                    values.push(value);
+
+                    if (labelMapping && labelMapping[key])
+                    {
+                        itemNames.push(labelMapping[key]);
+
+                    }
+                    else {
+                        itemNames.push(key);
+                    }
+                }
+
+                for (let value of values)
+                {
+                    let percent = (((value / total) * 100)).toFixed(0) + '%';
+                    percentValues.push(percent);
+
+                }
+
+                let textinfo = 'label+percent';
+
+                let maxLabelCount = 20;
+                if (keyCount > maxLabelCount)
+                {
+                    textinfo = 'text';
+                }
+                let data = [
+                    {
+                        type: 'table',
+                        header: {
+                            values: headers,
+                            align: 'center',
+                            line: {width: 1, color: 'black'},
+                            // fill: {color: "grey"},
+                            // fill: {color: '#119DFF'},
+                            // fill: {color: sequential_colors[0]},
+
+                            // font: {family: "Arial", size: 12, color: "white"},
+                            font: {family: "Arial", size: 12, color: "black"}
+                        },
+                        cells: {
+                            values: [
+                                itemNames,
+                                percentValues,
+                                values,
+                            ],
+                            align: "center",
+                            line: {color: "black", width: 1},
+                            // fill: {color: [sequential_colors[1],'white']},
+                            // fill: {color: ['#25FEFD', 'white']},
+                            font: {family: "Arial", size: 11, color: ["black"]}
+                        }
+
+
+                    }
+                ];
+
+                return {
+                    data,
+                    layout: {
+                        title: options.title,
+
+                        plot_bgcolor: defaultLayout.plot_bgcolor,
+                        paper_bgcolor: defaultLayout.paper_bgcolor,
+                        // showlegend: true,
+                        // legend: {
+                        // xanchor:"center",
+                        // yanchor:"top",
+                        // y:-1.3, // play with it
+                        // x:0.5,   // play with it
+                        // orientation: 'h',
+                        // x: 0,
+                        // y: 1
+                        // }
+                    }
+                }
+            },
+            //
+
+            getSmartChartFromJson(obj,options)
+            {
+                let defaultOptions = {
+                    title: '',
+                };
+
+
+                options = options || {};
 
                 options = Object.assign({
 
                 },defaultOptions,options);
-                let {name} = options;
 
-                let dataAry = [];
-                let total = 0;
-                for (let key in json)
+                let {labelMapping,strategy} = options;
+
+                let values = [];
+                let labels = [];
+
+                let keyCount = 0;
+
+                for (let key in obj)
                 {
-                    let record = {
-                        key: key,
-                        value: json[key]
-                    };
-                    dataAry.push(record)
-                    total += record.value;
+                    keyCount++;
+                    values.push(obj[key]);
+
+                    if (labelMapping && labelMapping[key])
+                    {
+                        labels.push(labelMapping[key]);
+
+                    }
+                    else {
+                        labels.push(key);
+                    }
                 }
 
-                // return {};
+                let textinfo = 'label+percent';
+                let maxLabelCount = 5;
+                let showLegend = false;
 
-
-
-
-                if (options.sort)
+                //too large for a pie chart go to another based on strategy given
+                if (keyCount > maxLabelCount)
                 {
-                    dataAry.sort(function(a,b) {
-                        return b.value - a.value;
-                        // return a.value - b.value;
-                    });
+                    if (strategy === 'table')
+                    {
+                        return self.getTableFromJson(obj,options);
+                    }
+                    else if (strategy === 'bar')
+                    {
+                        return self.getBarChartPlotly(obj,options);
+                    }
+                    else { //apply default based on size.
+                        if (keyCount > 15) //for vary large number of keys use a table
+                        {
+                            return self.getTableFromJson(obj,options);
+                        }
+                        else {
+                            return self.getBarChartPlotly(obj,options);
+                        }
+                    }
                 }
+                let data = [
+                    {
+                        values,
+                        labels,
+                        type: 'pie',
+                        hole: options.hole || 0,
+                        textinfo
 
-                name = name || '';
+                    }
+                ];
 
-                let data = [];
-                // let labels = [];
-                // let backgroundColor = [];
-
-                for (let record of dataAry) {
-                    record.percent = record.value / total;
-                    let trace = {
-                        x: [name],
-                        y: [record.value],
-                        // y: [record.percent],
-                        name: record.key,
-                        type: 'bar',
-                        'textinfo' : 'label+text+value+percent',
-
-                        // width: [.1]
-
-                        // width: [record.percent]
-
-
-                        // orientation: 'h'
-                    };
-                    data.push(trace);
-
-                    // labels.push(key);
-                    // backgroundColor.push(chartColors[data.length]);
-                    // data.push(json[key]);
-                }
-                let chart = {
+                //https://github.com/plotly/plotly.js/issues/53
+                return {
+                    data,
                     layout: {
-                        // orientation: 'h',
-                        bargap: .9,
-                        barmode: 'group',
-                        // barmode: 'stack',
-                        'textinfo' : 'label+text+value+percent',
+                        title: options.title,
+                        plot_bgcolor: defaultLayout.plot_bgcolor,
+                        paper_bgcolor: defaultLayout.paper_bgcolor,
 
-                    },
-                    data
+                        showlegend: showLegend,
+                        legend: {
+                        }
+                    }
                 }
-                return chart;
             },
             getBarChartPlotly(json,options)
             {
@@ -417,7 +604,7 @@
                 options = Object.assign({
 
                 },defaultOptions,options);
-                let {name} = options;
+                let {name,labelMapping} = options;
 
                 let dataAry = [];
                 let total = 0;
@@ -430,9 +617,6 @@
                     dataAry.push(record)
                     total += record.value;
                 }
-
-                // return {};
-
 
 
 
@@ -474,18 +658,22 @@
 
                     record.percent = ((record.value / total) * 100).toFixed(2);
 
-                    data[0].y.push(record.key);
-                    // data[0].y.push(record.value);
+                    if (labelMapping && labelMapping[record.key])
+                    {
+                        data[0].y.push(labelMapping[record.key]);
+
+                    }
+                    else {
+                        data[0].y.push(record.key);
+                    }
 
                     if (options.isPercent)
                     {
                         data[0].x.push(record.percent);
-                        // data[0].text.push(record.percent + `% (${record.value})`);
                         data[0].text.push(record.percent + `%`);
                     }
                     else {
                         data[0].x.push(record.value);
-                        // data[0].text.push(record.percent + `% (${record.value})`);
                         data[0].text.push(record.value);
                     }
 
@@ -499,8 +687,16 @@
                 //https://plot.ly/python/hover-text-and-formatting/
                 //https://codepen.io/etpinard/pen/NaVrZz?editors=0010
                 //https://plot.ly/javascript/setting-graph-size/
+                //https://plot.ly/javascript/reference/#layout-plot_bgcolor
+                //https://community.plot.ly/t/plot-background-how-can-i-setup-it/6617
                 let chart = {
                     layout: {
+
+                        plot_bgcolor: '#F4F5F7',
+                        paper_bgcolor: "#F4F5F7",
+                        // bgcolor: "#F4F5F7",
+
+
                         title: options.title,
                         hovermode: false, //No tooltip is required
                         // hovermode: 'closest',

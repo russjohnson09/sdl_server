@@ -53,7 +53,6 @@ let self =
             return self.getPieChartFromJson(jsonObj,labelMapping, {
                 hole: 0.4
             });
-
         },
         //https://dataviz.love/2017/03/17/alternative-chart-types-pie-chart/
         getPieChartFromJson(obj,labelMapping,options)
@@ -93,7 +92,6 @@ let self =
                     labels,
                     type: 'pie',
                     hole: options.hole || 0,
-                    // 'textinfo' : 'label+text+value+percent',
                     textinfo
 
                 }
@@ -105,13 +103,6 @@ let self =
                 layout: {
                     showlegend: showLegend,
                     legend: {
-                        // xanchor:"center",
-                        // yanchor:"top",
-                        // y:-1.3, // play with it
-                        // x:0.5,   // play with it
-                        // orientation: 'h',
-                        // x: 0,
-                        // y: 1
                     }
                 }
             }
@@ -159,16 +150,6 @@ let self =
             return {
                 data,
                 layout: {
-                    // showlegend: true,
-                    // legend: {
-                    // xanchor:"center",
-                    // yanchor:"top",
-                    // y:-1.3, // play with it
-                    // x:0.5,   // play with it
-                    // orientation: 'h',
-                    // x: 0,
-                    // y: 1
-                    // }
                 }
             }
         },
