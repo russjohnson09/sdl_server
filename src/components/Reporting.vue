@@ -33,7 +33,9 @@
                                 </div>
                             </div>
                             <div class="row">
-                                <div class="col-sm-4">
+                                <div class="col-sm-4"
+                                     style="min-width:350px"
+                                >
 
 
                                     <!--                                    <vue-plotly v-if="ptuChartStacked"-->
@@ -61,7 +63,8 @@
 
                             <h3>Devices</h3>
                             <div class="row">
-                                <div class="col-sm-6">
+                                <div class="col-sm-6" style="min-width:350px"
+                                >
                                     <vue-plotly v-if="deviceOsPie"
                                                 :data="deviceOsPie.data"
                                                 :layout="deviceOsPie.layout"
@@ -70,7 +73,8 @@
                                     />
 
                                 </div>
-                                <div class="col-sm-6">
+                                <div class="col-sm-6" style="min-width:350px"
+                                >
 
 
                                     <vue-plotly v-if="modelPie"
@@ -82,12 +86,12 @@
                                 </div>
 
 
-
                             </div>
 
                             <div class="row">
 
-                                <div class="col-sm-6">
+                                <div class="col-sm-6" style="min-width:350px"
+                                >
 
 
                                     <vue-plotly v-if="carrierPie"
@@ -102,18 +106,16 @@
                     </div>
 
 
+                    <!--                    <policy-table-update-report-->
+                    <!--                            v-bind:policy_table_updates_by_trigger="aggregateReport.policy_table_updates_by_trigger"-->
+                    <!--                            v-bind:total_policy_table_updates_by_trigger="aggregateReport.total_policy_table_updates_by_trigger"-->
 
-<!--                    <policy-table-update-report-->
-<!--                            v-bind:policy_table_updates_by_trigger="aggregateReport.policy_table_updates_by_trigger"-->
-<!--                            v-bind:total_policy_table_updates_by_trigger="aggregateReport.total_policy_table_updates_by_trigger"-->
-
-<!--                            v-bind:total_device_os="aggregateReport.total_device_os"-->
-<!--                            v-bind:total_device_model="aggregateReport.total_device_model"-->
-<!--                            v-bind:total_device_carrier="aggregateReport.total_device_carrier"-->
-<!--                    />-->
+                    <!--                            v-bind:total_device_os="aggregateReport.total_device_os"-->
+                    <!--                            v-bind:total_device_model="aggregateReport.total_device_model"-->
+                    <!--                            v-bind:total_device_carrier="aggregateReport.total_device_carrier"-->
+                    <!--                    />-->
 
                 </div>
-
 
 
                 <div v-if="!ENABLE_REPORTING">
@@ -303,7 +305,7 @@
                 if (total_device_os) {
 
                     let pieChart = PlotlyHelper.getPieChartFromJson(total_device_os, labelMapping);
-                    pieChart.layout.title ='Device OS';
+                    pieChart.layout.title = 'Device OS';
                     pieChart.options = {
                         responsive: true,
 
@@ -319,7 +321,18 @@
 
 
                 if (total_device_model) {
-                    let pieChart = PlotlyHelper.getPieChartFromJson(total_device_model, labelMapping);
+                    // let pieChart = PlotlyHelper.getPieChartFromJson(total_device_model, labelMapping);
+
+                    // let pieChart = PlotlyHelper.getStackedBarChartFromJson(total_device_model, labelMapping);
+
+                    let pieChart = PlotlyHelper.getTableFromJson(total_device_model, labelMapping,{
+                        headerValues: [
+                            "Device Model",
+                            "Total",
+                            "Percent Total"
+                        ]
+                    });
+
                     pieChart.layout.title = 'Device Model';
 
                     // pieChart.layout = {
