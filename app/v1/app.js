@@ -1,3 +1,5 @@
+const ReportingController = require('./statistics/ReportingController');
+
 const express = require('express');
 const helmet = require('helmet');
 let app = express();
@@ -42,7 +44,7 @@ const moduleConfig = require('./module-config/controller.js');
 const about = require('./about/controller.js');
 const auth = require('./middleware/auth.js');
 
-function exposeRoutes () {
+async function  exposeRoutes () {
 	// use helmet middleware for security
 	app.use(helmet());
 	// extend response builder to all routes
@@ -53,6 +55,12 @@ function exposeRoutes () {
 	//app.post('/register', register.post);
 	app.post('/login', login.validateAuth);
 	app.get('/applications', auth.validateAuth, applications.get);
+
+	//TODO
+	// app.get('/applications/report', auth.validateAuth, applications.get);
+	// app.get('/module/report', auth.validateAuth, moduleConfig.get);
+
+
 	app.post('/applications/action', auth.validateAuth, applications.actionPost);
 	app.post('/applications/auto', auth.validateAuth, applications.autoPost);
 	app.post('/applications/administrator', auth.validateAuth, applications.administratorPost);
@@ -81,6 +89,25 @@ function exposeRoutes () {
 	app.post('/module', auth.validateAuth, moduleConfig.post);
 	app.post('/module/promote', auth.validateAuth, moduleConfig.promote);
 	app.get('/about', auth.validateAuth, about.getInfo);
+	//
+	// router.get('/aggregate-report',self.getTestDataRoute());
+	// router.get('/application-report/:id',self.getTestAppReportRoute());
+
+	await (async () => {
+		let t1 = Date.now();
+		let route = '/reporting';
+		let router = express.Router();
+		app.use(route, router);
+
+		await ReportingController.create({
+			parcel,
+			router
+		});
+		let d1 = Date.now() - t1;
+		log.info(`initialized route ${route} in ${d1} (ms)`);
+
+	})();
+
 }
 
 function updatePermissionsAndGenerateTemplates (next) {
