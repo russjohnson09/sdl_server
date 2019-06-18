@@ -122,7 +122,6 @@
 
 
     import Chart from "./common/reporting/Chart";
-    import PlotlyHelper from "./common/reporting/plotly/PlotlyHelper";
 
     let obj = {
         data() {

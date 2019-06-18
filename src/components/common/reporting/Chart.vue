@@ -461,11 +461,6 @@
                             values: headers,
                             align: 'center',
                             line: {width: 1, color: 'black'},
-                            // fill: {color: "grey"},
-                            // fill: {color: '#119DFF'},
-                            // fill: {color: sequential_colors[0]},
-
-                            // font: {family: "Arial", size: 12, color: "white"},
                             font: {family: "Arial", size: 12, color: "black"}
                         },
                         cells: {
@@ -492,16 +487,6 @@
 
                         plot_bgcolor: defaultLayout.plot_bgcolor,
                         paper_bgcolor: defaultLayout.paper_bgcolor,
-                        // showlegend: true,
-                        // legend: {
-                        // xanchor:"center",
-                        // yanchor:"top",
-                        // y:-1.3, // play with it
-                        // x:0.5,   // play with it
-                        // orientation: 'h',
-                        // x: 0,
-                        // y: 1
-                        // }
                     }
                 }
             },
@@ -511,6 +496,8 @@
             {
                 let defaultOptions = {
                     title: '',
+                    plot_bgcolor: defaultLayout.plot_bgcolor,
+                    paper_bgcolor: defaultLayout.paper_bgcolor,
                 };
 
 
@@ -583,8 +570,8 @@
                     data,
                     layout: {
                         title: options.title,
-                        plot_bgcolor: defaultLayout.plot_bgcolor,
-                        paper_bgcolor: defaultLayout.paper_bgcolor,
+                        plot_bgcolor: options.plot_bgcolor,
+                        paper_bgcolor: options.paper_bgcolor,
 
                         showlegend: showLegend,
                         legend: {

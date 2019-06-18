@@ -22,13 +22,11 @@ import PatternInput from './components/common/PatternInput'
 import LineChart from './components/common/reporting/LineChart'
 import PolicyTableUpdateReport from './components/common/reporting/reports/PolicyTableUpdateReport'
 import ApplicationReports from './components/common/reporting/reports/ApplicationReports'
-import VueChartist from 'vue-chartist';
 
 Vue.use(BootstrapVue);
 Vue.use(VueSession);
 Vue.use(VueResource);
 Vue.use(VueScrollTo);
-Vue.use(VueChartist);
 
 Vue.config.productionTip = false
 
@@ -46,8 +44,6 @@ import Chart from "./components/common/reporting/Chart";
 import PolarChart from "./components/common/reporting/PolarChart";
 import PieChartWithLabels from "./components/common/reporting/PieChartWithLabels";
 
-import PlotlyChart from "./components/common/reporting/plotly/PlotlyChart";
-import PlotlyBarChart from "./components/common/reporting/plotly/PlotlyBarChart";
 
 import VuePlotly from '@statnett/vue-plotly'
 
@@ -77,8 +73,6 @@ Vue.component("polar-chart", PolarChart);
 Vue.component("pie-chart-with-labels", PieChartWithLabels);
 Vue.component("application-reports", ApplicationReports);
 
-Vue.component("plotly-chart", PlotlyChart);
-Vue.component("plotly-bar-chart", PlotlyBarChart);
 Vue.component("vue-plotly", VuePlotly);
 
 
@@ -142,8 +136,6 @@ Vue.mixin({
 		}
 	}
 })
-
-import 'chartjs-plugin-labels';
 
 
 /* eslint-disable no-new */

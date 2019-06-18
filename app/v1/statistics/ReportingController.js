@@ -285,14 +285,30 @@ module.exports = class ReportingController
         let usage_and_error_counts_history = await this.generateTestUsageAndErrorCountsHistory();
 
         //stored data, computed data.
+
+        //     created_date: reportDate,
+        //     count_of_rejected_rpcs_calls,
+        //     count_of_user_selections,
+        //     minutes_in_hmi_background: 10,
+        //     minutes_in_hmi_full: 20,
+        //     minutes_in_hmi_limited: 40,
+        //     minutes_in_hmi_none: 50
         let obj = {
             app: {
                 name: 'TEST APP'
             },
             //Number of daily PTUs during the retention period, stacked by the triggering event (miles, days, ignition cycles)
             report_days: 30,
-            usage_and_error_counts_history
-
+            aggregate_counts: {
+                usage_time: {
+                    minutes_in_hmi_background: 100,
+                    minutes_in_hmi_full: 1000,
+                    minutes_in_hmi_limited: 20,
+                    minutes_in_hmi_none: 2
+                },
+                count_of_user_selections: 10,
+                count_of_rejected_rpcs_calls: 100,
+            }
         };
 
 

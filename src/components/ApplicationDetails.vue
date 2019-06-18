@@ -316,6 +316,11 @@
                         </vue-ladda>
                     </form>
                 </b-modal>
+
+
+                <application-reports v-if="appReport"
+                        v-bind:appReport="appReport"
+                />
             </main>
         </div>
     </div>
@@ -367,6 +372,7 @@ export default {
             "class": "dropdown-red"
         };
         return {
+            "appReport": null,
             "ENABLE_REPORTING": ENABLE_REPORTING,
             "environment": "STAGING",
             "environmentOptions": [
@@ -441,6 +447,21 @@ export default {
         };
     },
     methods: {
+        populateAppReport: function () {
+            this.httpRequest("get", "reporting/application-report/" + this.$route.params.id, null,
+                (err, response) => {
+                    if (err) {
+                        // error
+                        console.error("Error receiving application.");
+                        console.error(response);
+                    } else {
+                        // success
+                        response.json().then(parsed => {
+                            this.appReport = parsed.data;
+                        });
+                    }
+                });
+        },
         "handleAppState": function (changedState) {
             if (this.app) {
                 const isProduction = this.app.approval_status === "ACCEPTED";
@@ -691,6 +712,7 @@ export default {
         }
     },
     created: function(){
+        this.populateAppReport();
         this.getApp();
     },
     beforeDestroy () {

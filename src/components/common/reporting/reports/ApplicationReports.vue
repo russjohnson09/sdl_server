@@ -3,11 +3,21 @@
     <div>
 
 
-        <div v-if="stackedUsageReport" >
-            <chart
-                    v-bind:height="defaultHeight"
-                    v-bind:width="defaultWidth"
-                    v-if="stackedUsageReport" v-bind:chart="stackedUsageReport"></chart>
+        <pre>{{appReport}}</pre>
+
+        <h4>Application Report For Past {{appReport.report_days}} Days</h4>
+
+<!--        <h5>App Usage</h5>-->
+        <div v-if="usageTimeReport" >
+            <vue-plotly v-if="usageTimeReport"
+                        :data="usageTimeReport.data"
+                        :layout="usageTimeReport.layout"
+                        :options="usageTimeReport.options"
+
+            />
+        </div>
+        <div v-else >
+           <img src="~@/assets/images/black_graphs/bargraphtall_blank.png" alt="No data"/>
         </div>
 
 
@@ -45,18 +55,27 @@
 
     let obj = {
         props: [
-            'usage_and_error_counts_history' //usage aggregates by day for this application.
-                // "2019-05-15": {
-                //     "count_of_rejected_rpcs_calls": 2,
-                //      "count_of_user_selections": 3,
-                //     "minutes_in_hmi_background": 10,
-                //     "minutes_in_hmi_full": 20,
-                //     "minutes_in_hmi_limited": 40,
-                //     "minutes_in_hmi_none": 50
+            'appReport' //usage aggregates by day for this application.
+            // eg {
+            //     "app": {
+            //         "name": "TEST APP"
+            //     },
+            //     "report_days": 30,
+            //     "aggregate_counts": {
+            //         "usage_time": {
+            //             "minutes_in_hmi_background": 100,
+            //             "minutes_in_hmi_full": 1000,
+            //             "minutes_in_hmi_limited": 20,
+            //             "minutes_in_hmi_none": 2
+            //         },
+            //         "count_of_user_selections": 10,
+            //         "count_of_rejected_rpcs_calls": 100
+            //     }
+            // }
         ],
         data () {
             let obj = {
-                stackedUsageReport: null,
+                usageTimeReport: null,
                 stackedCountsReport: null,
                 lineChartRejectedRPCCalls: null,
                 lineChartUserSelectionCounts: null,
@@ -137,34 +156,50 @@
 
         mounted (){
 
-            if (this.usage_and_error_counts_history)
+            if (this.appReport)
             {
-                this.stackedUsageReport = this.getStackedReportFromHistoryReport(this.usage_and_error_counts_history,
-                    [
-                        'minutes_in_hmi_background',
-                        'minutes_in_hmi_full',
-                        'minutes_in_hmi_limited',
-                        'minutes_in_hmi_none'
-                    ]
-                );
+                let {app,report_days,aggregate_counts} = this.appReport;
+                let {usage_time} = aggregate_counts;
 
-                this.stackedCountsReport = this.getStackedReportFromHistoryReport(
-                    this.usage_and_error_counts_history,
-                    [
-                        'count_of_rejected_rpcs_calls',
-                        'count_of_user_selections'
-                    ]
-                );
-
-                this.lineChartRejectedRPCCalls = this.getLineChartFromHistoryReport(
-                    this.usage_and_error_counts_history,
-                    [
-                        'count_of_rejected_rpcs_calls',
-                        'count_of_user_selections'
-                    ]
-                )
+                if (usage_time)
+                {
+                    this.usageTimeReport = Chart.getSmartChartFromJson(usage_time,{
+                        title: 'App Usage Time',
+                        plot_bgcolor: '#FFFFFF',
+                        paper_bgcolor: '#FFFFFF'
+                    })
+                }
 
             }
+
+            // if (this.usage_and_error_counts_history)
+            // {
+            //     this.stackedUsageReport = this.getStackedReportFromHistoryReport(this.usage_and_error_counts_history,
+            //         [
+            //             'minutes_in_hmi_background',
+            //             'minutes_in_hmi_full',
+            //             'minutes_in_hmi_limited',
+            //             'minutes_in_hmi_none'
+            //         ]
+            //     );
+            //
+            //     this.stackedCountsReport = this.getStackedReportFromHistoryReport(
+            //         this.usage_and_error_counts_history,
+            //         [
+            //             'count_of_rejected_rpcs_calls',
+            //             'count_of_user_selections'
+            //         ]
+            //     );
+            //
+            //     this.lineChartRejectedRPCCalls = this.getLineChartFromHistoryReport(
+            //         this.usage_and_error_counts_history,
+            //         [
+            //             'count_of_rejected_rpcs_calls',
+            //             'count_of_user_selections'
+            //         ]
+            //     )
+            //
+            // }
         },
     };
     export default obj;
