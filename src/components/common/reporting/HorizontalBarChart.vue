@@ -1,17 +1,16 @@
 <script>
     // CommitChart.js
-    import { Bar } from 'vue-chartjs'
+    // import { HorizontalBar } from 'vue-chartjs'
+    import { HorizontalBar } from 'vue-chartjs'
 
     export default {
-        extends: Bar,
+        extends: HorizontalBar,
         props: ['chart',
         'width',
         'height'],
         mounted () {
 
             let options = this.chart.options;
-
-            // options.type = 'horizontalBar';
             options.response = false;
             options.maintainAspectRatio = false;
 
@@ -29,12 +28,10 @@
                 xAxes: [{
                     stacked: true
                 }],
-                yAxes: [{
+                    yAxes: [{
                     stacked: true
                 }]
             };
-
-            console.log(`bar`,this.chart.data,options);
 
 
             return this.renderChart(this.chart.data,options);

@@ -19,6 +19,45 @@
                         <div>
                             <h3>Policy Table Updates</h3>
 
+                            <div style="width:20%">
+                                <chartist
+                                        ratio="ct-major-second"
+                                        type="Line"
+                                        :data="chartist.line.data"
+                                        :options="chartist.line.options" />
+                            </div>
+
+
+                            <div class="row">
+                                <div class="col-sm-3">
+
+                                    <chartist
+                                            ratio="ct-major-second"
+                                            type="Line"
+                                            :data="chartist.line.data"
+                                            :options="chartist.line.options" />
+                                </div>
+
+                                <div class="col-sm-3">
+
+                                    <chartist
+                                            ratio="ct-major-second"
+                                            type="Line"
+                                            :data="chartist.line.data"
+                                            :options="chartist.line.options" />
+                                </div>
+
+                                <div class="col-sm-3">
+
+                                    <chartist
+                                            ratio="ct-major-second"
+                                            type="Line"
+                                            :data="chartist.line.data"
+                                            :options="chartist.line.options" />
+                                </div>
+                            </div>
+
+
                             <!--                            <h4 for="name">Report for the Last {{aggregateReport.report_days}} Days</h4>-->
 
                             <div class="row">
@@ -36,18 +75,6 @@
                                 <div class="col-sm-4"
                                      style="min-width:350px"
                                 >
-
-
-                                    <!--                                    <vue-plotly v-if="ptuChartStacked"-->
-                                    <!--                                                  v-bind:data="ptuChartStacked.data"-->
-                                    <!--                                                  v-bind:layout="ptuChartStacked.layout"-->
-                                    <!--                                                  v-bind:options="ptuChartStacked.options"-->
-
-                                    <!--                                    />-->
-
-                                    <!--&lt;!&ndash;                                    https://plot.ly/javascript/pie-charts/&ndash;&gt;-->
-                                    <!--&lt;!&ndash;                                    https://plot.ly/~yusuf.sultan/119/pie-charts-5-labels-text-hoverinf/#/&ndash;&gt;-->
-
                                     <div
                                             v-if="ptuPieChart">
                                         <vue-plotly v-if="ptuPieChart"
@@ -73,6 +100,16 @@
                                     />
 
                                 </div>
+
+                                <div class="col-sm-6" style="min-width:550px"
+                                >
+
+                                    <chart v-if="deviceOsPie2"
+                                           :chart="deviceOsPie2"
+
+                                    />
+
+                                </div>
                                 <div class="col-sm-6" style="min-width:550px"
                                 >
 
@@ -86,11 +123,22 @@
                                 </div>
 
 
+                                <div class="col-sm-6" style="width:550px"
+                                >
+
+
+                                    <chart v-if="modelPie2"
+                                           :chart="modelPie2"
+
+                                    />
+                                </div>
+
+
                             </div>
 
                             <div class="row">
 
-                                <div class="col-sm-6" style="min-width:550px"
+                                <div class="col-sm-6" style="width:550px"
                                 >
 
 
@@ -101,19 +149,41 @@
 
                                     />
                                 </div>
+
+                                <div class="col-sm-6" style="width:550px"
+                                >
+
+
+                                    <chart v-if="carrierPie2"
+                                                :chart="carrierPie2"
+
+                                    />
+                                </div>
                             </div>
+                            <div class="row">
+
+                                <div class="col-sm-6" style="width:550px"
+                                >
+
+
+<!--                                    <chart v-if="carrierChart3"-->
+<!--                                           :chart="carrierChart3"-->
+
+<!--                                    />-->
+
+                                    <vue-plotly v-if="carrierChart3"
+                                                :data="carrierChart3.data"
+                                                :layout="carrierChart3.layout"
+                                                :options="carrierChart3.options"
+
+                                    />
+                                </div>
+                            </div>
+
+
                         </div>
                     </div>
 
-
-                    <!--                    <policy-table-update-report-->
-                    <!--                            v-bind:policy_table_updates_by_trigger="aggregateReport.policy_table_updates_by_trigger"-->
-                    <!--                            v-bind:total_policy_table_updates_by_trigger="aggregateReport.total_policy_table_updates_by_trigger"-->
-
-                    <!--                            v-bind:total_device_os="aggregateReport.total_device_os"-->
-                    <!--                            v-bind:total_device_model="aggregateReport.total_device_model"-->
-                    <!--                            v-bind:total_device_carrier="aggregateReport.total_device_carrier"-->
-                    <!--                    />-->
 
                 </div>
 
@@ -154,9 +224,41 @@
                 ptuDonutChart: null,
 
                 deviceOsPie: null,
+                deviceOsPie2: null,
+
                 modelPie: null,
+                modelPie2: null,
 
                 carrierPie: null,
+                carrierPie2: null,
+                carrierChart3: null,
+
+                chartData: {
+                    labels: ["A", "B", "C"],
+                    series:[[1, 3, 2], [4, 6, 5]]
+                },
+                chartOptions: {
+                    lineSmooth: false
+                },
+
+                chartist: {
+                    line: {
+                        data: {
+                            labels: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'],
+                            series: [
+                                [12, 9, 7, 8, 5],
+                                [2, 1, 3.5, 7, 3],
+                                [1, 3, 4, 5, 6]
+                            ]
+                        },
+                        options: {
+                            // fullWidth: true,
+                            // chartPadding: {
+                            //     right: 40
+                            // }
+                        }
+                    }
+                }
 
 
             }
@@ -374,6 +476,43 @@
                     };
                     this.carrierPie = pieChart;
                 }
+
+
+
+                if (total_device_carrier)
+                {
+                    this.carrierPie2 = Chart.getBasicPieChartFromJson(total_device_carrier);
+
+                }
+
+
+                if (total_device_carrier)
+                {
+                    // this.carrierChart3 = Chart.getBarChartFromJson(total_device_carrier);
+                    // this.carrierChart3 = Chart.getStackedBarPlotly(total_device_carrier,{
+                    //     name: 'Device Breakdown',
+                    //
+                    // });
+
+                    this.carrierChart3 = Chart.getHorizontalStackedBarPlotly(total_device_carrier,{
+                        name: 'Device Breakdown',
+
+                    });
+
+                }
+
+                if (total_device_model)
+                {
+                    this.modelPie2 = Chart.getBasicPieChartFromJson(total_device_model);
+
+                }
+
+                if (total_device_os)
+                {
+                    this.deviceOsPie2 = Chart.getBasicPieChartFromJson(total_device_os);
+
+                }
+
 
             }
         },
