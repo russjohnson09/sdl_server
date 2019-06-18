@@ -458,12 +458,17 @@
             },
             //
 
+            getTopCategories(obj,limit)
+            {
+
+            },
             getSmartChartFromJson(obj,options)
             {
                 let defaultOptions = {
                     title: '',
                     plot_bgcolor: defaultLayout.plot_bgcolor,
                     paper_bgcolor: defaultLayout.paper_bgcolor,
+                    limitCategories: 10, //limit unique keys to 10 by default. others will be grouped into other.
                 };
 
 
@@ -479,10 +484,58 @@
                 let labels = [];
 
                 let keyCount = 0;
+                let records = [];
+                for (let key in obj)
+                {
+
+                    keyCount++; //original keyCount
+                    records.push({
+                        key,
+                        value: obj[key]
+                    });
+                }
+
+                //sort and fetch 10 x.
+                if (options.limitCategories && options.limitCategories < records.length)
+                {
+                    records.sort(function(a,b) {
+                        // return a.value - b.value;
+
+                        return b.value - a.value;
+                    });
+
+                    let recordResults = [];
+                    let other = {
+                        key: 'Other',
+                        value: 0,
+                    };
+                    for (let i = records.length - 1; i >= 0; i--)
+                    {
+
+                        if ((records.length - i) < options.limitCategories)
+                        {
+                            recordResults.push(records[i]);
+                        }
+                        else {
+                            other.value += records[i].value;
+                        }
+                    }
+                    recordResults.push(other);
+                    records = recordResults;
+                    obj = (function() {
+                        let result = {};
+                        for (let record of records)
+                        {
+                            result[record.key] = record.value;
+                        }
+                        return result;
+                    })();
+                }
 
                 for (let key in obj)
                 {
-                    keyCount++;
+
+                    // keyCount++;
                     values.push(obj[key]);
 
                     if (labelMapping && labelMapping[key])
@@ -498,6 +551,8 @@
                 let textinfo = 'label+percent';
                 let maxLabelCount = 5;
                 let showLegend = false;
+
+
 
                 //too large for a pie chart go to another based on strategy given
                 if (keyCount > maxLabelCount)
@@ -577,7 +632,7 @@
             {
                 options = options || {};
                 let defaultOptions = {
-                    sort: true,
+                    sort: false, //already sorted by smart
                     isPercent: true,
                     title: '',
                     plot_bgcolor: defaultLayout.plot_bgcolor,
@@ -711,70 +766,6 @@
 
                 console.log(`chart`,chart);
 
-                return chart;
-            },
-            getStackedBarPlotly(json,options)
-            {
-                options = options || {};
-                let defaultOptions = {
-                    sort: true,
-                };
-
-                options = Object.assign({
-
-                },defaultOptions,options);
-                let {name} = options;
-
-                let dataAry = [];
-                let total = 0;
-                for (let key in json)
-                {
-                    let record = {
-                        key: key,
-                        value: json[key]
-                    };
-                    dataAry.push(record)
-                    total += record.value;
-                }
-
-                // return {};
-
-
-
-
-                if (options.sort)
-                {
-                    dataAry.sort(function(a,b) {
-                        return b.value - a.value;
-                        // return a.value - b.value;
-                    });
-                }
-
-                name = name || '';
-
-                let data = [];
-
-                for (let record of dataAry) {
-                    record.percent = record.value / total;
-                    let trace = {
-                        x: [name],
-                        y: [record.value],
-                        // y: [record.percent],
-                        name: record.key,
-                        type: 'bar',
-                        'textinfo' : 'label+text+value+percent',
-                    };
-                    data.push(trace);
-                }
-                let chart = {
-                    layout: {
-                        bargap: .9,
-                        barmode: 'group',
-                        'textinfo' : 'label+text+value+percent',
-
-                    },
-                    data
-                }
                 return chart;
             },
             getBasicDonutChartFromJson(json) {

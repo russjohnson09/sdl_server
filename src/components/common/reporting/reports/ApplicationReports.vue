@@ -1,10 +1,6 @@
 <template>
 
     <div>
-
-
-        <pre>{{appReport}}</pre>
-
         <h4>Application Report For Past {{appReport.report_days}} Days</h4>
 
 
@@ -43,8 +39,6 @@
 
             </div>
         </div>
-
-<!--        <h5>App Usage</h5>-->
 
 
 
@@ -214,35 +208,6 @@
 
 
             }
-
-            // if (this.usage_and_error_counts_history)
-            // {
-            //     this.stackedUsageReport = this.getStackedReportFromHistoryReport(this.usage_and_error_counts_history,
-            //         [
-            //             'minutes_in_hmi_background',
-            //             'minutes_in_hmi_full',
-            //             'minutes_in_hmi_limited',
-            //             'minutes_in_hmi_none'
-            //         ]
-            //     );
-            //
-            //     this.stackedCountsReport = this.getStackedReportFromHistoryReport(
-            //         this.usage_and_error_counts_history,
-            //         [
-            //             'count_of_rejected_rpcs_calls',
-            //             'count_of_user_selections'
-            //         ]
-            //     );
-            //
-            //     this.lineChartRejectedRPCCalls = this.getLineChartFromHistoryReport(
-            //         this.usage_and_error_counts_history,
-            //         [
-            //             'count_of_rejected_rpcs_calls',
-            //             'count_of_user_selections'
-            //         ]
-            //     )
-            //
-            // }
         },
     };
     export default obj;
