@@ -509,10 +509,10 @@
                         key: 'Other',
                         value: 0,
                     };
-                    for (let i = records.length - 1; i >= 0; i--)
+                    for (let i in records)
                     {
 
-                        if ((records.length - i) < options.limitCategories)
+                        if (i < options.limitCategories)
                         {
                             recordResults.push(records[i]);
                         }
