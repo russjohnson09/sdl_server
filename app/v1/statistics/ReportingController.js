@@ -235,6 +235,18 @@ module.exports = class ReportingController
                 "Verizon": 5,
                 "Sprint": 10,
                 'T-Mobile': 2,
+                "Appalachian Wireless": 5,
+                // "Small 1": 1,
+                // "Small 2": 1,
+                // "Small 3": 1,
+                // "Small 4": 1,
+                // "Small 5": 1,
+                // "Small 6": 1,
+                // "Small 7": 1,
+                // "Small 8": 1,
+                // "Small 9": 1,
+                // "Small 10": 1,
+
                 // "Ting": 2,
                 // "1": 1,
                 // "2": 1,
@@ -253,6 +265,12 @@ module.exports = class ReportingController
             },
 
         };
+
+
+        for (let i = 0; i < 10; i++)
+        {
+            obj.total_device_carrier[`Carrier ${i + 1}`] = 1;
+        }
 
 
 

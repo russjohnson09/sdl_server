@@ -80,9 +80,12 @@ let self =
             }
 
             let textinfo = 'label+percent';
-            if (keyCount > 3)
+            let maxLabelCount = 20;
+            let showLegend = false;
+            if (keyCount > maxLabelCount)
             {
                 textinfo = 'text';
+                showLegend = true;
             }
             let data = [
                 {
@@ -100,7 +103,7 @@ let self =
             return {
                 data,
                 layout: {
-                    showlegend: true,
+                    showlegend: showLegend,
                     legend: {
                         // xanchor:"center",
                         // yanchor:"top",
@@ -272,7 +275,9 @@ let self =
             }
 
             let textinfo = 'label+percent';
-            if (keyCount > 3)
+
+            let maxLabelCount = 20;
+            if (keyCount > maxLabelCount)
             {
                 textinfo = 'text';
             }

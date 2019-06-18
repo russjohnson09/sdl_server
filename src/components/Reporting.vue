@@ -63,7 +63,7 @@
 
                             <h3>Devices</h3>
                             <div class="row">
-                                <div class="col-sm-6" style="min-width:350px"
+                                <div class="col-sm-6" style="min-width:550px"
                                 >
                                     <vue-plotly v-if="deviceOsPie"
                                                 :data="deviceOsPie.data"
@@ -73,7 +73,7 @@
                                     />
 
                                 </div>
-                                <div class="col-sm-6" style="min-width:350px"
+                                <div class="col-sm-6" style="min-width:550px"
                                 >
 
 
@@ -90,7 +90,7 @@
 
                             <div class="row">
 
-                                <div class="col-sm-6" style="min-width:350px"
+                                <div class="col-sm-6" style="min-width:550px"
                                 >
 
 
