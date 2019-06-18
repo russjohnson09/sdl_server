@@ -56,9 +56,9 @@ async function  exposeRoutes () {
 	app.post('/login', login.validateAuth);
 	app.get('/applications', auth.validateAuth, applications.get);
 
-	//TODO
-	// app.get('/applications/report', auth.validateAuth, applications.get);
-	// app.get('/module/report', auth.validateAuth, moduleConfig.get);
+
+	app.get('/applications/report', auth.validateAuth, applications.getReport);
+	app.get('/module/report', auth.validateAuth, moduleConfig.getReport);
 
 
 	app.post('/applications/action', auth.validateAuth, applications.actionPost);
@@ -93,20 +93,20 @@ async function  exposeRoutes () {
 	// router.get('/aggregate-report',self.getTestDataRoute());
 	// router.get('/application-report/:id',self.getTestAppReportRoute());
 
-	await (async () => {
-		let t1 = Date.now();
-		let route = '/reporting';
-		let router = express.Router();
-		app.use(route, router);
-
-		await ReportingController.create({
-			parcel,
-			router
-		});
-		let d1 = Date.now() - t1;
-		log.info(`initialized route ${route} in ${d1} (ms)`);
-
-	})();
+	// await (async () => {
+	// 	let t1 = Date.now();
+	// 	let route = '/reporting';
+	// 	let router = express.Router();
+	// 	app.use(route, router);
+	//
+	// 	await ReportingController.create({
+	// 		parcel,
+	// 		router
+	// 	});
+	// 	let d1 = Date.now() - t1;
+	// 	log.info(`initialized route ${route} in ${d1} (ms)`);
+	//
+	// })();
 
 }
 

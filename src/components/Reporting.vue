@@ -216,7 +216,7 @@
         },
         created() {
             let self = this;
-            self.httpRequest("get", "reporting/aggregate-report", {}, (err, response) => {
+            self.httpRequest("get", "module/report", {}, (err, response) => {
                 if (err) {
                     // error
                     console.error("Error receiving about info.");

@@ -264,7 +264,36 @@ function attemptRetry(milliseconds, retryQueue){
     }, milliseconds);
 }
 
+
+//TODO hook up to db.
+async function getAggregateReportByAppId(appId)
+{
+    let obj = {
+        app: {
+            name: 'TEST APP'
+        },
+        //Number of daily PTUs during the retention period, stacked by the triggering event (miles, days, ignition cycles)
+        report_days: 30,
+        aggregate_counts: {
+            usage_time: {
+                minutes_in_hmi_background: 100,
+                minutes_in_hmi_full: 1000,
+                minutes_in_hmi_limited: 20,
+                minutes_in_hmi_none: 2
+            },
+            count_of_user_selections: 10,
+            count_of_rejected_rpcs_calls: 100,
+        }
+    };
+
+
+    return obj;
+
+
+}
+
 module.exports = {
+    getAggregateReportByAppId: getAggregateReportByAppId,
 	validateActionPost: validateActionPost,
 	validateAutoPost: validateAutoPost,
 	validateAdministratorPost: validateAdministratorPost,

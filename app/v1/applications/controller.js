@@ -4,6 +4,14 @@ const sql = require('./sql.js');
 const flow = app.locals.flow;
 const async = require('async');
 
+
+async function getReport(req,res,next) {
+	let reportData = await helper.getAggregateReportByAppId(req.query.id);
+	return res.parcel.setStatus(200)
+		.setData(reportData)
+		.deliver();
+}
+
 function get (req, res, next) {
 	//prioritize id, uuid, approval status, in that order.
 	//only one parameter can be acted upon in one request
@@ -294,6 +302,7 @@ function queryAndStoreApplicationsFlow (queryObj) {
 
 module.exports = {
 	get: get,
+	getReport: getReport,
 	actionPost: actionPost,
 	putServicePermission: putServicePermission,
 	autoPost: autoPost,

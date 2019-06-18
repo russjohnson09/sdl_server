@@ -449,7 +449,7 @@ export default {
     },
     methods: {
         populateAppReport: function () {
-            this.httpRequest("get", "reporting/application-report/" + this.$route.params.id, null,
+            this.httpRequest("get", "applications/report?id=" + this.$route.params.id, null,
                 (err, response) => {
                     if (err) {
                         // error
