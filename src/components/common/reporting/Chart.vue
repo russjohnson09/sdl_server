@@ -589,6 +589,14 @@
                         showlegend: showLegend,
                         legend: {
                         }
+                    },
+                    options: {
+                        toImageButtonOptions: {
+                            filename: options.title,
+                            width: 800,
+                            height: 600,
+                            format: 'png'
+                        }
                     }
                 }
             },

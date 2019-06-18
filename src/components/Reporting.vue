@@ -63,10 +63,6 @@
                                 <div class="col-sm-6" style="min-width:550px"
                                 >
 
-                                </div>
-                                <div class="col-sm-6" style="min-width:550px"
-                                >
-
 
                                     <vue-plotly v-if="modelChart"
                                                 :data="modelChart.data"
@@ -74,19 +70,10 @@
                                                 :options="modelChart.options"
 
                                     />
-                                </div>
-
-
-                                <div class="col-sm-6" style="width:550px"
-                                >
-
 
                                 </div>
 
 
-                            </div>
-
-                            <div class="row">
 
                                 <div class="col-sm-6" style="width:550px"
                                 >
@@ -98,20 +85,10 @@
                                                 :options="carrierChart.options"
 
                                     />
-                                </div>
-
-                                <div class="col-sm-6" style="width:550px"
-                                >
-
 
                                 </div>
-                            </div>
-                            <div class="row">
 
-                                <div class="col-sm-6"
-                                >
 
-                                </div>
                             </div>
 
 
