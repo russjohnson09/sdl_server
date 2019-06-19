@@ -11,13 +11,13 @@
             <main class="col-sm-9 ml-sm-auto col-md-10 pt-3 main-content" role="main">
 
                 <div v-if="ENABLE_REPORTING">
-                    <h2>Reporting</h2>
+                    <h3>Reporting</h3>
 
                     <div v-if="aggregateReport">
 
                         <!--                         class="form-row mb-0"-->
                         <div>
-                            <h3>Policy Table Updates</h3>
+                            <h4>Policy Table Updates</h4>
 
                             <div class="row">
                                 <div class="col-sm-12">

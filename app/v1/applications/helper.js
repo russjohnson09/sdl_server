@@ -309,13 +309,69 @@ async function generateTestUsageTimeHistory(appId)
     return usage_history;
 }
 
+async function generateTestUserSelectionHistory()
+{
+    let usage_history = {};
+    let report_days = 90;
+    let date = moment().subtract(report_days,'days');
+
+    // let report_days = 30;
+
+    for (let i = 0; i < report_days; i++)
+    {
+        let reportDate = moment(date).add(i,'days');
+
+        let random = function(max,min)
+        {
+            return Math.floor(Math.random() * (+max - +min)) + +min;
+        };
+
+        usage_history[reportDate.format('YYYY-MM-DD')] = {
+            count_of_user_selections: random(0,10),
+        };
+
+
+    }
+
+    return usage_history;
+}
+
+
+async function generateTestRejectedRPCsHistory()
+{
+    let usage_history = {};
+    let report_days = 90;
+    let date = moment().subtract(report_days,'days');
+
+    // let report_days = 30;
+
+    for (let i = 0; i < report_days; i++)
+    {
+        let reportDate = moment(date).add(i,'days');
+
+        let random = function(max,min)
+        {
+            return Math.floor(Math.random() * (+max - +min)) + +min;
+        };
+
+        usage_history[reportDate.format('YYYY-MM-DD')] = {
+            count_of_rejected_rpcs_calls: random(0,10),
+    };
+
+
+    }
+
+    return usage_history;
+}
+
 
 //TODO hook up to db.
 async function getAggregateReportByAppId(appId)
 {
 
     let usage_time_history = await generateTestUsageTimeHistory();
-
+    let user_selection_history = await generateTestUserSelectionHistory();
+    let rejected_rpcs_history = await generateTestRejectedRPCsHistory();
 
     let obj = {
         app: {
@@ -324,7 +380,8 @@ async function getAggregateReportByAppId(appId)
         //Number of daily PTUs during the retention period, stacked by the triggering event (miles, days, ignition cycles)
         report_days: 30,
         usage_time_history,
-
+        user_selection_history,
+        rejected_rpcs_history,
         aggregate_counts: {
             usage_time: {
                 minutes_in_hmi_background: 100,

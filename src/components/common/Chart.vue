@@ -116,6 +116,11 @@
     let defaultLayout = {
         plot_bgcolor: '#F4F5F7',
         paper_bgcolor: "#F4F5F7",
+        font: {
+            family: 'LivioNorm, Helvetica, sans-serif',
+            size: 18,
+            // color: '#7f7f7f'
+        },
     }
 
     let defaultOptions = {
@@ -206,6 +211,7 @@
             {
                 options = options || {};
                 let defaultOptions = {
+                    isLineChart: false,
                     title: '',
                     plot_bgcolor: defaultLayout.plot_bgcolor,
                     paper_bgcolor: defaultLayout.paper_bgcolor,
@@ -218,9 +224,6 @@
                 let datasetsIndex = {};
                 let datasets = [];
 
-                let start_x;
-                let end_x;
-
                 let dates = [];
                 /**
                  * json is indexed by date and then type. We want to split
@@ -231,13 +234,6 @@
                  */
                 for (let date in json) {
                     dates.push(date);
-                    // if (!start_x)
-                    // {
-                    //     start_x = end_x = date;
-                    // }
-                    // else {
-                    //     end_x = date;
-                    // }
 
                     let record = json[date];
                     for (let type in record) {
@@ -249,7 +245,7 @@
                         if (datasetsIndex[label] == undefined) {
                             datasetsIndex[label] = datasets.length;
                             datasets.push({
-                                type: 'bar',
+                                type: options.isLineChart ? 'scatter' : 'bar',
                                 name: label,
                                 marker: {
                                     color: chartColors[datasets.length],
@@ -275,6 +271,10 @@
                     data: datasets,
 
                     layout: {
+
+                        //font-family: LivioNorm, Helvetica, sans-serif;
+                        font: defaultLayout.font,
+
                         plot_bgcolor: options.plot_bgcolor,
                         paper_bgcolor: options.paper_bgcolor,
                         barmode: 'stack',
@@ -441,6 +441,8 @@
                 return {
                     data,
                     layout: {
+                        font: defaultLayout.font,
+
                         title: options.title,
                         plot_bgcolor: options.plot_bgcolor,
                         paper_bgcolor: options.paper_bgcolor,
@@ -620,6 +622,8 @@
                     data,
 
                     layout: {
+                        font: defaultLayout.font,
+
                         title: options.title,
                         plot_bgcolor: options.plot_bgcolor,
                         paper_bgcolor: options.paper_bgcolor,
@@ -768,6 +772,7 @@
                 //https://plot.ly/javascript/reference/#layout-xaxis-ticklen
                 let chart = {
                     layout: {
+                        font: defaultLayout.font,
 
 
                         plot_bgcolor: options.plot_bgcolor,
