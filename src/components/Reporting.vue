@@ -12,7 +12,10 @@
 
                 <div v-if="ENABLE_REPORTING">
                     <h2>Reporting</h2>
-                    <!--                    class="functional-content" v-if="aggregateReport"-->
+
+<!--                    <iframe frameborder=0 width="800" height="600" src="https://analytics.zoho.com/open-view/2001431000000002276"></iframe>-->
+
+                    <iframe frameborder=0 width="800" height="600" src="https://analytics.zoho.com/open-view/2001431000000010332"></iframe>
                     <div v-if="aggregateReport">
 
                         <!--                         class="form-row mb-0"-->
@@ -168,7 +171,8 @@
 
                     this.ptuChartStacked = Chart.getTimeSeriesStackedFromJson(policy_table_updates_by_trigger, {
                         title: ptuTableTitle,
-                        labelMapping
+                        labelMapping,
+                        yTitle: 'Event Count'
                     })
                 }
 
@@ -208,6 +212,7 @@
                     this.carrierChart = Chart.getSmartChartFromJson(total_device_carrier, {
                         labelMapping,
                         title: 'Device Carrier',
+                        xTitle: 'Device Count',
                     });
                 }
 

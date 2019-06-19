@@ -1,4 +1,3 @@
-const ReportingController = require('./statistics/ReportingController');
 
 const express = require('express');
 const helmet = require('helmet');
@@ -89,24 +88,7 @@ async function  exposeRoutes () {
 	app.post('/module', auth.validateAuth, moduleConfig.post);
 	app.post('/module/promote', auth.validateAuth, moduleConfig.promote);
 	app.get('/about', auth.validateAuth, about.getInfo);
-	//
-	// router.get('/aggregate-report',self.getTestDataRoute());
-	// router.get('/application-report/:id',self.getTestAppReportRoute());
 
-	// await (async () => {
-	// 	let t1 = Date.now();
-	// 	let route = '/reporting';
-	// 	let router = express.Router();
-	// 	app.use(route, router);
-	//
-	// 	await ReportingController.create({
-	// 		parcel,
-	// 		router
-	// 	});
-	// 	let d1 = Date.now() - t1;
-	// 	log.info(`initialized route ${route} in ${d1} (ms)`);
-	//
-	// })();
 
 }
 

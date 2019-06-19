@@ -171,22 +171,11 @@
 
                 if (usage_time)
                 {
-                    let usePie = true;
-                    if (usePie)
-                    {
-                        this.usageTimeReport = Chart.getSmartChartFromJson(usage_time,{
-                            title: 'App Usage Time',
-                            plot_bgcolor: '#FFFFFF',
-                            paper_bgcolor: '#FFFFFF'
-                        });
-                    }
-                    else {
-                        this.usageTimeReport = Chart.getBarChartFromJson(usage_time,{
-                            title: 'App Usage Time',
-                            plot_bgcolor: '#FFFFFF',
-                            paper_bgcolor: '#FFFFFF'
-                        })
-                    }
+                    this.usageTimeReport = Chart.getSmartChartFromJson(usage_time,{
+                        title: 'App Usage Time',
+                        plot_bgcolor: '#FFFFFF',
+                        paper_bgcolor: '#FFFFFF'
+                    });
                 }
 
                 if (count_of_user_selections)
