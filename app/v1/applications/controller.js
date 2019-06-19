@@ -6,10 +6,20 @@ const async = require('async');
 
 
 async function getReport(req,res,next) {
-	let reportData = await helper.getAggregateReportByAppId(req.query.id);
-	return res.parcel.setStatus(200)
-		.setData(reportData)
-		.deliver();
+	try {
+		let reportData = await helper.getAggregateReportByAppId(req.query.id);
+		return res.parcel.setStatus(200)
+			.setData(reportData)
+			.deliver();
+	}
+	catch (err)
+	{
+		app.locals.log.error(err);
+		return res.parcel
+			.setStatus(500)
+			.setMessage("Internal server error")
+			.deliver();
+	}
 }
 
 function get (req, res, next) {

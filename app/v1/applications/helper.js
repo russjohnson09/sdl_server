@@ -8,6 +8,7 @@ const flame = app.locals.flame;
 const log = app.locals.log;
 const db = app.locals.db;
 const config = app.locals.config;
+const moment = require('moment');
 
 //validation functions
 
@@ -265,15 +266,65 @@ function attemptRetry(milliseconds, retryQueue){
 }
 
 
+async function generateTestUsageTimeHistory(appId)
+{
+    let usage_history = {};
+    let report_days = 90;
+    let date = moment().subtract(report_days,'days');
+
+    // let report_days = 30;
+
+    for (let i = 0; i < report_days; i++)
+    {
+        if (i % 9 === 0)
+        {
+            continue;
+            // ptu_history.push({
+            //     created_date: reportDate,
+            //     update_type: 'days',
+            // });
+        }
+        let reportDate = moment(date).add(i,'days');
+
+        let random = function(max,min)
+        {
+            return Math.floor(Math.random() * (+max - +min)) + +min;
+        }
+
+        let minutes_in_hmi_full = random(0,10);
+        let minutes_in_hmi_background = random(0,10);//
+        let minutes_in_hmi_limited = random(0,10);//
+        let minutes_in_hmi_none = random(0,10);//
+
+        usage_history[reportDate.format('YYYY-MM-DD')] = {
+            minutes_in_hmi_full,
+            minutes_in_hmi_background,
+            minutes_in_hmi_limited,
+            minutes_in_hmi_none
+        };
+
+
+    }
+
+    return usage_history;
+}
+
+
 //TODO hook up to db.
 async function getAggregateReportByAppId(appId)
 {
+
+    let usage_time_history = await generateTestUsageTimeHistory();
+
+
     let obj = {
         app: {
             name: 'TEST APP'
         },
         //Number of daily PTUs during the retention period, stacked by the triggering event (miles, days, ignition cycles)
         report_days: 30,
+        usage_time_history,
+
         aggregate_counts: {
             usage_time: {
                 minutes_in_hmi_background: 100,

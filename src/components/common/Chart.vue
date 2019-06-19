@@ -206,7 +206,9 @@
             {
                 options = options || {};
                 let defaultOptions = {
-                    title: ''
+                    title: '',
+                    plot_bgcolor: defaultLayout.plot_bgcolor,
+                    paper_bgcolor: defaultLayout.paper_bgcolor,
                 };
                 options = Object.assign({
 
@@ -273,8 +275,8 @@
                     data: datasets,
 
                     layout: {
-                        plot_bgcolor: '#F4F5F7',
-                        paper_bgcolor: "#F4F5F7",
+                        plot_bgcolor: options.plot_bgcolor,
+                        paper_bgcolor: options.paper_bgcolor,
                         barmode: 'stack',
                         title: options.title,
 
@@ -396,6 +398,9 @@
                     }
                 }
 
+                //TODO style table
+
+                //https://plot.ly/javascript/table/
                 let data = [
                     {
                         type: 'table',
@@ -460,6 +465,7 @@
                         }
                     },
                     options: {
+                        displayModeBar: false,
                         toImageButtonOptions: {
                             filename: options.title,
                             width: 800,
@@ -496,12 +502,17 @@
                 let values = [];
                 let labels = [];
 
+                let marker = {
+                    colors: []
+                };
+
                 let keyCount = 0;
                 let records = [];
                 for (let key in obj)
                 {
 
                     keyCount++; //original keyCount
+
                     records.push({
                         key,
                         value: obj[key]
@@ -512,8 +523,6 @@
                 if (options.limitCategories && options.limitCategories < records.length)
                 {
                     records.sort(function(a,b) {
-                        // return a.value - b.value;
-
                         return b.value - a.value;
                     });
 
@@ -524,6 +533,7 @@
                     };
                     for (let i in records)
                     {
+
 
                         if (i < options.limitCategories)
                         {
@@ -548,6 +558,8 @@
                 for (let key in obj)
                 {
 
+                    marker.colors.push(chartColors[values.length]);
+
                     // keyCount++;
                     values.push(obj[key]);
 
@@ -559,6 +571,7 @@
                     else {
                         labels.push(key);
                     }
+
                 }
 
                 let textinfo = 'label+percent';
@@ -588,8 +601,10 @@
                         }
                     }
                 }
+
                 let data = [
                     {
+                        marker,
                         values,
                         labels,
                         type: 'pie',
@@ -601,8 +616,9 @@
 
                 //https://github.com/plotly/plotly.js/issues/53
                 //https://github.com/plotly/plotly.js/issues/296
-                return {
+                let chart = {
                     data,
+
                     layout: {
                         title: options.title,
                         plot_bgcolor: options.plot_bgcolor,
@@ -632,6 +648,8 @@
                         }
                     },
                     options: {
+                        displayModeBar: false,
+
                         toImageButtonOptions: {
                             filename: options.title,
                             width: 800,
@@ -639,7 +657,10 @@
                             format: 'png'
                         }
                     }
-                }
+                };
+
+                console.log(`get chart`,chart);
+                return chart;
             },
             getBarChartPlotly(json,options)
             {
@@ -671,13 +692,15 @@
 
 
 
-                if (options.sort)
-                {
-                    dataAry.sort(function(a,b) {
-                        // return b.value - a.value;
-                        return a.value - b.value;
-                    });
-                }
+                // if (options.sort)
+                // {
+                //place other last.
+                dataAry.sort(function(a,b) {
+                    let aValue = a.key === 'Other' ? -100 : a.value;
+                    let bValue = b.key === 'Other' ? -100 :  b.value;
+                    return aValue - bValue;
+                });
+                // }
 
                 name = name || '';
 
@@ -695,7 +718,8 @@
                         // textposition: 'outside',
 
                         orientation: 'h',
-                        hoverinfo: 'x'
+                        hoverinfo: 'x',
+
 
 
                     }
@@ -741,8 +765,10 @@
                 //https://plot.ly/javascript/setting-graph-size/
                 //https://plot.ly/javascript/reference/#layout-plot_bgcolor
                 //https://community.plot.ly/t/plot-background-how-can-i-setup-it/6617
+                //https://plot.ly/javascript/reference/#layout-xaxis-ticklen
                 let chart = {
                     layout: {
+
 
                         plot_bgcolor: options.plot_bgcolor,
                         paper_bgcolor: options.plot_bgcolor,
@@ -757,6 +783,8 @@
                         height: 700,
                         autosize: true,
                         xaxis: {
+
+
                             title: {
                                 text: options.xTitle, //options.isPercent ? '%' : 'Total'
                             },
@@ -764,12 +792,18 @@
 
                         },
                         yaxis: {
+                            // ticklen: 100,
+                            // tickwidth: 100,
+                            ticksuffix: '  ', //no margin but can add spaces to labels this way.
+
                             automargin: true,
                         }
 
                     },
                     data,
                     options: {
+                        displayModeBar: false,
+
                         toImageButtonOptions: {
                             filename: options.title,
                             width: 800,

@@ -4,15 +4,16 @@
         <h4>Application Report For Past {{appReport.report_days}} Days</h4>
 
 
+        <pre>{{appReport}}</pre>
         <div class="row">
-            <div class="col-sm-4"
+            <div class="col-sm-12"
                  style="min-width:350px"
             >
-                <div v-if="usageTimeReport" >
-                    <vue-plotly v-if="usageTimeReport"
-                                :data="usageTimeReport.data"
-                                :layout="usageTimeReport.layout"
-                                :options="usageTimeReport.options"
+                <div v-if="timeUsageReport" >
+                    <vue-plotly v-if="timeUsageReport"
+                                :data="timeUsageReport.data"
+                                :layout="timeUsageReport.layout"
+                                :options="timeUsageReport.options"
 
                     />
                 </div>
@@ -22,14 +23,17 @@
 
             </div>
 
-            <div class="col-sm-4"
+        </div>
+
+        <div class="row">
+            <div class="col-sm-12"
                  style="min-width:350px"
             >
-                <div v-if="miscStats" >
-                    <vue-plotly v-if="miscStats"
-                                :data="miscStats.data"
-                                :layout="miscStats.layout"
-                                :options="miscStats.options"
+                <div v-if="userSelectionsReport" >
+                    <vue-plotly v-if="userSelectionsReport"
+                                :data="userSelectionsReport.data"
+                                :layout="userSelectionsReport.layout"
+                                :options="userSelectionsReport.options"
 
                     />
                 </div>
@@ -38,6 +42,7 @@
                 </div>
 
             </div>
+
         </div>
 
 
@@ -96,11 +101,8 @@
         ],
         data () {
             let obj = {
-                usageTimeReport: null,
-                miscStats: null,
-                stackedCountsReport: null,
-                lineChartRejectedRPCCalls: null,
-                lineChartUserSelectionCounts: null,
+                timeUsageReport: null,
+                userSelectionsReport: null,
 
                 defaultWidth,
                 defaultHeight
@@ -110,90 +112,61 @@
             return obj;
         },
         methods: {
-            getStackedReportFromHistoryReport(report,validTypes)
-            {
-                let datasets = this.getDataSetsFromHistoryReport(report,validTypes);
-
-                let barchartStacked = {
-                    type: 'bar-chart',
-                    options: Chart.defaultOptions.stackedTimeSeries,
-                    data: {
-                        datasets,
-                    }
-                };
-                return barchartStacked;
-            },
-            getDataSetsFromHistoryReport(report,validTypes)
-            {
-                let datasetsIndex = {};
-                let datasets = [];
-                if (report)
-                {
-                    for (let date in report)
-                    {
-
-                        let record = report[date];
-                        for (let type in record)
-                        {
-                            if (validTypes && validTypes.indexOf(type) === -1)
-                            {
-                                continue;
-                            }
-                            if (datasetsIndex[type] == undefined)
-                            {
-                                datasetsIndex[type] = datasets.length;
-                                datasets.push({
-                                    label: type,
-                                    backgroundColor: Chart.chartColors[datasets.length],
-                                    data: []
-                                })
-                            }
-                            let dataset = datasets[datasetsIndex[type]];
-
-                            dataset.data.push({
-                                x: date,
-                                y: record[type]
-                            })
-                        }
-                    }
-                }
-
-                return datasets;
-            },
         },
 
         mounted (){
 
             if (this.appReport)
             {
-                let {app,report_days,aggregate_counts} = this.appReport;
-                let {usage_time,count_of_user_selections,count_of_rejected_rpcs_calls} = aggregate_counts;
+                let {app,report_days,aggregate_counts,usage_time_history,user_selection_history} = this.appReport;
+                let {usage_time,count_of_user_selections,count_of_rejected_rpcs_calls,
+                } = aggregate_counts;
 
-                if (usage_time)
-                {
-                    this.usageTimeReport = Chart.getSmartChartFromJson(usage_time,{
-                        title: 'App Usage Time',
-                        plot_bgcolor: '#FFFFFF',
-                        paper_bgcolor: '#FFFFFF'
-                    });
-                }
 
-                if (count_of_user_selections)
-                {
-                    this.miscStats = Chart.getTableFromJson({
-                        count_of_user_selections,
-                        count_of_rejected_rpcs_calls
-                    },{
-                        isPercent: false,
-                        title: 'Other Stats',
-                        plot_bgcolor: '#FFFFFF',
-                        paper_bgcolor: '#FFFFFF',
-                        labelMapping: {
-                            count_of_user_selections: 'User Selections',
-                            count_of_rejected_rpcs_calls: 'RPC Rejections',
-                        }
-                    });
-                }
+
+                this.timeUsageReport = Chart.getTimeSeriesStackedFromJson(usage_time_history,{
+                            title: 'App Usage Time',
+                            plot_bgcolor: '#FFFFFF',
+                            paper_bgcolor: '#FFFFFF',
+                    labelMapping: {
+                                'minutes_in_hmi_none': "Minutes in None"
+                    }
+                });
+
+
+                this.userSelectionsReport = Chart.getTimeSeriesStackedFromJson(user_selection_history,{
+                    title: 'App Usage Time',
+                    plot_bgcolor: '#FFFFFF',
+                    paper_bgcolor: '#FFFFFF',
+                    labelMapping: {
+                        'minutes_in_hmi_none': "Minutes in None"
+                    }
+                })
+                // if (usage_time)
+                // {
+                //     this.usageTimeReport = Chart.getSmartChartFromJson(usage_time,{
+                //         title: 'App Usage Time',
+                //         plot_bgcolor: '#FFFFFF',
+                //         paper_bgcolor: '#FFFFFF'
+                //     });
+                // }
+
+                // if (count_of_user_selections)
+                // {
+                //     this.miscStats = Chart.getTableFromJson({
+                //         count_of_user_selections,
+                //         count_of_rejected_rpcs_calls
+                //     },{
+                //         isPercent: false,
+                //         title: 'Other Stats',
+                //         plot_bgcolor: '#FFFFFF',
+                //         paper_bgcolor: '#FFFFFF',
+                //         labelMapping: {
+                //             count_of_user_selections: 'User Selections',
+                //             count_of_rejected_rpcs_calls: 'RPC Rejections',
+                //         }
+                //     });
+                // }
 
 
             }

@@ -13,9 +13,6 @@
                 <div v-if="ENABLE_REPORTING">
                     <h2>Reporting</h2>
 
-<!--                    <iframe frameborder=0 width="800" height="600" src="https://analytics.zoho.com/open-view/2001431000000002276"></iframe>-->
-
-                    <iframe frameborder=0 width="800" height="600" src="https://analytics.zoho.com/open-view/2001431000000010332"></iframe>
                     <div v-if="aggregateReport">
 
                         <!--                         class="form-row mb-0"-->
@@ -103,6 +100,7 @@
 
 
                 <div v-if="!ENABLE_REPORTING">
+<!--                    TODO update reporting is disabled.-->
                     Reporting is disabled.
                     <a class="fa fa-question-circle color-primary doc-link" v-b-tooltip.hover
                        title="Click here for more info about this page"
