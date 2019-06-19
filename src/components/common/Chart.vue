@@ -325,6 +325,47 @@
 
 
             },
+            getRawTableFromJson(obj,options)
+            {
+                let {labelMapping} = options;
+                let total = 0;
+                for (let key in obj)
+                {
+                    let value = +obj[key];
+                    total += value;
+                }
+
+                let rows = [];
+
+                let row = [
+                    'NAME',
+                    'PERCENT',
+                    'COUNT',
+                ];
+
+                rows.push(row);
+
+                for (let key in obj)
+                {
+                    let value = +obj[key];
+                    let percent = (((value / total) * 100)).toFixed(0) + '%';
+                    let label = key;
+                    if (labelMapping && labelMapping[key])
+                    {
+                        label = labelMapping[key];
+
+                    }
+
+                    let row = [
+                        label,
+                        percent,
+                        value
+                    ];
+                    rows.push(row)
+                }
+                return rows;
+
+            },
             getTableFromJson(obj,options)
             {
                 let defaultOptions = {
@@ -342,15 +383,15 @@
                     if (options.isPercent)
                     {
                         return [
-                            'Name',
-                            'Percent',
-                            'Count',
+                            'NAME',
+                            'PERCENT',
+                            'COUNT',
                         ]
                     }
                     else {
                         return [
-                            'Name',
-                            'Count',
+                            'NAME',
+                            'COUNT',
                         ]
                     }
 
@@ -364,6 +405,7 @@
                 let percentValues = [];
 
                 let itemNames = [];
+                let rawTable = self.getRawTableFromJson(obj,options);
 
 
 
@@ -378,39 +420,55 @@
                     total += value;
                     values.push(value);
 
+                    let label = key;
                     if (labelMapping && labelMapping[key])
                     {
-                        itemNames.push(labelMapping[key]);
+                        label = labelMapping[key];
 
                     }
-                    else {
-                        itemNames.push(key);
-                    }
+                    itemNames.push(label);
                 }
 
                 if (options.isPercent)
                 {
-                    for (let value of values)
+                    for (let i in values)
                     {
+                        let value = values[i];
                         let percent = (((value / total) * 100)).toFixed(0) + '%';
                         percentValues.push(percent);
 
                     }
                 }
 
+
+                //                            family: 'LivioNorm, Helvetica, sans-serif',
+
+                let family = defaultLayout.font.family;
                 //TODO style table
 
                 //https://plot.ly/javascript/table/
+                //https://community.plot.ly/t/cell-padding-in-plotly-table/21725
+                //https://community.plot.ly/t/how-to-change-the-padding-of-a-graph/6784
                 let data = [
                     {
+                        rawTable,
                         type: 'table',
                         header: {
                             values: headers,
                             align: 'center',
                             line: {width: 1, color: 'black'},
-                            font: {family: "Arial", size: 12, color: "black"}
+
+
+
+                            font: {
+                                family: family,
+                                size: 10,
+                                color: "#A9B3BD",
+                            weight: "bold"}
                         },
+                        //https://plot.ly/javascript/reference/#table-cells
                         cells: {
+                            height: 100,
                             values: (function() {
                                 if (options.isPercent)
                                 {
@@ -431,7 +489,12 @@
                             line: {color: "black", width: 1},
                             // fill: {color: [sequential_colors[1],'white']},
                             // fill: {color: ['#25FEFD', 'white']},
-                            font: {family: "Arial", size: 11, color: ["black"]}
+                            font: {
+                                family: family,
+                                size: 11,
+                                // color: "#A9B3BD",
+                                // weight: "bold"
+                            }
                         }
 
 
@@ -439,6 +502,7 @@
                 ];
 
                 return {
+                    rawTable,
                     data,
                     layout: {
                         font: defaultLayout.font,
@@ -452,7 +516,7 @@
                             // l: 80,
                             // r: 50,
                             // b: 50,
-                            t: 150
+                            // t: 150
                         },
 
                         xaxis: {

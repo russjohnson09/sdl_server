@@ -64,10 +64,15 @@
                                 >
 
 
-                                    <vue-plotly v-if="modelChart"
+                                    <vue-plotly v-if="modelChart && !modelChart.rawTable"
                                                 :data="modelChart.data"
                                                 :layout="modelChart.layout"
                                                 :options="modelChart.options"
+
+                                    />
+
+                                    <report-table v-if="modelChart && modelChart.rawTable"
+                                                :chart="modelChart"
 
                                     />
 

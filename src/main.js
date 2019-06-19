@@ -20,6 +20,7 @@ import MessageItem from './components/common/MessageItem'
 import CardItem from './components/common/CardItem'
 import PatternInput from './components/common/PatternInput'
 import ApplicationReports from './components/common/ApplicationReports'
+import ReportTable from './components/common/ReportTable'
 
 Vue.use(BootstrapVue);
 Vue.use(VueSession);
@@ -56,6 +57,7 @@ Vue.component("pattern-input", PatternInput);
 
 Vue.component("vue-plotly", VuePlotly);
 Vue.component("application-reports", ApplicationReports);
+Vue.component("report-table", ReportTable);
 
 
 Vue.http.options.root = '/api/v1';
