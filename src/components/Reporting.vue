@@ -105,14 +105,16 @@
 
 
                 <div v-if="!ENABLE_REPORTING">
-<!--                    TODO update reporting is disabled.-->
-                    Reporting is disabled.
-                    <a class="fa fa-question-circle color-primary doc-link" v-b-tooltip.hover
-                       title="Click here for more info about this page"
-                       href="https://smartdevicelink.com/en/guides/sdl-server/getting-started/installation/"
-                       target="_blank"></a>
-                    <!--                    <h4>About this Policy Server-->
-                    <!--                       </h4>-->
+                    <img src="~@/assets/images/black_graphs/reportingdisabled.png" alt="Reporting is disabled."/>
+
+                    <!--                    TODO update reporting is disabled.-->
+
+<!--                    <a class="fa fa-question-circle color-primary doc-link" v-b-tooltip.hover-->
+<!--                       title="Click here for more info about this page"-->
+<!--                       href="https://smartdevicelink.com/en/guides/sdl-server/getting-started/installation/"-->
+<!--                       target="_blank"></a>-->
+<!--                    &lt;!&ndash;                    <h4>About this Policy Server&ndash;&gt;-->
+<!--                    &lt;!&ndash;                       </h4>&ndash;&gt;-->
 
                 </div>
 
