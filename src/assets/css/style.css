@@ -1219,7 +1219,6 @@ input:checked + .slider:before {
     width: 125px;
     height: 40px;
     font-family: "Livio Norm";
-/*.name {	height: 12px;	width: 32px;	*/
     color: #A9B3BD;	font-family: "Livio Norm";
     font-size: 10px;
     font-weight: bold;
@@ -1231,11 +1230,7 @@ input:checked + .slider:before {
 .report-table td {
     height: 30px;
     width: 125px;
-    /*font-family: "Livio Norm";*/
-    /*height: 13px;	*/
-    /*width: 40px;	*/
     color: #394E60;
-    /*font-family: "Livio Norm";	*/
     font-size: 12px;
     line-height: 14px;
     text-align: center;
