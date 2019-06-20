@@ -311,13 +311,13 @@
                     </form>
                 </b-modal>
 
-                <div v-if="!ENABLE_REPORTING">
-                    Reporting is disabled.
-                    <a class="fa fa-question-circle color-primary doc-link" v-b-tooltip.hover
-                       title="Click here for more info about this page"
-                       href="https://smartdevicelink.com/en/guides/sdl-server/getting-started/installation/"
-                       target="_blank"></a>
-                </div>
+<!--                <div v-if="!ENABLE_REPORTING">-->
+<!--                    Reporting is disabled.-->
+<!--                    <a class="fa fa-question-circle color-primary doc-link" v-b-tooltip.hover-->
+<!--                       title="Click here for more info about this page"-->
+<!--                       href="https://smartdevicelink.com/en/guides/sdl-server/getting-started/installation/"-->
+<!--                       target="_blank"></a>-->
+<!--                </div>-->
 
                 <application-reports v-if="appReport"
                         v-bind:appReport="appReport"
@@ -713,7 +713,11 @@ export default {
         }
     },
     created: function(){
-        this.populateAppReport();
+        if (this.ENABLE_REPORTING)
+        {
+            this.populateAppReport();
+
+        }
         this.getApp();
     },
     beforeDestroy () {

@@ -1180,37 +1180,8 @@ input:checked + .slider:before {
 }
 
 
-/*https://medium.com/@vembarrajan/html-css-tricks-scroll-able-table-body-tbody-d23182ae0fbc*/
-/*.fixed_header{*/
-/*    width: 400px;*/
-/*    table-layout: fixed;*/
-/*    border-collapse: collapse;*/
-/*}*/
 
-/*.fixed_header tbody{*/
-/*    display:block;*/
-/*    width: 100%;*/
-/*    overflow: auto;*/
-/*    !*height: 100px;*!*/
-/*}*/
-
-/*.fixed_header thead tr {*/
-/*    display: block;*/
-/*}*/
-
-/*.fixed_header thead {*/
-/*    !*background: black;*!*/
-/*    !*color:#fff;*!*/
-/*}*/
-
-/*.fixed_header th, .fixed_header td {*/
-/*    padding: 5px;*/
-/*    text-align: left;*/
-/*    width: 200px;*/
-/*}*/
-
-
-.report-table table, th, td {
+.report-table table, .report-table th, .report-table td {
     border: 1px solid #DEE1E6;
     background-color: #FFFFFF;
 }
@@ -1218,8 +1189,8 @@ input:checked + .slider:before {
 .report-table th {
     width: 125px;
     height: 40px;
+    color: #A9B3BD;
     font-family: "Livio Norm";
-    color: #A9B3BD;	font-family: "Livio Norm";
     font-size: 10px;
     font-weight: bold;
     letter-spacing: 2px;
