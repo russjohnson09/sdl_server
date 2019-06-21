@@ -158,7 +158,8 @@
                 let labelMapping = {
                     'mileage': 'Mileage',
                     'days': 'Days',
-                    'ignition_cycle': 'Ignition Cycle'
+                    'ignition_cycle': 'Ignition',
+                    // 'ignition_cycle': 'Ignition Cycle'
                 };
 
                 if (policy_table_updates_by_trigger)
