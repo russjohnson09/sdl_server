@@ -63,6 +63,7 @@ const self = module.exports = {
         function readRecurse () {
             //read the applications
             shaid.read(shaid.entity.application, queryObj, function (err, res) {
+                // console.log(res);
                 const appsInQuery = res.data.applications;
                 apps = apps.concat(appsInQuery); //add to the total apps found
 
