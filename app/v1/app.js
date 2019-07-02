@@ -51,6 +51,7 @@ async function  exposeRoutes () {
 	let requestCollection = mongoDB.collection(`request`);
 
 
+
 	//{$sort: {request_time: -1}}
 	app.use("*", async (req,res,next) => {
 		req.locals = req.locals || {};
@@ -83,6 +84,37 @@ ${JSON.stringify(req.body,null,4)}
 
 		next();
 	});
+
+
+	// {
+	// 	"meta": {
+	// 	"request_id": "e8e3f4c5-d399-45dc-a253-64590e26d964",
+	// 		"code": 200,
+	// 		"message": null
+	// },
+	// 	"data": [
+	// 	{
+	// 		"policy_table": {
+	// 			"module_config": {
+	// 				"full_app_id_supported": false,
+	// 				"exchange_after_x_ignition_cycles": 1,
+	// 				"exchange_after_x_kilometers": 1800,
+	// 				"exchange_after_x_days": 30,
+	// 				"timeout_after_x_seconds": 60,
+	// 				"seconds_between_retries": [
+	// 					1,
+	// 					5,
+	// 					25,
+	// 					125,
+	// 					625
+	// 				],
+	//http://policy.localhost/api/v1/policy/apps
+	app.use("/test-policy", async (req,res) => {
+		//see how core handles an empty json file.
+		res.json({
+
+		})
+	})
 
 	// use helmet middleware for security
 	app.use(helmet());
