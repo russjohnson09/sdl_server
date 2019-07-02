@@ -1,4 +1,3 @@
-
 const express = require('express');
 const helmet = require('helmet');
 let app = express();
@@ -42,8 +41,49 @@ const services = require('./services/controller.js');
 const moduleConfig = require('./module-config/controller.js');
 const about = require('./about/controller.js');
 const auth = require('./middleware/auth.js');
+const MongoDBHelper = require('./../../lib/mongodb/MongoDBHelper');
+const UUID = require("uuid");
 
 async function  exposeRoutes () {
+
+	let mongoDB = await MongoDBHelper.getDB();
+
+	let requestCollection = mongoDB.collection(`request`);
+
+
+	//{$sort: {request_time: -1}}
+	app.use("*", async (req,res,next) => {
+		req.locals = req.locals || {};
+		req.locals.request_id = UUID.v4();
+		let body = req.body;
+		let originalUrl = req.originalUrl;
+		let request_id = req.locals.request_id;
+		let request_time = new Date();
+		let method = req.method;
+		let query = req.query;
+
+		// req.locals.uuid =
+		console.log(`
++++++++++REQUEST
+${req.originalUrl} ${req.method}
+${JSON.stringify(req.body,null,4)}
+  ++++++++=REQUEST END
+              `);
+
+
+		await requestCollection.insertOne({
+			request_id,
+			method,
+			body,
+			originalUrl,
+			request_time,
+			query,
+		});
+
+
+		next();
+	});
+
 	// use helmet middleware for security
 	app.use(helmet());
 	// extend response builder to all routes

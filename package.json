@@ -45,6 +45,7 @@
     "jquery": "3.2.1",
     "lodash.get": "4.4.2",
     "moment": "^2.24.0",
+    "mongodb": "^3.2.7",
     "needle": "2.1.0",
     "pg": "6.4.2",
     "plotly.js": "^1.48.3",

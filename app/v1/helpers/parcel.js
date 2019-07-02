@@ -60,8 +60,8 @@ class Parcel {
 
     // method to write the response to the client
     deliver(){
-        var response_ts = new Date();
-        if(this.res && this.res.app.locals.log) this.res.app.locals.log.info(JSON.stringify(this.getJSON()));
+        // var response_ts = new Date();
+        // if(this.res && this.res.app.locals.log) this.res.app.locals.log.info(JSON.stringify(this.getJSON()));
 
         // send response to client
         this.res
