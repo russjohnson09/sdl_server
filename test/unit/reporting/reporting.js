@@ -1,3 +1,7 @@
+const moment = require('moment');
+
+
+
 // var common = require('../../common');
 // var expect = common.expect;
 // var endpoint = '/api/v1/applications';
@@ -5,6 +9,8 @@
 
 
 //Example postgres set in the .env file
+
+
 // DB_USER=livio
 // DB_PASSWORD=password
 // DB_DATABASE=sdl_server
@@ -72,6 +78,21 @@ describe('update from policy table', () => {
     reportingService = await ReportingService.create({db})
   });
 
+  it('old device', async () => {
+    let result = await reportingService.updateReporting({
+      device_data: {
+        "old": { //device id from core
+          "carrier": "",
+          "connection_type": "BTMAC",
+          "hardware": "Pixel",
+          "os": "Android",
+          "os_version": "8.1.0"
+        },
+      }
+    },
+      moment().subtract(60,'days').toDate());
+  })
+
   it('basic test', async () => {
       // console.log(`reporting`);
       // db.sqlCommand();
@@ -84,7 +105,21 @@ describe('update from policy table', () => {
               "hardware": "Pixel",
               "os": "Android",
               "os_version": "8.1.0"
-          }
+          },
+            "test2": { //device id from core
+              "carrier": "",
+              "connection_type": "BTMAC",
+              "hardware": "Pixel",
+              "os": "Android",
+              "os_version": "8.1.0"
+            },
+            "test1": { //device id from core
+              "carrier": "",
+              "connection_type": "BTMAC",
+              "hardware": "Pixel",
+              "os": "Android",
+              "os_version": "8.1.0"
+            }
           }
       });
 
@@ -97,6 +132,49 @@ describe('update from policy table', () => {
 
 
   });
+
+
+
+  //TODO device load testing
+
+
+
+
+
+
+
+  //usage_and_error_counts
+
+
+  it('usage_and_error_counts', async () => {
+    // console.log(`reporting`);
+    // db.sqlCommand();
+    //
+    let result = await reportingService.updateReporting({
+      //TODO what if (probably likely) this spans multiple days and so we cannot associate specific days with this usage.
+      //solution: multiple users will create an aggregate that is closer to what is actually going on.
+      usage_and_error_counts: { //app usage since last update.
+        "2aa52453-dec2-415f-bacc-2908557e003a": {
+          "count_of_user_selections": 0,
+          "count_of_rejected_rpc_calls":0,
+          "minutes_in_hmi_background": 0,
+          "minutes_in_hmi_full": 0,
+          "minutes_in_hmi_limited": 0,
+          "minutes_in_hmi_none": 0
+        }
+      }
+    });
+
+    expect(result.success).to.be.true;
+    // const query = {
+    //   text: 'INSERT INTO reporting_detail(name) VALUES($1)',
+    //   values: ['brianc'],
+    // };
+
+
+
+  });
+
 
   it('exit connections', async() => {
     db.end();
