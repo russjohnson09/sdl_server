@@ -76,7 +76,18 @@ describe('update from policy table', () => {
       // console.log(`reporting`);
       // db.sqlCommand();
       //
-      let result = await reportingService.updateReporting({});
+      let result = await reportingService.updateReporting({
+          device_data: {
+      "1280e3a858d9ab45ed129c2205abb7443eb6797e3fc23f38180879b5090c731f": { //device id from core
+            "carrier": "",
+              "connection_type": "BTMAC",
+              "hardware": "Pixel",
+              "os": "Android",
+              "os_version": "8.1.0"
+          }
+          }
+      });
+
     expect(result.success).to.be.true;
     // const query = {
     //   text: 'INSERT INTO reporting_detail(name) VALUES($1)',
