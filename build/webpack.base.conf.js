@@ -42,8 +42,6 @@ module.exports = {
         loader: 'vue-loader',
         options: vueLoaderConfig
       },
-      //https://stackoverflow.com/questions/45863925/webpack-2-uglify-plugin-es6
-      //https://babeljs.io/docs/en/env/
       {
         test: /\.js$/,
         loader: 'babel-loader',
