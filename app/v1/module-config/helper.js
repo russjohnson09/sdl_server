@@ -6,6 +6,8 @@ const flow = app.locals.flow;
 const setupSql = app.locals.db.setupSqlCommand;
 const sql = require('./sql.js');
 const moment = require('moment');
+/** @type {ReportingService} **/
+const reportingService = app.locals.reportingService;
 
 //validation functions
 
@@ -209,6 +211,11 @@ function getTotalPolicyUpdatesByTrigger(ptu_history)
     return result;
 }
 
+async function getTestDeivceTotalReport()
+{
+
+}
+
 async function getAggregateReport()
 {
 
@@ -286,6 +293,11 @@ async function getAggregateReport()
         },
 
     };
+
+    let deviceReport = await reportingService.getDeviceReport();
+    Object.assign(obj,
+      deviceReport,
+      )
 
 
     for (let i = 0; i < 10; i++)

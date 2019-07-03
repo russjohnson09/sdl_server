@@ -22,6 +22,8 @@ app.locals.hashify = hashify;
 app.locals.arrayify = arrayify;
 app.locals.flame = flame;
 app.locals.version = path.basename(__dirname);
+app.locals.reportingService = new (require('../../lib/reporting/ReportingService'))({db});
+
 
 //export app before requiring dependent modules to avoid circular dependency issues
 module.exports = app;
@@ -45,6 +47,10 @@ const MongoDBHelper = require('./../../lib/mongodb/MongoDBHelper');
 const UUID = require("uuid");
 
 async function  exposeRoutes () {
+
+	await app.locals.reportingService.init();
+
+	console.log(`initialized reportingService`,app.locals.reportingService);
 
 	let mongoDB = await MongoDBHelper.getDB();
 
