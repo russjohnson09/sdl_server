@@ -4,7 +4,7 @@ const webpack = require('webpack')
 const utils = require('./utils')
 const config = require('../config')
 const vueLoaderConfig = require('./vue-loader.conf')
-require('dotenv').config(); 
+require('dotenv').config();
 const settings = require('../settings.js')
 
 function resolve (dir) {
@@ -42,6 +42,8 @@ module.exports = {
         loader: 'vue-loader',
         options: vueLoaderConfig
       },
+      //https://stackoverflow.com/questions/45863925/webpack-2-uglify-plugin-es6
+      //https://babeljs.io/docs/en/env/
       {
         test: /\.js$/,
         loader: 'babel-loader',
