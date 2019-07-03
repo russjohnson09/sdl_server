@@ -20,6 +20,15 @@ import MessageItem from './components/common/MessageItem'
 import CardItem from './components/common/CardItem'
 import PatternInput from './components/common/PatternInput'
 
+//https://codeburst.io/migrating-to-webpack-4-today-d564b453a3ba
+//npm install webpack@latest --save-dev
+//npm install html-webpack-plugin@latest --save-dev
+//https://codeburst.io/migrating-to-webpack-4-today-d564b453a3ba
+import VuePlotly from '@statnett/vue-plotly'
+
+// import ApplicationReports from './components/common/ApplicationReports'
+// import ReportTable from './components/common/ReportTable'
+
 Vue.use(BootstrapVue);
 Vue.use(VueSession);
 Vue.use(VueResource);
@@ -31,7 +40,12 @@ import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap-vue/dist/bootstrap-vue.css'
 import './assets/css/font-awesome.min.css'
 import './assets/css/style.css'
+
 import async from 'async';
+
+
+
+
 Object.defineProperty(Vue.prototype, '$async', { value: async });
 
 Vue.component("vue-ladda", VueLadda);
@@ -46,6 +60,11 @@ Vue.component("hmi-selector", HmiSelector);
 Vue.component("message-item", MessageItem);
 Vue.component("card-item", CardItem);
 Vue.component("pattern-input", PatternInput);
+
+// Vue.component("vue-plotly", VuePlotly);
+// Vue.component("application-reports", ApplicationReports);
+// Vue.component("report-table", ReportTable);
+
 
 Vue.http.options.root = '/api/v1';
 

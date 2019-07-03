@@ -22,6 +22,8 @@ app.locals.hashify = hashify;
 app.locals.arrayify = arrayify;
 app.locals.flame = flame;
 app.locals.version = path.basename(__dirname);
+app.locals.reportingService = new (require('../../lib/reporting/ReportingService'))({db});
+
 
 //export app before requiring dependent modules to avoid circular dependency issues
 module.exports = app;
@@ -41,8 +43,85 @@ const services = require('./services/controller.js');
 const moduleConfig = require('./module-config/controller.js');
 const about = require('./about/controller.js');
 const auth = require('./middleware/auth.js');
+const MongoDBHelper = require('./../../lib/mongodb/MongoDBHelper');
+const UUID = require("uuid");
 
-function exposeRoutes () {
+async function  exposeRoutes () {
+
+	await app.locals.reportingService.init();
+
+	console.log(`initialized reportingService`,app.locals.reportingService);
+
+	let mongoDB = await MongoDBHelper.getDB();
+
+	let requestCollection = mongoDB.collection(`request`);
+
+
+
+	//{$sort: {request_time: -1}}
+	app.use("*", async (req,res,next) => {
+		req.locals = req.locals || {};
+		req.locals.request_id = UUID.v4();
+		let body = req.body;
+		let originalUrl = req.originalUrl;
+		let request_id = req.locals.request_id;
+		let request_time = new Date();
+		let method = req.method;
+		let query = req.query;
+
+		// req.locals.uuid =
+		console.log(`
++++++++++REQUEST
+${req.originalUrl} ${req.method}
+${JSON.stringify(req.body,null,4)}
+  ++++++++=REQUEST END
+              `);
+
+
+		await requestCollection.insertOne({
+			request_id,
+			method,
+			body,
+			originalUrl,
+			request_time,
+			query,
+		});
+
+
+		next();
+	});
+
+
+	// {
+	// 	"meta": {
+	// 	"request_id": "e8e3f4c5-d399-45dc-a253-64590e26d964",
+	// 		"code": 200,
+	// 		"message": null
+	// },
+	// 	"data": [
+	// 	{
+	// 		"policy_table": {
+	// 			"module_config": {
+	// 				"full_app_id_supported": false,
+	// 				"exchange_after_x_ignition_cycles": 1,
+	// 				"exchange_after_x_kilometers": 1800,
+	// 				"exchange_after_x_days": 30,
+	// 				"timeout_after_x_seconds": 60,
+	// 				"seconds_between_retries": [
+	// 					1,
+	// 					5,
+	// 					25,
+	// 					125,
+	// 					625
+	// 				],
+	//http://policy.localhost/api/v1/policy/apps
+	app.use("/test-policy", async (req,res) => {
+		//see how core handles an empty json file.
+		res.json({
+
+		})
+	})
+
 	// use helmet middleware for security
 	app.use(helmet());
 	// extend response builder to all routes
@@ -53,6 +132,12 @@ function exposeRoutes () {
 	//app.post('/register', register.post);
 	app.post('/login', login.validateAuth);
 	app.get('/applications', auth.validateAuth, applications.get);
+
+
+	app.get('/applications/report', auth.validateAuth, applications.getReport);
+	app.get('/module/report', auth.validateAuth, moduleConfig.getReport);
+
+
 	app.post('/applications/action', auth.validateAuth, applications.actionPost);
 	app.post('/applications/auto', auth.validateAuth, applications.autoPost);
 	app.post('/applications/administrator', auth.validateAuth, applications.administratorPost);
@@ -81,6 +166,8 @@ function exposeRoutes () {
 	app.post('/module', auth.validateAuth, moduleConfig.post);
 	app.post('/module/promote', auth.validateAuth, moduleConfig.promote);
 	app.get('/about', auth.validateAuth, about.getInfo);
+
+
 }
 
 function updatePermissionsAndGenerateTemplates (next) {

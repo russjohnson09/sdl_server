@@ -16,6 +16,10 @@ const GET = require('lodash.get');
 //validation functions
 
 function validateCorePost (req, res) {
+    if (!false)
+    {
+        return;
+    }
     if (!req.body.policy_table) {
         return res.errorMsg = "Please provide policy table information";
     } else if (!req.body.policy_table.app_policies) {
