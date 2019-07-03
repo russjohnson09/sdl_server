@@ -300,10 +300,10 @@ async function getAggregateReport()
       )
 
 
-    for (let i = 0; i < 10; i++)
-    {
-        obj.total_device_carrier[`Carrier ${i + 1}`] = 1;
-    }
+    // for (let i = 0; i < 10; i++)
+    // {
+    //     obj.total_device_carrier[`Carrier ${i + 1}`] = 1;
+    // }
 
     return obj;
 }
