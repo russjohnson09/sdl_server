@@ -15,8 +15,10 @@ function postFromCore (isProduction) {
 		if (res.errorMsg) {
 			return res.status(400).send({ error: res.errorMsg });
 		}
+		let policyTable =  req.body.policy_table || {};
+		let appPolicies = policyTable.app_policies || {};
 		const useLongUuids = GET(req, "body.policy_table.module_config.full_app_id_supported", false) ? true : false;
-        helper.generatePolicyTable(isProduction, useLongUuids, req.body.policy_table.app_policies, true, handlePolicyTableFlow.bind(null, res, true));
+        helper.generatePolicyTable(isProduction, useLongUuids, appPolicies, true, handlePolicyTableFlow.bind(null, res, true));
 	}
 }
 
