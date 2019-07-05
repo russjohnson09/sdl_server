@@ -228,9 +228,9 @@ async function getAggregateReport()
     let obj = {
         //Number of daily PTUs during the retention period, stacked by the triggering event (miles, days, ignition cycles)
         report_days: 30,
-        policy_table_update_history,
-        policy_table_updates_by_trigger,
-        total_policy_table_updates_by_trigger,
+        // policy_table_update_history,
+        // policy_table_updates_by_trigger,
+        // total_policy_table_updates_by_trigger,
         total_device_model: { //totals by model
             "iPhone 8": 10,
             "Nexus 7": 5,
@@ -295,8 +295,11 @@ async function getAggregateReport()
     };
 
     let deviceReport = await reportingService.getDeviceReport();
+    let policyTableUpdatesReport = await reportingService.getPolicyTableUpdatesReport();
+
     Object.assign(obj,
       deviceReport,
+      policyTableUpdatesReport
       )
 
 

@@ -38,10 +38,12 @@ class ReportingTestHelper
     let deviceIndex = this.getRandomInt(0,ReportingTestHelper.testDevices.length - 1);
     let device = ReportingTestHelper.testDevices[deviceIndex];
 
-    console.log(`got device`,device,`at index`,deviceIndex);
+    // console.log(`got device`,device,`at index`,deviceIndex);
 
     //collisions will happen and there will be updates
-    let now = Math.floor(Date.now() / 100);
+    // let now = Math.floor(Date.now() / 100);
+    let now = Math.floor(Date.now());
+
     let id = 'now-' + now;
     // device_data[id] = id;
 
@@ -66,7 +68,7 @@ class ReportingTestHelper
   {
     let policyUpdate = {};
 
-    console.log(`sendPolicyTableUpdate`,policyUpdate);
+    // console.log(`sendPolicyTableUpdate`,policyUpdate);
 
     let device_data = await this.getTestDevice();
 
@@ -77,7 +79,7 @@ class ReportingTestHelper
       // moment().subtract(60,'days').toDate()
     );
 
-    console.log(`sendPolicyTableUpdate`,result);
+    // console.log(`sendPolicyTableUpdate`,result);
 
     return result;
 
@@ -99,8 +101,8 @@ class ReportingTestHelper
       console.log(`sendMultipleUpdates`,count);
       let result = await this.sendPolicyTableUpdate();
       results.push(result);
-      let timeout = Math.floor(Math.random() * 500);
-      await this.sleep(timeout);
+      // let timeout = Math.floor(Math.random() * 500);
+      // await this.sleep(timeout);
       count--;
     }
 
@@ -134,7 +136,7 @@ class ReportingTestHelper
 
     let results = await Promise.all(promiseArray);
 
-    console.log(`doConcurrentCalls`,results);
+    // console.log(`doConcurrentCalls`,results);
 
     return results;
   }

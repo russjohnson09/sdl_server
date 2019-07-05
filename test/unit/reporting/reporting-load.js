@@ -95,8 +95,8 @@ describe('update from policy table', () => {
 
     let count = 100;
     let concurrency = 100;
-    count = 1;
-    concurrency = 100;
+    // count = 1;
+    // concurrency = 100;
 
     let result = await rth.sendConcurrentUpdates(count,concurrency);
 
@@ -126,7 +126,52 @@ describe('update from policy table', () => {
 
   it(`load testing 3`, async function() {
 
+    // this.timeout(100 * 1000);
+    this.timeout(0);
+
+    console.log(`start load testing 3`);
+    await rth.sleep(1000 * 1)
+
+
+
     this.timeout(100 * 1000);
+
+
+    let count = Math.pow(10,4);
+    let concurrency = 1;
+    // count = 10;
+    // concurrency = 100;
+
+    let result = await rth.sendConcurrentUpdates(count,concurrency);
+
+    for (let concurrentGroup of result)
+    {
+
+      for (let result of concurrentGroup)
+      {
+        expect(result.success).to.be.true;
+      }
+    }
+
+    // let result = await reportingService.updateReporting({
+    //   device_data: {
+    //     "old": { //device id from core
+    //       "carrier": "",
+    //       "connection_type": "BTMAC",
+    //       "hardware": "Pixel",
+    //       "os": "Android",
+    //       "os_version": "8.1.0"
+    //     },
+    //   }
+    // },
+    //   moment().subtract(60,'days').toDate());
+  })
+
+
+  it(`load testing 3`, async function() {
+
+    // this.timeout(100 * 1000);
+    this.timeout(0);
 
     console.log(`start load testing 3`);
     await rth.sleep(1000 * 1)
@@ -168,17 +213,12 @@ describe('update from policy table', () => {
 
 
 
-  //TODO device load testing
-
-
-
-
 
 
 
 
   it('exit connections', async() => {
-    // db.end();
+    await db.end();
     // process.exit(0);
   })
 
