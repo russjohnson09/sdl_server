@@ -219,11 +219,11 @@ async function getTestDeivceTotalReport()
 async function getAggregateReport()
 {
 
-    let policy_table_update_history = generateTestPolicyTableUpdateHistory();
+    // let policy_table_update_history = generateTestPolicyTableUpdateHistory();
 
-    let policy_table_updates_by_trigger = getPolicyTableUpdatesByTrigger(policy_table_update_history);
+    // let policy_table_updates_by_trigger = getPolicyTableUpdatesByTrigger(policy_table_update_history);
 
-    let total_policy_table_updates_by_trigger = getTotalPolicyUpdatesByTrigger(policy_table_update_history);
+    // let total_policy_table_updates_by_trigger = getTotalPolicyUpdatesByTrigger(policy_table_update_history);
 
     let obj = {
         //Number of daily PTUs during the retention period, stacked by the triggering event (miles, days, ignition cycles)
@@ -231,66 +231,66 @@ async function getAggregateReport()
         // policy_table_update_history,
         // policy_table_updates_by_trigger,
         // total_policy_table_updates_by_trigger,
-        total_device_model: { //totals by model
-            "iPhone 8": 10,
-            "Nexus 7": 5,
-            "unknown": 1,
-            "Nexus 1": 5,
-            "Nexus 2": 5,
-            "Nexus 3": 5,
-            "Nexus 4": 5,
-            "Nexus 5": 5,
-            "Nexus 6": 5,
-            "Liquid Zest": 5,
-            "Liquid Jade Z": 5,
-            "Liquid Jade X": 5,
-            "Small 1": 1,
-            "Small 2": 1,
-            "Small 3": 1,
-            "Small 4": 1,
-            "Small 5": 1,
-            "Small 6": 1,
-            "Small 7": 1,
-            "Small 8": 1,
-            "Small 9": 1,
-            "Small 10": 1,
-        },
-        total_device_os: {
-            "Android": 5,
-            "iOS": 10
-        },
-        total_device_carrier: {
-            "Verizon": 5,
-            "Sprint": 10,
-            'T-Mobile': 2,
-            "Appalachian Wireless": 5,
-            // "Small 1": 1,
-            // "Small 2": 1,
-            // "Small 3": 1,
-            // "Small 4": 1,
-            // "Small 5": 1,
-            // "Small 6": 1,
-            // "Small 7": 1,
-            // "Small 8": 1,
-            // "Small 9": 1,
-            // "Small 10": 1,
-
-            // "Ting": 2,
-            // "1": 1,
-            // "2": 1,
-            // "3": 1,
-            // "4": 1,
-            // "5": 1,
-            // "6": 1,
-
-        },
+        // total_device_model: { //totals by model
+        //     "iPhone 8": 10,
+        //     "Nexus 7": 5,
+        //     "unknown": 1,
+        //     "Nexus 1": 5,
+        //     "Nexus 2": 5,
+        //     "Nexus 3": 5,
+        //     "Nexus 4": 5,
+        //     "Nexus 5": 5,
+        //     "Nexus 6": 5,
+        //     "Liquid Zest": 5,
+        //     "Liquid Jade Z": 5,
+        //     "Liquid Jade X": 5,
+        //     "Small 1": 1,
+        //     "Small 2": 1,
+        //     "Small 3": 1,
+        //     "Small 4": 1,
+        //     "Small 5": 1,
+        //     "Small 6": 1,
+        //     "Small 7": 1,
+        //     "Small 8": 1,
+        //     "Small 9": 1,
+        //     "Small 10": 1,
+        // },
+        // total_device_os: {
+        //     "Android": 5,
+        //     "iOS": 10
+        // },
+        // total_device_carrier: {
+        //     "Verizon": 5,
+        //     "Sprint": 10,
+        //     'T-Mobile': 2,
+        //     "Appalachian Wireless": 5,
+        //     // "Small 1": 1,
+        //     // "Small 2": 1,
+        //     // "Small 3": 1,
+        //     // "Small 4": 1,
+        //     // "Small 5": 1,
+        //     // "Small 6": 1,
+        //     // "Small 7": 1,
+        //     // "Small 8": 1,
+        //     // "Small 9": 1,
+        //     // "Small 10": 1,
+        //
+        //     // "Ting": 2,
+        //     // "1": 1,
+        //     // "2": 1,
+        //     // "3": 1,
+        //     // "4": 1,
+        //     // "5": 1,
+        //     // "6": 1,
+        //
+        // },
         // app_opens: { //app level
 
         // },
-        rejected_rpcs: { //Aggregate count of rejected RPCs, over the retention period
-            unknown: 10,
-            getTires: 10
-        },
+        // rejected_rpcs: { //Aggregate count of rejected RPCs, over the retention period
+        //     unknown: 10,
+        //     getTires: 10
+        // },
 
     };
 

@@ -159,6 +159,7 @@
                     'mileage': 'Mileage',
                     'days': 'Days',
                     'ignition_cycle': 'Ignition',
+                    'UNKNOWN': 'Unknown'
                     // 'ignition_cycle': 'Ignition Cycle'
                 };
 

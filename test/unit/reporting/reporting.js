@@ -136,6 +136,36 @@ describe('update from policy table', () => {
 
 
 
+  it('populate last 30 days', async () => {
+    // console.log(`reporting`);
+    // db.sqlCommand();
+
+
+    for (let i = 0; i < 30; i++)
+    {
+
+
+      let result = await reportingService.updateReporting({
+          device_data: {
+            "old": { //device id from core
+              "carrier": "",
+              "connection_type": "BTMAC",
+              "hardware": "Pixel",
+              "os": "Android",
+              // "os_version": "8.1.0",
+              "os_version": "8.1.1",
+            },
+          }
+        },
+        moment().subtract(i,'days').toDate());
+      expect(result.success).to.be.true;
+
+    }
+
+  })
+
+
+
   //TODO device load testing
 
 
