@@ -116,15 +116,6 @@ class ReportingTestHelper
   {
 
     return this.doConcurrentCalls(count,concurrency,this.sendMultipleUpdates);
-    // let promiseArray = [];
-    // for (let i =0; i < concurrency; i++)
-    // {
-    //   promiseArray.push(this.sendMultipleUpdates(count));
-    // }
-    //
-    // let results = await Promise.all(promiseArray);
-    //
-    // return results;
 
   }
 

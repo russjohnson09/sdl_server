@@ -86,7 +86,8 @@ describe('update from policy table', () => {
           "connection_type": "BTMAC",
           "hardware": "Pixel",
           "os": "Android",
-          "os_version": "8.1.0"
+          // "os_version": "8.1.0",
+          "os_version": "8.1.1",
         },
       }
     },
@@ -104,14 +105,14 @@ describe('update from policy table', () => {
               "connection_type": "BTMAC",
               "hardware": "Pixel",
               "os": "Android",
-              "os_version": "8.1.0"
+              "os_version": "8.1.2"
           },
             "test2": { //device id from core
               "carrier": "",
               "connection_type": "BTMAC",
               "hardware": "Pixel",
               "os": "Android",
-              "os_version": "8.1.0"
+              "os_version": "8.1.5"
             },
             "test1": { //device id from core
               "carrier": "",

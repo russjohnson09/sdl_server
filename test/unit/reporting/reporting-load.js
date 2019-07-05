@@ -86,13 +86,17 @@ describe('update from policy table', () => {
     this.timeout(100 * 1000);
 
     console.log(`start load testing 2`);
-    await rth.sleep(1000 * 5)
+    await rth.sleep(1000 * 1)
 
     let count = 100;
     let concurrency = 100;
 
     this.timeout(100 * 1000);
 
+
+
+    count = 10;
+    concurrency = 100;
 
     let result = await rth.sendConcurrentUpdates(count,concurrency);
 
