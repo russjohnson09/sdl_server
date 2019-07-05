@@ -4,6 +4,12 @@ const helper = require('./helper.js');
 const encryption = require('../../../customizable/encryption');
 const GET = require('lodash.get');
 
+/**
+ * Called whenever core requests the policy table.
+ * Extra reporting can be recorded when isProduction = true
+ * @param isProduction
+ * @returns {Function}
+ */
 function postFromCore (isProduction) {
 	return function (req, res, next) {
 		// attempt decryption of the policy table if it's defined
@@ -19,6 +25,9 @@ function postFromCore (isProduction) {
 		let appPolicies = policyTable.app_policies || {};
 		const useLongUuids = GET(req, "body.policy_table.module_config.full_app_id_supported", false) ? true : false;
         helper.generatePolicyTable(isProduction, useLongUuids, appPolicies, true, handlePolicyTableFlow.bind(null, res, true));
+
+        //do not wait or log errors here. The function call should take care of any errors.
+        app.locals.reportingService.updateReporting(policyTable,undefined,useLongUuids);
 	}
 }
 

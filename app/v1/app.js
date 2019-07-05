@@ -48,10 +48,6 @@ const UUID = require("uuid");
 
 async function  exposeRoutes () {
 
-	await app.locals.reportingService.init();
-
-	console.log(`initialized reportingService`,app.locals.reportingService);
-
 	let mongoDB = await MongoDBHelper.getDB();
 
 	let requestCollection = mongoDB.collection(`request`);

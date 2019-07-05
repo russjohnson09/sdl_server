@@ -395,7 +395,9 @@ async function getAggregateReportByAppId(appId)
     };
 
 
-    return obj;
+
+
+    return app.locals.reportingService.getAppUsageReport(appId);
 
 
 }

@@ -42,6 +42,10 @@ const self = module.exports = {
                 "applications": applications
             },
             function (err, res) {
+                if (err)
+                {
+                    console.error(err,res,applications);
+                }
                 next(err, null);
             }
         );
