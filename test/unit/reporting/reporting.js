@@ -75,7 +75,7 @@ describe('update from policy table', () => {
 
 
   it('init services', async () => {
-    reportingService = await ReportingService.create({db})
+    reportingService = new ReportingService({db})
   });
 
   it('old device', async () => {
@@ -155,9 +155,24 @@ describe('update from policy table', () => {
               // "os_version": "8.1.0",
               "os_version": "8.1.1",
             },
+          },
+          "usage_and_error_counts": {
+            "app_level": {
+              "a5fb2c9b61": {
+                "count_of_user_selections": 1,
+                "count_of_rejected_rpc_calls": 2,
+                "minutes_in_hmi_background": 2,
+                "minutes_in_hmi_full": 1,
+                "minutes_in_hmi_limited": 1,
+                "minutes_in_hmi_none": 1
+              },
+            }
           }
+
+
         },
-        moment().subtract(i,'days').toDate());
+        moment().subtract(i,'days').toDate(),
+        false);
       expect(result.success).to.be.true;
 
     }
