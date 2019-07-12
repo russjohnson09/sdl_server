@@ -10,7 +10,7 @@ create table if not exists policy_table_update_request
 
 create table if not exists device
 (
-    id char default 64
+    id char(64)
     constraint device_pk
     primary key,
     carrier varchar,
