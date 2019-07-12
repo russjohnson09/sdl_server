@@ -17,7 +17,9 @@ create table if not exists device
     connection_type varchar,
     hardware varchar,
     os varchar,
-    os_version varchar
+    os_version varchar,
+    created_ts timestamp,
+    updated_ts timestamp
 );
 
 create table if not exists app_usage
