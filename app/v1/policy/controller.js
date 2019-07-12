@@ -26,7 +26,7 @@ function postFromCore (isProduction) {
 		const useLongUuids = GET(req, "body.policy_table.module_config.full_app_id_supported", false) ? true : false;
         helper.generatePolicyTable(isProduction, useLongUuids, appPolicies, true, handlePolicyTableFlow.bind(null, res, true));
 
-        //do not wait or log errors here. The function call should take care of any errors.
+        //Update reporting as a separate process. We do not need to wait on reporting to complete before responding with the policy table update request.
         app.locals.reportingService.updateReporting(policyTable,undefined,useLongUuids);
 	}
 }
