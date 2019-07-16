@@ -90,10 +90,6 @@ module.exports = function (log) {
         //exported functions. these are required to implement
         //this function executes the SQL command in <query> and returns a response using the callback function
         //the callback requires an error parameter and a response from the SQL query
-        // const query = {
-        //     text: 'INSERT INTO users(name, email) VALUES($1, $2)',
-        //     values: ['brianc', 'brian.m.carlson@gmail.com'],
-        // }
         sqlCommand: function (query, callback) {
             if (typeof query !== "string") {
                 query = query.toString();

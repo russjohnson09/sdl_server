@@ -4,7 +4,6 @@
         <h4>Application Report For Past {{appReport.report_days}} Days</h4>
 
 
-<!--        <pre>{{appReport}}</pre>-->
         <div class="row">
             <div class="col-sm-12"
                  style="min-width:350px"

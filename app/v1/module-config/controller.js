@@ -9,9 +9,7 @@ const cache = require('../../../custom/cache');
 async function getReport(req,res)
 {
     try {
-        console.log(`module`,`getReport`);
         let reportData = await helper.getAggregateReport();
-        console.log(`module`,`getReport`,reportData);
         return res.parcel.setStatus(200)
             .setData(reportData)
             .deliver();
