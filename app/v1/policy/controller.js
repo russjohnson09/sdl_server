@@ -27,6 +27,7 @@ function postFromCore (isProduction) {
         //Update reporting as a separate process. We do not need to wait on reporting to complete before responding with the policy table update request.
         (async function () {
             try {
+                let policyTable = req.body.policy_table || {};
                 await app.locals.reportingService.updateReporting(policyTable, undefined, useLongUuids)
             } catch (e) {
                 app.locals.log.error(e.message)
