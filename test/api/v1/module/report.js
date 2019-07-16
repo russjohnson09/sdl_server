@@ -46,6 +46,16 @@ describe(`/api/v1/module/report tests`, function () {
                       policy_table: {
                           module_config: {
                               full_app_id_supported: true,
+                              exchange_after_x_days: 1,
+                              exchange_after_x_ignition_cycles: 1,
+                              exchange_after_x_kilometers: 1,
+
+                          },
+                          module_meta: {
+                              //ignition based exchange.
+                              ignition_cycles_since_last_exchange: 1,
+                              // pt_exchanged_x_days_after_epoch: 0,
+                              // pt_exchanged_at_odometer_x: 30
                           },
                           device_data,
                           app_policies: {},
@@ -108,11 +118,12 @@ describe(`/api/v1/module/report tests`, function () {
 
                 console.log(JSON.stringify(data,null,' '));
 
-                expect(data.application).not.to.be.undefined;
                 expect(data.report_days).not.to.be.undefined;
-                expect(data.usage_time_history).not.to.be.undefined;
-                expect(data.user_selection_history).not.to.be.undefined;
-                expect(data.rejected_rpcs_history).not.to.be.undefined;
+                expect(data.total_device_carrier).not.to.be.undefined;
+                expect(data.total_device_model).not.to.be.undefined;
+                expect(data.total_device_os).not.to.be.undefined;
+                expect(data.policy_table_updates_by_trigger).not.to.be.undefined;
+                expect(data.total_policy_table_updates_by_trigger).not.to.be.undefined;
 
                 done();
             })

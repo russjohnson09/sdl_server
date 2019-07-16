@@ -70,6 +70,12 @@ describe(`/api/v1/applications/report tests`, function () {
                           module_config: {
                               full_app_id_supported: true,
                           },
+                          module_meta: {
+                              //day based exchange.
+                              exchange_after_x_ignition_cycles: 0,
+                              pt_exchanged_x_days_after_epoch: 0,
+                              // pt_exchanged_at_odometer_x: 30
+                          },
                           app_policies: {},
                           consumer_friendly_messages: {},
                           device_data: {},
