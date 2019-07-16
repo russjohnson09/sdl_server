@@ -14,10 +14,6 @@ describe('SDL SERVER TESTS', function () {
         setTimeout(done, 15000);
     });
 
-    describe('unit', function() {
-        importTest('reporting', './unit/reporting/reporting');
-    })
-
     describe('api', function() {
         describe('v1', function() {
             importTest('/applications', './api/v1/applications/applications');
@@ -43,4 +39,8 @@ describe('SDL SERVER TESTS', function () {
 
     importTest('cache', './cache/cache');
     importTest('basic-auth', './basicAuth/basicAuth');
+
+    describe('unit', function() {
+        importTest('reporting', './unit/reporting/reporting');
+    })
 });
