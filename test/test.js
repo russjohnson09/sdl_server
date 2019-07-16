@@ -34,6 +34,8 @@ describe('SDL SERVER TESTS', function () {
             importTest('/messages/names', './api/v1/messages/names');
             importTest('/module', './api/v1/module/module');
             importTest('/module/promote', './api/v1/module/promote');
+            importTest('/applications/report', './api/v1/applications/report');
+
         });
     });
 
