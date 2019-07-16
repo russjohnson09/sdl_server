@@ -67,8 +67,6 @@ function exposeRoutes () {
 
 	app.get('/applications/report', auth.validateAuth, applications.getReport);
 	app.get('/module/report', auth.validateAuth, moduleConfig.getReport);
-
-
 	app.post('/applications/action', auth.validateAuth, applications.actionPost);
 	app.post('/applications/auto', auth.validateAuth, applications.autoPost);
 	app.post('/applications/administrator', auth.validateAuth, applications.administratorPost);
@@ -97,8 +95,6 @@ function exposeRoutes () {
 	app.post('/module', auth.validateAuth, moduleConfig.post);
 	app.post('/module/promote', auth.validateAuth, moduleConfig.promote);
 	app.get('/about', auth.validateAuth, about.getInfo);
-
-
 }
 
 function updatePermissionsAndGenerateTemplates (next) {
