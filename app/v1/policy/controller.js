@@ -11,29 +11,36 @@ const GET = require('lodash.get');
  * @returns {Function}
  */
 function postFromCore (isProduction) {
-	return function (req, res, next) {
-		// attempt decryption of the policy table if it's defined
-		if(req.body.policy_table){
-			req.body.policy_table = encryption.decryptPolicyTable(req.body.policy_table);
-		}
+    return function (req, res, next) {
+        // attempt decryption of the policy table if it's defined
+        if (req.body.policy_table) {
+            req.body.policy_table = encryption.decryptPolicyTable(req.body.policy_table)
+        }
 
-        helper.validateCorePost(req, res);
-		if (res.errorMsg) {
-			return res.status(400).send({ error: res.errorMsg });
-		}
-		let policyTable =  req.body.policy_table || {};
-		let appPolicies = policyTable.app_policies || {};
-		const useLongUuids = GET(req, "body.policy_table.module_config.full_app_id_supported", false) ? true : false;
+        helper.validateCorePost(req, res)
+        if (res.errorMsg) {
+            return res.status(400).send({ error: res.errorMsg })
+        }
+        let policyTable = req.body.policy_table || {}
+        let appPolicies = policyTable.app_policies || {}
+        const useLongUuids = GET(req, 'body.policy_table.module_config.full_app_id_supported', false) ? true : false
         helper.generatePolicyTable(isProduction, useLongUuids, appPolicies, true, handlePolicyTableFlow.bind(null, res, true));
 
         //Update reporting as a separate process. We do not need to wait on reporting to complete before responding with the policy table update request.
-        app.locals.reportingService.updateReporting(policyTable,undefined,useLongUuids);
-	}
+        (async function () {
+            try {
+                await app.locals.reportingService.updateReporting(policyTable, undefined, useLongUuids)
+            } catch (e) {
+                app.locals.log.error(e.message)
+            }
+        })()
+
+    }
 }
 
 function getPreview (req, res, next) {
-    const isProduction = !req.query.environment || req.query.environment.toLowerCase() !== 'staging';
-    helper.generatePolicyTable(isProduction, false, {}, true, handlePolicyTableFlow.bind(null, res, false));
+    const isProduction = !req.query.environment || req.query.environment.toLowerCase() !== 'staging'
+    helper.generatePolicyTable(isProduction, false, {}, true, handlePolicyTableFlow.bind(null, res, false))
 }
 
 function postAppPolicy (req, res, next) {
