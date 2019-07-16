@@ -115,9 +115,7 @@
 
             if (this.appReport)
             {
-                let {app,report_days,aggregate_counts,usage_time_history,user_selection_history,rejected_rpcs_history} = this.appReport;
-                let {usage_time,count_of_user_selections,count_of_rejected_rpcs_calls,
-                } = aggregate_counts;
+                let {app,report_days,usage_time_history,user_selection_history,rejected_rpcs_history} = this.appReport;
 
 
 
