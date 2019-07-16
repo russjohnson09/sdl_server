@@ -14,7 +14,7 @@ const logger = new winston.Logger({
         new winston.transports.Console({ //write prettified logs to console
             colorize: true,
             timestamp: true,
-            level: logLevel
+            level: process.env.LOG_LEVEL || logLevel
         }),
         /*
         new winston.transports.File({ //write logs to a file as well
