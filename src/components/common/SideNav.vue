@@ -19,6 +19,12 @@
             <router-link tag="li" class="nav-item" to="/about" active-class="active">
                 <a class="nav-link">About</a>
             </router-link>
+            <!--                    v-if="ENABLE_REPORTING"-->
+<!--            123 sdf 123-->
+            <router-link
+                    tag="li" class="nav-item" to="/reporting" active-class="active">
+                <a class="nav-link">Reporting</a>
+            </router-link>
         </ul>
     </nav>
 </template>
@@ -27,6 +33,7 @@
 export default {
     data: function(){
         return {
+            ENABLE_REPORTING: ENABLE_REPORTING,
             "badge_counts": {
                 "applications": 0,
                 "functional_groups": 0,

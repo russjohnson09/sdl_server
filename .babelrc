@@ -22,8 +22,9 @@
               "env",
               "stage-2",
               ["es2015",  {
-                  "modules": false
+                "modules": false
               }]
+
           ],
           "plugins": []
       }
