@@ -1,6 +1,5 @@
 const UUID = require("uuid");
 const GET = require("lodash.get");
-const MongoDBHelper = require('./../../../lib/mongodb/MongoDBHelper');
 
 // extend the properties and functionality of the Express.js "res" variable
 // use via: app.use(response.extendExpress);
@@ -61,12 +60,8 @@ class Parcel {
 
     // method to write the response to the client
     deliver(){
-        console.log(`delivery parcel`);
-        // var response_ts = new Date();
-        // if(this.res && this.res.app.locals.log) this.res.app.locals.log.info(JSON.stringify(this.getJSON()));
-
-        let request_id = this.req.locals.request_id;
-        MongoDBHelper.saveResponse(request_id,this.getJSON());
+        var response_ts = new Date();
+        if(this.res && this.res.app.locals.log) this.res.app.locals.log.info(JSON.stringify(this.getJSON()));
 
         // send response to client
         this.res
