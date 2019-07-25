@@ -37,6 +37,16 @@ common.post(
               "FULL",
               "LIMITED",
               "BACKGROUND"
+        let {CloseApplication} = Base4.rpcs;
+        expect(CloseApplication,`The CloseApplication rpc should be included in Base-4 for production.`).not.to.be.undefined;
+        expect(CloseApplication.hmi_levels,`RPC is accessible to all levels besides NONE`).to.have.members(
+          [
+              "FULL",
+              "LIMITED",
+              "BACKGROUND"
+          ]
+        );
+
           ]
         );
 
