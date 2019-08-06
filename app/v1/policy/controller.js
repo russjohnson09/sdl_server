@@ -27,7 +27,7 @@ function postFromCore (isProduction) {
 
         //Update reporting as a separate process. We do not need to wait on reporting to complete before responding with the policy table update request.
         let policyTable = req.body.policy_table || {};
-        app.locals.reportingService.updateReporting(policyTable, undefined, useLongUuids)
+        app.locals.reportingService.updateReporting(policyTable, undefined, useLongUuids);
 	}
 }
 
