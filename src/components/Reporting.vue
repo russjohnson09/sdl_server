@@ -104,7 +104,7 @@
                 </div>
 
 
-                <div v-if="!ENABLE_REPORTING">
+                <div v-if="!REPORTING_ENABLED">
                     <img src="~@/assets/images/black_graphs/reportingdisabled.png" alt="Reporting is disabled."/>
 
                 </div>
