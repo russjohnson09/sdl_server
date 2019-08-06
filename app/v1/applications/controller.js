@@ -4,9 +4,8 @@ const sql = require('./sql.js');
 const flow = app.locals.flow;
 const async = require('async');
 
-
-function getReport(req,res,next) {
-	 helper.getAggregateReportByAppId(req.query.id,function(reportData) {
+function getReport (req, res, next) {
+	helper.getAggregateReportByAppId(req.query.id, function (reportData) {
 		return res.parcel.setStatus(200)
 		.setData(reportData)
 		.deliver();

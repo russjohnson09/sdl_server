@@ -97,25 +97,24 @@ function getModuleConfigFlow (property, value) {
     ], {method: 'waterfall', eventLoop: true});
 }
 
-
 async function getAggregateReport (cb) {
     let obj = {
         report_days: reportingService.expirationDays,
-    }
+    };
 
-    reportingService.getDeviceReport(function(deviceReport) {
-        reportingService.getPolicyTableUpdatesReport(function(policyTableUpdatesReport) {
+    reportingService.getDeviceReport(function (deviceReport) {
+        reportingService.getPolicyTableUpdatesReport(function (policyTableUpdatesReport) {
             Object.assign(obj,
               deviceReport,
               policyTableUpdatesReport
-            )
+            );
             cb(obj);
-        })
-    })
+        });
+    });
 }
 
 module.exports = {
     getAggregateReport: getAggregateReport,
     validatePost: validatePost,
     getModuleConfigFlow: getModuleConfigFlow
-}
+};
