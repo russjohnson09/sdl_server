@@ -37,12 +37,8 @@ describe(`/api/v1/applications/report tests`, function () {
             };
 
             request(options, function (err, res, body) {
-                console.log(err, res.statusCode, body);
-
                 expect(res.statusCode).to.be.equal(200);
-
                 let { data, meta } = JSON.parse(body);
-
                 expect(data.applications).not.to.be.undefined;
                 expect(data.applications.length).to.be.equal(1);
 
@@ -103,13 +99,6 @@ describe(`/api/v1/applications/report tests`, function () {
 
         });
 
-        //report is generated asynchronously in the background after a response is give.
-        //there is a chance we can request the application report before it has been generated
-        //giving us an out of date response.
-        // it(`wait for report`, function (done) {
-        //     setTimeout(done, 1000);
-        // });
-
         it(`/api/v1/applications/report GET`, function (done) {
 
             let options = {
@@ -120,13 +109,10 @@ describe(`/api/v1/applications/report tests`, function () {
             };
 
             request(options, function (err, res, body) {
-                console.log(err, res.statusCode, body);
 
                 expect(res.statusCode).to.be.equal(200);
 
                 let { data, meta } = JSON.parse(body);
-
-                console.log(JSON.stringify(data, null, ' '));
 
                 expect(data.application).not.to.be.undefined;
                 expect(data.report_days).not.to.be.undefined;
