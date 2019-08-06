@@ -14,14 +14,12 @@ const db = require(`../../../custom/databases/${config.dbModule}/index.js`)(log)
 // const arrayify = require('../../lib/arrayify');
 // const parcel = require('./helpers/parcel');
 // const Cron = require('cron').CronJob;
-const ReportingService = require('../../../lib/reporting/ReportingService');
 const ReportingTestHelper = require('./utils/ReportingTestHelper');
 const expect = require('chai').expect;
 
 let rth;
 
 
-/**@type {ReportingService} **/
 let reportingService;
 
 
@@ -34,7 +32,7 @@ describe('update from policy table', () => {
   // });
 
   it('init services', async () => {
-    reportingService = await ReportingService.create({db});
+    reportingService =  require('../../../lib/reporting-service/index')({db})
     rth = new ReportingTestHelper({reportingService});
   });
 

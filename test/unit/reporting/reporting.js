@@ -8,10 +8,8 @@ const log = require(`../../../custom/loggers/${config.loggerModule}/index.js`);
 
 console.log(`config`,config);
 const db = require(`../../../custom/databases/${config.dbModule}/index.js`)(log); //pass in the logger module that's loaded
-const ReportingService = require('../../../lib/reporting/ReportingService');
 const expect = require('chai').expect;
 
-/**@type {ReportingService} **/
 let reportingService;
 
 
@@ -20,7 +18,7 @@ describe('update from policy table', () => {
 
 
   it('init services', async () => {
-    reportingService = new ReportingService({db})
+    reportingService =  require('../../../lib/reporting-service/index')({db})
   });
 
   it('old device', async () => {
