@@ -25,10 +25,7 @@ app.locals.arrayify = arrayify;
 app.locals.emailer = emailer;
 app.locals.flame = flame;
 app.locals.version = path.basename(__dirname);
-
 app.locals.reportingService = reportingService;
-
-
 
 // construct base URL, e.g. "http://localhost:3000"
 app.locals.baseUrl = "http";

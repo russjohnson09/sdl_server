@@ -5,10 +5,8 @@ const model = require('./model.js');
 const flow = app.locals.flow;
 const cache = require('../../../custom/cache');
 
-
-async function getReport(req,res)
-{
-    helper.getAggregateReport(function(reportData) {
+async function getReport (req, res) {
+    helper.getAggregateReport(function (reportData) {
         return res.parcel.setStatus(200)
           .setData(reportData)
           .deliver();
