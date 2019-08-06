@@ -7,8 +7,6 @@ const BASE_URL = 'http://' + config.policyServerHost + ':' + config.policyServer
 chai.use(chaiHttp);
 chai.use(chaiJsonSchema);
 
-console.log(`common`,BASE_URL);
-
 exports.get = (testName, endpoint, queryParams, endFunction) => {
     it(testName, (done) => {
         chai.request(BASE_URL)

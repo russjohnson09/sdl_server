@@ -5,8 +5,6 @@ const app = require('../app');
 const flow = app.locals.flow;
 const setupSql = app.locals.db.setupSqlCommand;
 const sql = require('./sql.js');
-const moment = require('moment');
-/** @type {ReportingService} **/
 const reportingService = app.locals.reportingService;
 
 //validation functions
@@ -101,29 +99,19 @@ function getModuleConfigFlow (property, value) {
 
 
 async function getAggregateReport (cb) {
-
-    let count = 0;
     let obj = {
         report_days: reportingService.expirationDays,
     }
 
     reportingService.getDeviceReport(function(deviceReport) {
         reportingService.getPolicyTableUpdatesReport(function(policyTableUpdatesReport) {
-            count++;
-            // console.log(`getPolicyTableUpdatesReport response`,count);
-
             Object.assign(obj,
               deviceReport,
               policyTableUpdatesReport
             )
-
-            // console.log(`getAggregateReport`,`callback`);
             cb(obj);
         })
     })
-
-
-
 }
 
 module.exports = {
