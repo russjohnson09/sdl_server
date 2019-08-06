@@ -8,22 +8,26 @@ const cache = require('../../../custom/cache');
 
 async function getReport(req,res)
 {
-    try {
-        helper.getAggregateReport(function(reportData) {
-            return res.parcel.setStatus(200)
-              .setData(reportData)
-              .deliver();
-        });
-
-    }
-    catch (err)
-    {
-        app.locals.log.error(err);
-        return res.parcel
-            .setStatus(500)
-            .setMessage("Internal server error")
-            .deliver();
-    }
+    console.log(`getReport start`);
+    // try {
+    //cb is called twice.
+    helper.getAggregateReport(function(reportData) {
+        console.log(`getAggregateReport`);
+        // res.json(reportData);
+        return res.parcel.setStatus(200)
+          .setData(reportData)
+          .deliver();
+    });
+    //
+    // }
+    // catch (err)
+    // {
+    //     app.locals.log.error(err);
+    //     return res.parcel
+    //         .setStatus(500)
+    //         .setMessage("Internal server error")
+    //         .deliver();
+    // }
 
 }
 
