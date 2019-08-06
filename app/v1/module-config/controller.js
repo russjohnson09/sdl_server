@@ -9,10 +9,12 @@ const cache = require('../../../custom/cache');
 async function getReport(req,res)
 {
     try {
-        let reportData = await helper.getAggregateReport();
-        return res.parcel.setStatus(200)
-            .setData(reportData)
-            .deliver();
+        helper.getAggregateReport(function(reportData) {
+            return res.parcel.setStatus(200)
+              .setData(reportData)
+              .deliver();
+        });
+
     }
     catch (err)
     {

@@ -100,21 +100,25 @@ function getModuleConfigFlow (property, value) {
 }
 
 
-async function getAggregateReport () {
+async function getAggregateReport (cb) {
 
     let obj = {
         report_days: reportingService.expirationDays,
     }
 
     let deviceReport = await reportingService.getDeviceReport()
-    let policyTableUpdatesReport = await reportingService.getPolicyTableUpdatesReport()
+    reportingService.getPolicyTableUpdatesReport(function(policyTableUpdatesReport) {
+        console.log(`getPolicyTableUpdatesReport`)
 
-    Object.assign(obj,
-      deviceReport,
-      policyTableUpdatesReport
-    )
+        Object.assign(obj,
+          deviceReport,
+          policyTableUpdatesReport
+        )
 
-    return obj
+        cb(obj);
+    })
+
+
 }
 
 module.exports = {
