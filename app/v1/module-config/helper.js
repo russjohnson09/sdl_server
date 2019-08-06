@@ -107,19 +107,21 @@ async function getAggregateReport (cb) {
         report_days: reportingService.expirationDays,
     }
 
-    let deviceReport = await reportingService.getDeviceReport()
-    reportingService.getPolicyTableUpdatesReport(function(policyTableUpdatesReport) {
-        count++;
-        // console.log(`getPolicyTableUpdatesReport response`,count);
+    reportingService.getDeviceReport(function(deviceReport) {
+        reportingService.getPolicyTableUpdatesReport(function(policyTableUpdatesReport) {
+            count++;
+            // console.log(`getPolicyTableUpdatesReport response`,count);
 
-        Object.assign(obj,
-          deviceReport,
-          policyTableUpdatesReport
-        )
+            Object.assign(obj,
+              deviceReport,
+              policyTableUpdatesReport
+            )
 
-        // console.log(`getAggregateReport`,`callback`);
-        cb(obj);
+            // console.log(`getAggregateReport`,`callback`);
+            cb(obj);
+        })
     })
+
 
 
 }
