@@ -265,10 +265,10 @@ function attemptRetry(milliseconds, retryQueue){
     }, milliseconds);
 }
 
-async function getAggregateReportByAppId(appId)
+function getAggregateReportByAppId(appId,cb)
 {
 
-  return app.locals.reportingService.getAppUsageReport(appId);
+  return app.locals.reportingService.getAppUsageReport(appId,cb);
 }
 
 module.exports = {
