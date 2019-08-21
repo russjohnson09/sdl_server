@@ -102,11 +102,13 @@ function getAggregateReport (cb) {
         report_days: reportingService.expirationDays,
     };
 
-    reportingService.getDeviceReport(function (deviceReport) {
-        reportingService.getPolicyTableUpdatesReport(function (policyTableUpdatesReport) {
-            Object.assign(obj,
-              deviceReport,
-              policyTableUpdatesReport
+    //TODO use async for multiple async calls that are independent. use flame at own risk. use async.
+    reportingService.getDeviceReport(function(deviceReport) {
+        reportingService.getPolicyTableUpdatesReport(function(policyTableUpdatesReport) {
+            Object.assign(
+                obj,
+                deviceReport,
+                policyTableUpdatesReport
             );
             cb(obj);
         });

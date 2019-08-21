@@ -8,12 +8,12 @@ common.post(
     {
         policy_table: {
             app_policies: {
-                "pancakes": 1,
-                "ac0a3e87-a45a-4c29-af4c-a3a4955a5ad1": 1,
-                "dfda5c35-700e-487e-87d2-ea4b2c572802": 2
+                'pancakes': 1,
+                'ac0a3e87-a45a-4c29-af4c-a3a4955a5ad1': 1,
+                'dfda5c35-700e-487e-87d2-ea4b2c572802': 2
             }
         },
-        environment: "staging"
+        environment: 'staging'
     },
     (err, res, done) => {
         expect(err).to.be.null;
@@ -29,12 +29,12 @@ common.post(
     {
         policy_table: {
             app_policies: {
-                "pancakes": 1,
-                "ac0a3e87-a45a-4c29-af4c-a3a4955a5ad1": 1,
-                "dfda5c35-700e-487e-87d2-ea4b2c572802": 2
+                'pancakes': 1,
+                'ac0a3e87-a45a-4c29-af4c-a3a4955a5ad1': 1,
+                'dfda5c35-700e-487e-87d2-ea4b2c572802': 2
             }
         },
-        environment: "production"
+        environment: 'production'
     },
     (err, res, done) => {
         expect(err).to.be.null;
@@ -48,9 +48,7 @@ common.post(
     'should return 400 with no app policies specified',
     endpoint,
     {
-        policy_table: {
-
-        }
+        policy_table: {}
     },
     (err, res, done) => {
         expect(err).to.be.null;
@@ -65,7 +63,7 @@ common.post(
     {
         policy_table: {
             app_policies: {
-                "INVALID_APP": 1
+                'INVALID_APP': 1
             }
         }
     },
