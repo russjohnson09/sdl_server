@@ -81,13 +81,16 @@
         paper_bgcolor: '#F4F5F7',
         font: {
             family: 'LivioNorm, Helvetica, sans-serif',
-            size: 18,
+            size: 12.5,
         },
     };
 
     let defaultOptions = {
         stackedTimeSeries:
             {
+                //TODO fix rounding to the nearest day with single data point.
+                //TODO margin px on the x-ticks
+
                 scales: {
                     xAxes: [{
                         stacked: true,
@@ -375,6 +378,7 @@
                         autosize: true,
                         margin: {},
                         xaxis: {
+                            //TODO margin on x and y axis for time series.
                             automargin: true,
                         },
                         yaxis: {
