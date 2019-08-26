@@ -5,6 +5,7 @@ DROP VIEW view_module_config_staging;
 DROP VIEW view_module_config_production;
 
 ALTER TABLE module_config DROP COLUMN custom_vehicle_data_mapping_url;
+ALTER TABLE module_config  DROP COLUMN custom_vehicle_data_mapping_url_version;
 
 
 CREATE OR REPLACE VIEW view_module_config AS

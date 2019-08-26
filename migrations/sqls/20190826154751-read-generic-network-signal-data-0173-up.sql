@@ -2,6 +2,7 @@
 
 
 ALTER TABLE module_config ADD custom_vehicle_data_mapping_url text NOT NULL DEFAULT 'http://localhost:3000/api/1/vehicleDataMap';
+ALTER TABLE module_config ADD custom_vehicle_data_mapping_url_version text NOT NULL DEFAULT '0.0.0';
 
 
 

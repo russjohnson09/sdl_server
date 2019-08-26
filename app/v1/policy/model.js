@@ -48,6 +48,11 @@ function transformModuleConfig (isProduction, useLongUuids = false, info, next) 
                 default: [base.custom_vehicle_data_mapping_url]
             }
         },
+        "endpoint_properties": {
+            "custom_vehicle_data_mapping_url": {
+                "version": base.custom_vehicle_data_mapping_url_version
+            }
+        },
         "notifications_per_minute_by_priority": {
             "EMERGENCY": base.emergency_notifications,
             "NAVIGATION": base.navigation_notifications,

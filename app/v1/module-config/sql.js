@@ -38,6 +38,7 @@ function insertModuleConfig (moduleConfig) {
         query_apps_url: moduleConfig.endpoints.queryAppsUrl,
         lock_screen_default_url: moduleConfig.endpoints.lock_screen_icon_url,
         custom_vehicle_data_mapping_url: moduleConfig.endpoints.custom_vehicle_data_mapping_url,
+        custom_vehicle_data_mapping_url_version: moduleConfig.endpoint_properties.custom_vehicle_data_mapping_url.version,
         emergency_notifications: moduleConfig.notifications_per_minute_by_priority.EMERGENCY,
         navigation_notifications: moduleConfig.notifications_per_minute_by_priority.NAVIGATION,
         voicecom_notifications: moduleConfig.notifications_per_minute_by_priority.VOICECOM,
