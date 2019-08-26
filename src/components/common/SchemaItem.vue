@@ -1,9 +1,6 @@
 <template>
     <!--            TODO class based margin-->
     <div class="white-box rpc-container" style="margin-left:10px;">
-        <div>fieldsDisabled: {{ fieldsDisabled }}</div>
-        <div> {{ item }}</div>
-        <h5>Name: {{ item.name }}</h5>
         <h5>{{ item.language_id }}
             <i
                 v-on:click="removeItem()"
@@ -14,37 +11,23 @@
         </h5>
 
         <div class="form-group row">
-            <label class="col-sm-2 col-form-label">TTS</label>
+            <label class="col-sm-2 col-form-label">Name</label>
             <div class="col-sm-10">
-                <input v-model="item.tts" :disabled="fieldsDisabled" class="form-control">
+                <input v-model="item.name" :disabled="fieldsDisabled" class="form-control">
             </div>
         </div>
 
         <div class="form-group row">
-            <label class="col-sm-2 col-form-label">Line 1</label>
+            <label class="col-sm-2 col-form-label">Type</label>
             <div class="col-sm-10">
-                <input v-model="item.line1" :disabled="fieldsDisabled" class="form-control">
+                <input v-model="item.type" :disabled="fieldsDisabled" class="form-control">
             </div>
         </div>
 
         <div class="form-group row">
-            <label class="col-sm-2 col-form-label">Line 2</label>
+            <label class="col-sm-2 col-form-label">Key</label>
             <div class="col-sm-10">
-                <input v-model="item.line2" :disabled="fieldsDisabled" class="form-control">
-            </div>
-        </div>
-
-        <div class="form-group row">
-            <label class="col-sm-2 col-form-label">Text Body</label>
-            <div class="col-sm-10">
-                <input v-model="item.text_body" :disabled="fieldsDisabled" class="form-control">
-            </div>
-        </div>
-
-        <div class="form-group row">
-            <label class="col-sm-2 col-form-label">Label</label>
-            <div class="col-sm-10">
-                <input v-model="item.label" :disabled="fieldsDisabled" class="form-control">
+                <input v-model="item.key" :disabled="fieldsDisabled" class="form-control">
             </div>
         </div>
 
@@ -54,12 +37,12 @@
             >
                 <!--                            :item="item"-->
 
+                <div> {{ param }} </div>
                 <schema-item
-                        v-if="param.selected"
-
                         v-bind:item="param"
                         :fieldsDisabled="fieldsDisabled"
                         :index="paramIndex"
+                        :items="item.params"
                 ></schema-item>
 
                 <!--                            <h3>Name: {{ item.name }}</h3>-->
@@ -86,17 +69,13 @@
             "addParam": function () {
 
                 this.item.params.push({
-                    selected: true,
-                    params: [],
+
+                    // selected: true,
+                    // params: [],
                                  })
             },
             "removeItem": function() {
-                console.log(`removeItem`,this.item);
-                this.item.selected = false;
-                this.item.tts = `deleted`;
-                // console.log(`removeItem`,this.items,this.index,this.item);
-                // delete this.items[this.index];
-                // this.item.selected = false;
+                this.$delete(this.items, this.index);
             }
         }
     }

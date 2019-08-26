@@ -33,7 +33,10 @@ function insertVehicleDataItem(vehicleDataItem,vehicle_data_group_id,parent_id)
     return sql.insert('vehicle_data', {
         name: vehicleDataItem.name || "test",
         vehicle_data_group_id: vehicle_data_group_id,
-        parent_id: parent_id
+        parent_id: parent_id,
+        key: vehicleDataItem.key,
+        type: vehicleDataItem.type
+
         // status: vehicleData.status,
         // exchange_after_x_ignition_cycles: moduleConfig.exchange_after_x_ignition_cycles,
         // exchange_after_x_kilometers: moduleConfig.exchange_after_x_kilometers,

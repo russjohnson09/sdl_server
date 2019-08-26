@@ -123,6 +123,78 @@ function insertVehicleDataItem(client, item, vehicleDataGroupId, parentId, cb) {
 
 }
 
+function getVehicleData(isProduction,cb)
+{
+    let query;
+    if (isProduction) {
+        query = `SELECT vd.*,vdg.schema_version,vdg.status
+FROM vehicle_data vd
+LEFT JOIN vehicle_data_group vdg on vdg.id = vd.vehicle_data_group_id
+WHERE vdg.id = (select max(id) FROM vehicle_data_group WHERE status = 'PRODUCTION');`;
+    } else {
+        query = `SELECT vd.*,vdg.schema_version,vdg.status
+FROM vehicle_data vd
+LEFT JOIN vehicle_data_group vdg on vdg.id = vd.vehicle_data_group_id
+WHERE vdg.id = (select max(id) FROM vehicle_data_group)
+;`;
+    }
+
+    console.log(`getMany`,isProduction,cb);
+    return db.getMany(query, function(err,results) {
+        if (err)
+        {
+            return cb(err);
+        }
+
+        let schema_version;
+        let status;
+        // let schema_items = [];
+        let schemaItemsById = {};
+
+        for (let item of results)
+        {
+            if (!schema_version)
+            {
+                schema_version = item.schema_version;
+            }
+            if (!status)
+            {
+                status = item.status;
+            }
+            delete item.status;
+            delete item.schema_version;
+            item.params = [];
+            schemaItemsById[item.id] = item;
+        }
+
+        let schema_items = [];
+
+        for (let id in schemaItemsById)
+        {
+            let item = schemaItemsById[id];
+
+            if (item.parent_id)
+            {
+                schemaItemsById[item.parent_id].params.push(item);
+            }
+            else {
+                schema_items.push(item);
+            }
+        }
+
+        console.log(schema_items);
+
+        return cb(null,{
+            schema_items,
+            status,
+            schema_version
+        });
+
+    });
+
+
+}
+
 //store the information using a SQL transaction
 function insertVehicleData(isProduction, vehicleData, next) {
     //change status
@@ -165,6 +237,7 @@ function insertVehicleData(isProduction, vehicleData, next) {
 }
 
 module.exports = {
+    getVehicleData: getVehicleData,
     transformModuleConfig: transformModuleConfig,
     insertVehicleData: insertVehicleData
 };

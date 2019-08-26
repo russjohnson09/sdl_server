@@ -30,7 +30,8 @@
 
 
                 <!-- module config data -->
-                <div class="functional-content" v-if="module_config">
+                <div class="functional-content" v-if="vehicle_data">
+                    <div> {{  vehicle_data.schema_items }}</div>
 
                     <div class="form-row">
                         <div>
@@ -38,10 +39,11 @@
                                 <div>
                                     <!--                            :item="item"-->
 
+                                    <div> item: {{ item }}</div>
                                     <schema-item
-                                            v-if="!!item.selected"
+                                            v-if="!item.deleted"
 
-                                            v-bind:item="item"
+                                            :item="item"
                                             :fieldsDisabled="fieldsDisabled"
                                             :index="index"
                                             :items="vehicle_data.schema_items"
@@ -132,7 +134,7 @@
         },
         computed: {
             canPromote: function() {
-                return this.module_config && this.module_config.status === 'STAGING';
+                return this.vehicle_data && this.vehicle_data.status === 'STAGING';
             },
             fieldsDisabled: function() {
                 return this.environment != 'STAGING';
@@ -151,7 +153,7 @@
             },
             'environmentClick': function() {
                 this.$nextTick(function() {
-                    this.httpRequest('get', 'module', {
+                    this.httpRequest('get', 'vehicledata', {
                         'params': {
                             'environment': this.environment
                         }
@@ -161,10 +163,11 @@
                             console.log(err);
                         } else {
                             res.json().then(parsed => {
-                                if (parsed.data.module_configs && parsed.data.module_configs.length) {
-                                    this.module_config = parsed.data.module_configs[0]; //only one entry
+                                console.log(`vehicle data`,parsed,parsed.data)
+                                if (parsed.data.vehicle_data) {
+                                    this.vehicle_data = parsed.data.vehicle_data;
                                 } else {
-                                    console.log('No module config data returned');
+                                    // console.log('No module config data returned');
                                 }
                             });
                         }
