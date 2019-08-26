@@ -129,6 +129,11 @@
 
                             </div>
 
+                            <div class="form-row">
+                                <h4>Custom Vehicle Data Mapping URL</h4>
+                                <input v-model="module_config.endpoints['custom_vehicle_data_mapping_url']" :disabled="fieldsDisabled" class="form-control">
+                            </div>
+
                             <!-- notifications -->
                             <div class="form-row">
                                 <h4>Notification Rate Limits by Priority Level</h4>

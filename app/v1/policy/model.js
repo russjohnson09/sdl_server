@@ -43,6 +43,9 @@ function transformModuleConfig (isProduction, useLongUuids = false, info, next) 
             },
             "lock_screen_icon_url": {
                 default: [base.lock_screen_default_url]
+            },
+            "custom_vehicle_data_mapping_url": {
+                default: [base.custom_vehicle_data_mapping_url]
             }
         },
         "notifications_per_minute_by_priority": {
@@ -266,7 +269,7 @@ function constructAppPolicy (appObj, useLongUuids = false, res, next) {
         app_services: appServiceObj,
         allow_unknown_rpc_passthrough: res.appPassthrough.length ? true : false
     };
-    
+
     if (appObj.icon_url) appPolicyObj[uuidProp].icon_url = appObj.icon_url;
     if (appObj.cloud_endpoint) appPolicyObj[uuidProp].endpoint = appObj.cloud_endpoint;
     if (appObj.cloud_transport_type) appPolicyObj[uuidProp].cloud_transport_type = appObj.cloud_transport_type;
