@@ -49,6 +49,8 @@ const services = require('./services/controller.js');
 const moduleConfig = require('./module-config/controller.js');
 const about = require('./about/controller.js');
 const auth = require('./middleware/auth.js');
+const vehicleData = require('./vehicle-data/controller.js');
+
 
 function exposeRoutes () {
 	// use helmet middleware for security
@@ -89,6 +91,9 @@ function exposeRoutes () {
 	app.post('/module', auth.validateAuth, moduleConfig.post);
 	app.post('/module/promote', auth.validateAuth, moduleConfig.promote);
 	app.get('/about', auth.validateAuth, about.getInfo);
+
+	app.post('/vehicledata', auth.validateAuth, vehicleData.post);
+
 }
 
 function updatePermissionsAndGenerateTemplates (next) {
