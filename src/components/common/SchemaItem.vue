@@ -1,14 +1,15 @@
 <template>
     <!--            TODO class based margin-->
-    <div class="white-box rpc-container" style="margin-left:10px;">
-        <h5>{{ item.language_id }}
-            <i
-                v-on:click="removeItem()"
-                v-if="!fieldsDisabled"
-                class="pointer pull-right fa fa-times hover-color-red"
-                aria-hidden="true">
-            </i>
-        </h5>
+<!--    white-box -->
+    <div class="rpc-container white-box" style="border-bottom:none;">
+        <div class="form-group row">
+            <h5>
+                <i aria-hidden="true" class="pointer pull-right fa fa-times hover-color-red"
+                   v-on:click="removeItem()"
+                ></i>
+            </h5>
+        </div>
+
 
         <div class="form-group row">
             <label class="col-sm-2 col-form-label">Name</label>
@@ -31,28 +32,42 @@
             </div>
         </div>
 
-        <div v-for="(param, paramIndex) in item.params">
-            <!--            TODO class based margin-->
-            <div
-            >
-                <!--                            :item="item"-->
 
-                <div> {{ param }} </div>
-                <schema-item
-                        v-bind:item="param"
-                        :fieldsDisabled="fieldsDisabled"
-                        :index="paramIndex"
-                        :items="item.params"
-                ></schema-item>
-
-                <!--                            <h3>Name: {{ item.name }}</h3>-->
-            </div>
-        </div>
-        <button
-                v-on:click="addParam()"
+        <div v-for="(param, paramIndex) in item.params"
+            style="border-left:1px solid black; margin:10px; padding:10px;"
         >
-            Add Param
-        </button>
+
+            <schema-item
+                    v-bind:item="param"
+                    :fieldsDisabled="fieldsDisabled"
+                    :index="paramIndex"
+                    :items="item.params"
+            ></schema-item>
+        </div>
+
+
+        <div id="add" class="another-rpc pointer"
+             v-if="item.name"
+             v-on:click="addParam()"
+        >
+            Add Param To {{ item.name }}
+            <i class="fa fa-plus middle-middle"></i></div>
+
+<!--        <button v-if="item.name"-->
+<!--                v-on:click="addParam()"-->
+<!--        >-->
+<!--            Add Param To {{ item.name }}-->
+<!--        </button>-->
+
+<!--        <vue-ladda-->
+<!--                type="submit"-->
+<!--                class="btn btn-card btn-style-green"-->
+<!--                data-style="zoom-in"-->
+<!--                v-if="item.name"-->
+<!--                v-on:click="saveVehicleData()"-->
+<!--        >-->
+<!--            Add Param To {{ item.name }}-->
+<!--        </vue-ladda>-->
 
 
     </div>

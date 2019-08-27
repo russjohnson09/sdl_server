@@ -195,6 +195,49 @@ WHERE vdg.id = (select max(id) FROM vehicle_data_group)
 
 }
 
+function getVehicleDataParamTypes(cb)
+{
+    let query = `SELECT id FROM vehicle_data_enums vde;`;
+
+    return db.getMany(query, function(err,results) {
+        if (err)
+        {
+            return cb(err);
+        }
+
+        let primitiveTypes = ['Boolean', 'String', 'Integer', 'Float'];
+        let enumTypes = results.map(function(el) {
+            return el.id;
+        });
+
+        let types = primitiveTypes.concat(enumTypes);
+
+        return cb(null,types);
+
+    });
+
+}
+
+
+function getVehicleDataReservedParams(cb) {
+    let query = `SELECT id FROM vehicle_data_reserved_params;`;
+
+    return db.getMany(query, function(err,results) {
+        if (err)
+        {
+            return cb(err);
+        }
+
+        let params = results.map(function(el) {
+            return el.id;
+        });
+
+
+        return cb(null,params);
+
+    });
+}
+
 //store the information using a SQL transaction
 function insertVehicleData(isProduction, vehicleData, next) {
     //change status
@@ -240,5 +283,7 @@ function insertVehicleData(isProduction, vehicleData, next) {
 module.exports = {
     getVehicleData: getVehicleData,
     transformModuleConfig: transformModuleConfig,
-    insertVehicleData: insertVehicleData
+    insertVehicleData: insertVehicleData,
+    getVehicleDataParamTypes: getVehicleDataParamTypes,
+    getVehicleDataReservedParams: getVehicleDataReservedParams,
 };

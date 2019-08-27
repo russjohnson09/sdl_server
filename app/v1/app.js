@@ -93,6 +93,9 @@ function exposeRoutes() {
 
     app.post('/vehicledata', auth.validateAuth, vehicleData.post);
     app.get('/vehicledata', auth.validateAuth, vehicleData.get);
+    app.get('/vehicledata/reserved-params', auth.validateAuth, vehicleData.getVehicleDataReservedParams);
+    // app.get('/vehicledata/enums', auth.validateAuth, vehicleData.getVehicleDataEnums);
+    app.get('/vehicledata/param-types', auth.validateAuth, vehicleData.getVehicleDataParamTypes);
 
 }
 

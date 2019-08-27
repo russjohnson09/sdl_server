@@ -21,17 +21,41 @@
                     </b-btn>
                 </div>
 
-                <h4>Module Config<a class="fa fa-question-circle color-primary doc-link" v-b-tooltip.hover
-                                    title="Click here for more info about this page"
-                                    href="https://smartdevicelink.com/en/guides/sdl-server/user-interface/module-config/"
-                                    target="_blank"></a></h4>
+
+
+
+                <h5>Reserved Vehicle Data Params</h5>
+                <p>
+                    The following keys are the default vehicle data params defined by the Mobile API and cannot
+                    be used for custom vehicle data.
+                </p>
+
+                <ul>
+                    <li v-for="(param, index) in reserved_params">{{ param }}</li>
+                </ul>
+
+
+<!--                <h5>Custom Vehicle Data Params</h5>-->
+<!--                <p>-->
+<!--                    Define custom vehicle params supported by the manufacturer's HMI.-->
+<!--                </p>-->
+
+
+                <div class="form-row">
+                    <h4>Custom Vehicle Data Mapping</h4>
+                    <p>
+                        Define custom vehicle params supported by the manufacturer's HMI.
+                    </p>
+                </div>
 
 
 
 
                 <!-- module config data -->
                 <div class="functional-content" v-if="vehicle_data">
-                    <div> {{  vehicle_data.schema_items }}</div>
+<!--                    <div> reserved: {{ reserved_params }}</div>-->
+
+<!--                    <div> {{  vehicle_data.schema_items }}</div>-->
 
                     <div class="form-row">
                         <div>
@@ -39,7 +63,7 @@
                                 <div>
                                     <!--                            :item="item"-->
 
-                                    <div> item: {{ item }}</div>
+<!--                                    <div> item: {{ item }}</div>-->
                                     <schema-item
                                             v-if="!item.deleted"
 
@@ -129,7 +153,8 @@
                 'module_config': null,
                 'vehicle_data': {
                     'schema_items': []
-                }
+                },
+                'reserved_params': []
             };
         },
         computed: {
@@ -151,6 +176,8 @@
             'toTop': function() {
                 this.$scrollTo('body', 500);
             },
+            'getData': function() {
+            },
             'environmentClick': function() {
                 this.$nextTick(function() {
                     this.httpRequest('get', 'vehicledata', {
@@ -163,9 +190,45 @@
                             console.log(err);
                         } else {
                             res.json().then(parsed => {
-                                console.log(`vehicle data`,parsed,parsed.data)
+                                console.log(`vehicle data`,parsed,parsed.data);
                                 if (parsed.data.vehicle_data) {
                                     this.vehicle_data = parsed.data.vehicle_data;
+                                } else {
+                                    // console.log('No module config data returned');
+                                }
+                            });
+                        }
+                    });
+
+                    this.httpRequest('get', 'vehicledata/reserved-params',{}, (err, res) => {
+                        if (err) {
+                            console.log('Error fetching reserved_params');
+                            console.log(err);
+                        } else {
+                            res.json().then(parsed => {
+                                console.log(`vehicle data reserved_params`,parsed,parsed.data);
+                                if (parsed.data.reserved_params) {
+                                    this.reserved_params = parsed.data.reserved_params;
+                                } else {
+                                    // console.log('No module config data returned');
+                                }
+                            });
+                        }
+                    });
+
+                    this.httpRequest('get', 'vehicledata/param-types', {
+                        'params': {
+                            'environment': this.environment
+                        }
+                    }, (err, res) => {
+                        if (err) {
+                            console.log('Error fetching param-types');
+                            console.log(err);
+                        } else {
+                            res.json().then(parsed => {
+                                console.log(`vehicle data`,parsed,parsed.data);
+                                if (parsed.data.vehicle_data_types) {
+                                    this.vehicle_data_types = parsed.data.vehicle_data_types;
                                 } else {
                                     // console.log('No module config data returned');
                                 }

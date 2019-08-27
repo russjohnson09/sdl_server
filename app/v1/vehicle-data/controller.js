@@ -6,6 +6,64 @@ const flow = app.locals.flow;
 const cache = require('../../../custom/cache');
 const async = require('async');
 
+function getVehicleDataReservedParams(req, res, next) {
+    async.waterfall(
+        [
+            function(cb) {
+                model.getVehicleDataReservedParams(cb);
+            },
+        ], function(err, reserved_params) {
+
+            console.log(`got data`, reserved_params);
+
+            if (err) {
+                app.locals.log.error(err);
+                return res.parcel
+                    .setStatus(500)
+                    .setMessage('Internal server error')
+                    .deliver();
+            }
+            return res.parcel
+                .setStatus(200)
+                .setData({
+                             reserved_params: reserved_params
+                         })
+                .deliver();
+        });
+}
+
+
+function getVehicleDataEnums(req, res, next) {
+
+}
+
+function getVehicleDataParamTypes(req, res, next) {
+    async.waterfall(
+        [
+            function(cb) {
+                model.getVehicleDataParamTypes(cb);
+            },
+        ], function(err, vehicle_data_types) {
+
+            console.log(`got data`, vehicle_data_types);
+
+            if (err) {
+                app.locals.log.error(err);
+                return res.parcel
+                    .setStatus(500)
+                    .setMessage('Internal server error')
+                    .deliver();
+            }
+            return res.parcel
+                .setStatus(200)
+                .setData({
+                             vehicle_data_types: vehicle_data_types
+                         })
+                .deliver();
+        });
+}
+
+
 function get(req, res, next) {
     //if environment is not of value "staging", then set the environment to production
     const isProduction = !req.query.environment || req.query.environment.toLowerCase() !== 'staging';
@@ -95,5 +153,6 @@ module.exports = {
     promote: post.bind(null, true),
     updateVehicleDataReservedParams: helper.updateVehicleDataReservedParams,
     updateVehicleDataEnums: helper.updateVehicleDataEnums,
-
+    getVehicleDataReservedParams: getVehicleDataReservedParams,
+    getVehicleDataParamTypes: getVehicleDataParamTypes
 };
