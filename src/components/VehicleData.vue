@@ -43,9 +43,12 @@
 
                 <div class="form-row">
                     <h4>Custom Vehicle Data Mapping</h4>
-                    <p>
+                </div>
+
+                <div class="form-row">
+                    <div>
                         Define custom vehicle params supported by the manufacturer's HMI.
-                    </p>
+                    </div>
                 </div>
 
 
@@ -82,12 +85,17 @@
                                 <!--                                                        v-if="!fieldsDisabled"
                                 -->
 
-
-                                <button
-                                        v-on:click="addSchemaItem()"
+                                <div id="add" class="another-rpc pointer"
+                                     v-on:click="addSchemaItem()"
                                 >
                                     Add Schema Item
-                                </button>
+                                    <i class="fa fa-plus middle-middle"></i></div>
+
+<!--                                <button-->
+<!--                                        v-on:click="addSchemaItem()"-->
+<!--                                >-->
+<!--                                    Add Schema Item-->
+<!--                                </button>-->
 
                             </div>
 
@@ -109,10 +117,10 @@
                 </div>
 
                 <!-- PROMOTE GROUP MODAL -->
-                <b-modal ref="promoteModal" title="Promote Module Config to Production" hide-footer id="promoteModal"
+                <b-modal ref="promoteModal" title="Promote Custom Vehicle Data to Production" hide-footer id="promoteModal"
                          tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
                     <small class="form-text text-muted">
-                        This will promote the module config to production, immediately updating the production policy
+                        This will promote the custom vehicle data mappings to production, immediately updating the production policy
                         table. Are you sure you want to do this?
                     </small>
                     <vue-ladda

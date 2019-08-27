@@ -41,11 +41,23 @@ create table vehicle_data
     id serial not null
         constraint vehicle_data_pk
             primary key,
-    parent_id integer,
-    vehicle_data_group_id integer,
-    name text,
-    key text,
-    type text
+    parent_id INTEGER,
+    vehicle_data_group_id INTEGER,
+    name TEXT,
+    key TEXT,
+    type TEXT,
+    "array" BOOLEAN,
+    since VARCHAR(255),
+    until VARCHAR(255),
+    enumeration BOOLEAN,
+    removed VARCHAR(255),
+    deprecated VARCHAR(255),
+    minvalue VARCHAR(255),
+    maxvalue VARCHAR(255),
+    minsize INTEGER,
+    maxsize INTEGER,
+    minlength INTEGER,
+    maxlength INTEGER
 );
 
 
