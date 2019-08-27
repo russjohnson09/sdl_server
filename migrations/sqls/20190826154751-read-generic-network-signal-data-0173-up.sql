@@ -33,3 +33,38 @@ FROM (
      ) mc
          INNER JOIN module_config
                     ON module_config.id = mc.id;
+
+
+--TODO update this.
+create table vehicle_data
+(
+    id serial not null
+        constraint vehicle_data_pk
+            primary key,
+    parent_id integer,
+    vehicle_data_group_id integer,
+    name text,
+    key text,
+    type text
+);
+
+
+create table vehicle_data_enums
+(
+    id varchar(255) not null
+        constraint vehicle_data_enums_pk
+            primary key
+);
+
+
+create table if not exists vehicle_data_group
+(
+    id serial not null
+        constraint vehicle_data_group_pk
+            primary key,
+    schema_version text default '0.0.0'::text not null,
+    created_ts timestamp default now(),
+    updated_ts timestamp default now(),
+    is_deleted boolean default false,
+    status text
+);

@@ -209,6 +209,7 @@ function insertVehicleData(isProduction, vehicleData, next) {
 
     // process message groups synchronously (due to the SQL transaction)
     db.runAsTransaction(function(client, callback) {
+
         let transactions = [];
         // let newVehicleDataGroup;
 

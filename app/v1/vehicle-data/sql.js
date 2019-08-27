@@ -92,7 +92,57 @@ function insertRetrySeconds (secondsArray, id) {
     }));
 }
 
+function insertVehicleDataReservedParams(vehicleDataReservedParams) {
+    return vehicleDataReservedParams.map(function(param) {
+        return sql.insert('vehicle_data_reserved_params', 'id')
+            .select
+            (
+                `'${param}' AS id`
+            )
+            .where(
+                sql.not(
+                    sql.exists(
+                        sql.select('*')
+                            .from('vehicle_data_reserved_params p')
+                            .where({
+                                       'p.id': param
+                                   })
+                    )
+                )
+            )
+            .toString();
+    });
+}
+
+
+function insertVehicleDataEnums(enums) {
+    return enums.map(function(param) {
+        return sql.insert('vehicle_data_enums', 'id')
+            .select
+            (
+                `'${param}' AS id`
+            )
+            .where(
+                sql.not(
+                    sql.exists(
+                        sql.select('*')
+                            .from('vehicle_data_enums e')
+                            .where({
+                                       'e.id': param
+                                   })
+                    )
+                )
+            )
+            .toString();
+    });
+}
+
+
 module.exports = {
+    insert: {
+        vehicleDataReservedParams: insertVehicleDataReservedParams,
+        vehicleDataEnums: insertVehicleDataEnums,
+    },
     insertVehicleDataItem: insertVehicleDataItem,
     insertVehicleData: insertVehicleData,
     insertRetrySeconds: insertRetrySeconds,

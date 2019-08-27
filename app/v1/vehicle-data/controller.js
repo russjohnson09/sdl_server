@@ -77,7 +77,7 @@ function post(isProduction, req, res, next) {
         if (err) {
             app.locals.log.error(err);
             res.parcel
-                .setMessage('Interal server error')
+                .setMessage('Internal server error')
                 .setStatus(500);
         } else {
             cache.deleteCacheData(isProduction, app.locals.version, cache.policyTableKey);
@@ -88,8 +88,12 @@ function post(isProduction, req, res, next) {
 
 }
 
+
 module.exports = {
     get: get,
     post: post.bind(null, false),
-    promote: post.bind(null, true)
+    promote: post.bind(null, true),
+    updateVehicleDataReservedParams: helper.updateVehicleDataReservedParams,
+    updateVehicleDataEnums: helper.updateVehicleDataEnums,
+
 };

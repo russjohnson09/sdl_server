@@ -5,10 +5,12 @@ const app = require('../app');
 const flow = app.locals.flow;
 const setupSql = app.locals.db.setupSqlCommand;
 const sql = require('./sql.js');
+const parseXml = require('xml2js').parseString;
+const needle = require('needle');
 
 //validation functions
 
-function validatePost (req, res) {
+function validatePost(req, res) {
     //coerce to a number first. NOTE: empty string is coerced to 0
     // req.body.exchange_after_x_ignition_cycles -= 0;
     // req.body.exchange_after_x_kilometers -= 0;
@@ -77,26 +79,109 @@ function validatePost (req, res) {
     // }
     return;
 
-    function setError (msg) {
+    function setError(msg) {
         res.parcel.setStatus(400).setMessage(msg);
     }
 }
 
-//helper functions
 
-function getModuleConfigFlow (property, value) {
-    const getInfoFlow = app.locals.flow({
-        base: setupSql.bind(null, sql.moduleConfig[property](value)),
-        retrySeconds: setupSql.bind(null, sql.retrySeconds[property](value))
-    }, {method: 'parallel'});
 
-    return app.locals.flow([
-        getInfoFlow,
-        model.transformModuleConfig
-    ], {method: 'waterfall', eventLoop: true});
+function getRpcSpec (next) {
+    //use the url from the settings.js file
+    needle.get(app.locals.config.githubLanguageSourceUrl, function (err, res) {
+        next(err, res.body);
+    });
+}
+
+function extractParams (rpcSpec, next) {
+    const getVehicleDataResponse = rpcSpec.interface.function.find(function (elem) {
+        return elem['$'].name === "GetVehicleData" && elem['$'].messagetype === "request";
+    });
+    console.log(`extractParams`,getVehicleDataResponse);
+    const params = getVehicleDataResponse.param
+    //     .find(function (elem) {
+    //     return elem['$'].name === "Language";
+    // })
+        .map(function (param) {
+        return param['$'].name;
+    });
+    console.log(`extractParams`,params);
+    next(null, params);
+}
+
+
+function extractEnums (rpcSpec, next) {
+    // const getVehicleDataResponse = rpcSpec.interface.enum.find(function (elem) {
+    //     return elem['$'].name === "GetVehicleData" && elem['$'].messagetype === "request";
+    // });
+    // console.log(`extractParams`,getVehicleDataResponse);
+    // const params = getVehicleDataResponse.param
+    // //     .find(function (elem) {
+    // //     return elem['$'].name === "Language";
+    // // })
+    //     .map(function (param) {
+    //         return param['$'].name;
+    //     });
+    const enums = rpcSpec.interface.enum.map(function (elem) {
+        return elem['$'].name;
+    });
+    console.log(`enums`,enums);
+    next(null, enums);
+}
+
+/**
+ *
+ */
+function updateVehicleDataEnums(next) {
+    const messageStoreFlow = [
+        getRpcSpec,
+        parseXml,
+        extractEnums,
+        insertVehicleDataEnums
+    ];
+
+    function insertVehicleDataEnums(params, next) {
+        app.locals.flow(app.locals.db.setupSqlCommands(sql.insert.vehicleDataEnums(params)), { method: 'parallel' })(next);
+    }
+
+    app.locals.flow(messageStoreFlow, { method: 'waterfall', eventLoop: true })(function(err, res) {
+        if (err) {
+            app.locals.log.error(err);
+        }
+        if (next) {
+            next(); //done
+        }
+    });
+}
+
+
+/**
+ *
+ */
+function updateVehicleDataReservedParams(next) {
+    const messageStoreFlow = [
+        getRpcSpec,
+        parseXml,
+        extractParams,
+        insertVehicleDataReservedParams
+    ];
+
+    function insertVehicleDataReservedParams(params, next) {
+        app.locals.flow(app.locals.db.setupSqlCommands(sql.insert.vehicleDataReservedParams(params)), { method: 'parallel' })(next);
+    }
+
+    app.locals.flow(messageStoreFlow, { method: 'waterfall', eventLoop: true })(function(err, res) {
+        if (err) {
+            app.locals.log.error(err);
+        }
+        if (next) {
+            next(); //done
+        }
+    });
 }
 
 module.exports = {
     validatePost: validatePost,
-    getModuleConfigFlow: getModuleConfigFlow
-}
+    updateVehicleDataReservedParams: updateVehicleDataReservedParams,
+    updateVehicleDataEnums: updateVehicleDataEnums,
+};
