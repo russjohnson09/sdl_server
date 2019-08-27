@@ -36,6 +36,7 @@
         methods: {
             // format the value of input
             formatValue(val) {
+                console.log(`formatValue`,val,this.regExp);
                 const formattedValue = val.toString().replace(this.regExp, this.replacement);
 
                 return formattedValue;

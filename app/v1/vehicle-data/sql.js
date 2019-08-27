@@ -30,30 +30,28 @@ function insertVehicleDataItem(vehicleDataItem,vehicle_data_group_id,parent_id)
 {
     console.log(`insertVehicleDataItem`,vehicleDataItem);
 
-    return sql.insert('vehicle_data', {
-        name: vehicleDataItem.name || "test",
+    let data = {
+        name: vehicleDataItem.name,
         vehicle_data_group_id: vehicle_data_group_id,
         parent_id: parent_id,
         key: vehicleDataItem.key,
-        type: vehicleDataItem.type
+        type: vehicleDataItem.type,
+        array: vehicleDataItem.array,
+        since: vehicleDataItem.since,
+        until: vehicleDataItem.until,
+        removed: vehicleDataItem.removed,
+        deprecated: vehicleDataItem.deprecated,
+        minvalue: vehicleDataItem.minvalue,
+        maxvalue: vehicleDataItem.maxvalue,
+        minsize: vehicleDataItem.minsize,
+        maxsize: vehicleDataItem.maxsize,
+        minlength: vehicleDataItem.minlength,
+        maxlength: vehicleDataItem.maxlength,
+    };
 
-        // status: vehicleData.status,
-        // exchange_after_x_ignition_cycles: moduleConfig.exchange_after_x_ignition_cycles,
-        // exchange_after_x_kilometers: moduleConfig.exchange_after_x_kilometers,
-        // exchange_after_x_days: moduleConfig.exchange_after_x_days,
-        // timeout_after_x_seconds: moduleConfig.timeout_after_x_seconds,
-        // endpoint_0x04: moduleConfig.endpoints["0x04"],
-        // query_apps_url: moduleConfig.endpoints.queryAppsUrl,
-        // lock_screen_default_url: moduleConfig.endpoints.lock_screen_icon_url,
-        // custom_vehicle_data_mapping_url: moduleConfig.endpoints.custom_vehicle_data_mapping_url,
-        // custom_vehicle_data_mapping_url_version: moduleConfig.endpoint_properties.custom_vehicle_data_mapping_url.version,
-        // emergency_notifications: moduleConfig.notifications_per_minute_by_priority.EMERGENCY,
-        // navigation_notifications: moduleConfig.notifications_per_minute_by_priority.NAVIGATION,
-        // voicecom_notifications: moduleConfig.notifications_per_minute_by_priority.VOICECOM,
-        // communication_notifications: moduleConfig.notifications_per_minute_by_priority.COMMUNICATION,
-        // normal_notifications: moduleConfig.notifications_per_minute_by_priority.NORMAL,
-        // none_notifications: moduleConfig.notifications_per_minute_by_priority.NONE
-    })
+    console.log(`insertVehicleDataItem`,data);
+
+    return sql.insert('vehicle_data', data)
         .returning('*');
 }
 

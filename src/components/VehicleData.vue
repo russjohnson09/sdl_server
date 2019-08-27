@@ -174,11 +174,90 @@
             }
         },
         methods: {
+            'parseVehicleData': function(vehicle_data) {
+                // let schema_items = [];
+                function updateItem(item)
+                {
+                    console.log(`updateItem`,item);
+                    item.minvalue =  item.minvalue || '';
+                    item.maxvalue =     item.maxvalue || '';
+                    item.minsize = item.minsize || '';
+                    item.maxsize = item.maxsize || '';
+                    item.minlength = item.minlength  || '';
+                    item.maxlength = item.maxlength || '';
+                    if (item.params)
+                    {
+                        for (let param of item.params)
+                        {
+                            updateItem(param);
+                        }
+                    }
+                }
+                for (let schema_item of vehicle_data.schema_items)
+                {
+
+                    updateItem(schema_item);
+
+                    // schema_item.minvalue =  schema_item.minvalue || '';
+                    // schema_item.maxvalue =     schema_item.maxvalue || '';
+                    // schema_item.minsize = schema_item.minsize || '';
+                    // schema_item.maxsize = schema_item.maxsize || '';
+                    // schema_item.minlength = schema_item.minlength  || '';
+                    // schema_item.maxlength = schema_item.maxlength || '';
+
+
+                    // item.params;
+
+                    // let item = {
+                    //             name: schema_item.name,
+                    //             key: schema_item.key,
+                    //             array: schema_item.array,
+                    //             since: schema_item.since,
+                    //             until: schema_item.until,
+                    //             removed: schema_item.removed,
+                    //             deprecated: schema_item.deprecated,
+                    //             minvalue: schema_item.minvalue || '',
+                    //             maxvalue: schema_item.maxvalue || '',
+                    //             minsize: schema_item.minsize || '',
+                    //             maxsize: schema_item.maxsize || '',
+                    //             minlength: schema_item.minlength  || '',
+                    //             maxlength: schema_item.maxlength || '',
+                    //             params: schema_item.params,
+                    //         };
+
+
+                }
+                this.vehicle_data = vehicle_data;
+
+                // console.log(`parsedVehicleData`,vehicle_data);
+                // let data = {
+                //
+                //     schema_items: vehicle_data.schema_items,
+                // };
+
+
+            },
             'addSchemaItem': function() {
-                this.vehicle_data.schema_items.push({
-                                                        selected: true,
-                                                        params: []
-                                                    });
+                this.vehicle_data.schema_items.push(
+                    {
+                        name: '',
+                        key: '',
+                        type: '',
+                        array: false,
+                        since: '',
+                        until: '',
+                        removed: false,
+                        deprecated: false,
+                        minvalue: '',
+                        maxvalue: '',
+                        minsize: '',
+                        maxsize: '',
+                        minlength: '',
+                        maxlength: '',
+                        params: []
+
+                    }
+                );
 
             },
             'toTop': function() {
@@ -200,7 +279,7 @@
                             res.json().then(parsed => {
                                 console.log(`vehicle data`,parsed,parsed.data);
                                 if (parsed.data.vehicle_data) {
-                                    this.vehicle_data = parsed.data.vehicle_data;
+                                    this.parseVehicleData(parsed.data.vehicle_data);
                                 } else {
                                     // console.log('No module config data returned');
                                 }

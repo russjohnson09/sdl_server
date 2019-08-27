@@ -1,9 +1,7 @@
 <template>
-    <!--            TODO class based margin-->
-<!--    white-box -->
 
-
-    <div class="rpc-container white-box" style="border-bottom:none;" v-if="item && false">
+    <!--     v-if="item && false"-->
+    <div class="rpc-container white-box" style="border-bottom:none;">
         <div class="form-group row">
             <h5>
                 <i aria-hidden="true" class="pointer pull-right fa fa-times hover-color-red"
@@ -20,12 +18,6 @@
             </div>
         </div>
 
-        <div class="form-group row">
-            <label class="col-sm-2 col-form-label">Type</label>
-            <div class="col-sm-10">
-                <input v-model="item.type" :disabled="fieldsDisabled" class="form-control">
-            </div>
-        </div>
 
         <div class="form-group row">
             <label class="col-sm-2 col-form-label">Key</label>
@@ -34,20 +26,136 @@
             </div>
         </div>
 
+
+
+<!--        name: '',-->
+<!--        key: '',-->
+<!--        type-->
+<!--        array: false,-->
+
+<!--        maxlength: '',-->
+
         <div class="form-group row">
-            <div class="col-sm-2">
-                <pattern-input class="form-control text-truncate"
-                               :regExp="integerInput.regExp"
-                               :replacement="integerInput.replacement"
-                               :disabled="fieldsDisabled"
-                               v-model.number="item."></pattern-input>
+            <label class="col-sm-2 col-form-label">Type</label>
+            <div class="col-sm-10">
+                <input v-model="item.type" :disabled="fieldsDisabled" class="form-control">
             </div>
-            <label class="col-sm-10 col-form-label color-primary" style="text-transform:none">Ignition {{ Math.abs(module_config.exchange_after_x_ignition_cycles) == 1 ? "Cycle" : "Cycles" }}</label>
+        </div>
+
+        <div class="form-group row">
+            <!--        color-bg-gray -->
+            <b-form-checkbox
+                    class="color-primary"
+                    v-model="item.array"
+                    v-bind:disabled="fieldsDisabled">
+                Is Array
+            </b-form-checkbox>
+        </div>
+
+
+        <!--        since: '',-->
+        <!--        until: '',-->
+        <!--        removed: false,-->
+        <!--        deprecated: false,-->
+        <!--        minvalue: '',-->
+        <!--        maxvalue: '',-->
+        <!--        minsize: '',-->
+        <!--        maxsize: '',-->
+        <!--        minlength: '',-->
+        <div class="form-group row">
+            <label class="col-sm-2 col-form-label">Since</label>
+            <div class="col-sm-10">
+                <input v-model="item.since" :disabled="fieldsDisabled" class="form-control">
+            </div>
+        </div>
+
+
+        <div class="form-group row">
+            <label class="col-sm-2 col-form-label">Until</label>
+            <div class="col-sm-10">
+                <input v-model="item.until" :disabled="fieldsDisabled" class="form-control">
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <!--        color-bg-gray -->
+            <b-form-checkbox
+                    class="color-primary"
+                    v-model="item.removed"
+                    v-bind:disabled="fieldsDisabled">
+                Removed
+            </b-form-checkbox>
+        </div>
+
+        <div class="form-group row">
+            <!--        color-bg-gray -->
+            <b-form-checkbox
+                    class="color-primary"
+                    v-model="item.deprecated"
+                    v-bind:disabled="fieldsDisabled">
+                Deprecated
+            </b-form-checkbox>
+        </div>
+
+
+        <div class="form-group row" v-if="item.array">
+            <label class="col-sm-2 col-form-label">Minvalue</label>
+            <!--            <label class="col-sm-10 col-form-label color-primary" style="text-transform:none">Minlength</label>-->
+            <div class="col-sm-2">
+                <!--                                               :replacement="integerInputZeroOrPositive.replacement"
+                -->
+                <pattern-input class="form-control text-truncate"
+                               :regExp="integerInputIncludingNegative.regExp"
+                               :disabled="fieldsDisabled"
+                               v-model.number="item.minvalue"></pattern-input>
+            </div>
+        </div>
+
+        <div class="form-group row" v-if="item.array">
+            <label class="col-sm-2 col-form-label">Minvalue</label>
+            <!--            <label class="col-sm-10 col-form-label color-primary" style="text-transform:none">Minlength</label>-->
+            <div class="col-sm-2">
+                <!--                                               :replacement="integerInputZeroOrPositive.replacement"
+                -->
+                <pattern-input class="form-control text-truncate"
+                               :regExp="integerInputIncludingNegative.regExp"
+                               :disabled="fieldsDisabled"
+                               v-model.number="item.maxvalue"></pattern-input>
+            </div>
+        </div>
+
+
+
+        <div class="form-group row" v-if="item.array">
+            <label class="col-sm-2 col-form-label">Minlength</label>
+            <!--            <label class="col-sm-10 col-form-label color-primary" style="text-transform:none">Minlength</label>-->
+            <div class="col-sm-2">
+                <!--                                               :replacement="integerInputZeroOrPositive.replacement"
+                -->
+                <pattern-input class="form-control text-truncate"
+                               :regExp="integerInputZeroOrPositive.regExp"
+                               :disabled="fieldsDisabled"
+                               v-model.number="item.minlength"></pattern-input>
+            </div>
+        </div>
+
+
+        <div class="form-group row" v-if="item.array">
+            <label class="col-sm-2 col-form-label">Maxlength</label>
+            <!--            <label class="col-sm-10 col-form-label color-primary" style="text-transform:none">Minlength</label>-->
+            <div class="col-sm-2">
+                <!--                                               :replacement="integerInputZeroOrPositive.replacement"
+                -->
+                <pattern-input class="form-control text-truncate"
+                               :regExp="integerInputZeroOrPositive.regExp"
+                               :disabled="fieldsDisabled"
+                               v-model.number="item.maxlength"></pattern-input>
+            </div>
         </div>
 
 
         <div v-for="(param, paramIndex) in item.params"
-            style="border-left:1px solid black; margin:10px; padding:10px;"
+             style="border-left:1px solid black; margin:10px; padding:10px;"
         >
 
             <schema-item
@@ -58,7 +166,7 @@
             ></schema-item>
         </div>
 
-<!--        <div>item: {{ item }}{{ item.name }} {{ item.type }} {{ item.name && item.type === 'Struct' }} {{ item.params }}</div>-->
+        <!--        <div>item: {{ item }}{{ item.name }} {{ item.type }} {{ item.name && item.type === 'Struct' }} {{ item.params }}</div>-->
 
         <div id="add" class="another-rpc pointer"
              v-if="item.name && item.type === 'Struct'"
@@ -68,56 +176,92 @@
             <i class="fa fa-plus middle-middle"></i>
         </div>
 
-<!--        <b-modal ref="addRpcModal" title="Select RPC" hide-footer id="addRpcModal" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">-->
-<!--            <input v-model="rpc_search" placeholder="Search for an RPC" class="form-control" id="rpc-search">-->
-
-<!--            <ul class="list-group rpc-list">-->
-<!--                <li-->
-<!--                        class="list-group-item rpc-list-item pointer"-->
-<!--                        v-for="(item, index) in fg.rpcs"-->
-<!--                        v-if="isRpcAvailable(item)"-->
-<!--                        v-on:click="addRpc(item)"-->
-<!--                >-->
-<!--                    {{ item.name }}-->
-<!--                </li>-->
-<!--            </ul>-->
-<!--        </b-modal>-->
-
 
     </div>
 </template>
 
 <script>
     export default {
-        props: ['item','index','items','environment','fieldsDisabled'],
-        data () {
+        props: ['item', 'index', 'items', 'environment', 'fieldsDisabled'],
+        data() {
             return {
-                "integerInput": {
-                    "regExp": /^[\D]*|\D*/g, // Match any character that doesn't belong to the positive integer
-                    "replacement": ""
+                'integerInputIncludingNegative': {
+                    'regExp': /[^-0-9]/g,
+                    'replacement': ''
+                },
+                'integerInputZeroOrPositive': {
+                    'regExp': /^[\D]*|\D*/g, // Match any character that doesn't belong to the positive integer
+                    'replacement': ''
                 }
             };
         },
         methods: {
-            "addParam": function () {
+            'addParam': function() {
 
-                console.log(`addParam`,this.item);
+                console.log(`addParam`, this.item);
 
                 //Populating the object is required.
-                this.item.params.push({
-                    params: [],
-                    name: '',
-                    type: ''
-                    // selected: true,
-                    // params: [],
-                                 })
+                this.item.params.push(
+                    {
+                        name: '',
+                        key: '',
+                        type: '',
+                        array: false,
+                        since: '',
+                        until: '',
+                        removed: false,
+                        deprecated: false,
+                        minvalue: '',
+                        maxvalue: '',
+                        minsize: '',
+                        maxsize: '',
+                        minlength: '',
+                        maxlength: '',
+                        params: []
+                    }
+                );
             },
-            "removeItem": function() {
+            'removeItem': function() {
                 this.$delete(this.items, this.index);
             }
         },
-        mounted: function(){
-            console.log(`mounted`,this.item,this.index);
-        },
-    }
+        // beforeMount() {
+        //     this.item = {
+        //         name: this.item.name,
+        //         key: this.item.key,
+        //         array: this.item.array,
+        //         since: this.item.since,
+        //         until: this.item.until,
+        //         removed: this.item.removed,
+        //         deprecated: this.item.deprecated,
+        //         minvalue: this.item.minvalue || '',
+        //         maxvalue: this.item.maxvalue || '',
+        //         minsize: this.item.minsize || '',
+        //         maxsize: this.item.maxsize || '',
+        //         minlength: this.item.minlength  || '',
+        //         maxlength: this.item.maxlength || '',
+        //         params: this.item.params,
+        //     };
+        //     console.log(`beforeMount`, this.item, this.index);
+        // },
+        // mounted: function() {
+        //     this.item = {
+        //         name: this.item.name,
+        //         key: this.item.key,
+        //         array: this.item.array,
+        //         since: this.item.since,
+        //         until: this.item.until,
+        //         removed: this.item.removed,
+        //         deprecated: this.item.deprecated,
+        //         minvalue: this.item.minvalue || '',
+        //         maxvalue: this.item.maxvalue || '',
+        //         minsize: this.item.minsize || '',
+        //         maxsize: this.item.maxsize || '',
+        //         minlength: this.item.minlength  || '',
+        //         maxlength: this.item.maxlength || '',
+        //         params: this.item.params,
+        //     };
+        //     console.log(`mounted`, this.item, this.index);
+        // },
+    };
 </script>

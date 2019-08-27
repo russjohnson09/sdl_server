@@ -49,7 +49,7 @@ create table vehicle_data
     "array" BOOLEAN,
     since VARCHAR(255),
     until VARCHAR(255),
-    enumeration BOOLEAN,
+--     enumeration BOOLEAN,
     removed VARCHAR(255),
     deprecated VARCHAR(255),
     minvalue VARCHAR(255),
