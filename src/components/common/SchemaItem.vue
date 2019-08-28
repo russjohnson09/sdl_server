@@ -27,14 +27,6 @@
         </div>
 
 
-
-<!--        name: '',-->
-<!--        key: '',-->
-<!--        type-->
-<!--        array: false,-->
-
-<!--        maxlength: '',-->
-
         <div class="form-group row">
             <label class="col-sm-2 col-form-label">Type</label>
             <div class="col-sm-10">
@@ -43,7 +35,6 @@
         </div>
 
         <div class="form-group row">
-            <!--        color-bg-gray -->
             <b-form-checkbox
                     class="color-primary"
                     v-model="item.array"
@@ -53,15 +44,28 @@
         </div>
 
 
-        <!--        since: '',-->
-        <!--        until: '',-->
-        <!--        removed: false,-->
-        <!--        deprecated: false,-->
-        <!--        minvalue: '',-->
-        <!--        maxvalue: '',-->
-        <!--        minsize: '',-->
-        <!--        maxsize: '',-->
-        <!--        minlength: '',-->
+        <div class="form-group row" v-if="item.array">
+            <label class="col-sm-2 col-form-label">Minlength</label>
+            <div class="col-sm-2">
+                <pattern-input class="form-control text-truncate"
+                               :regExp="integerInputZeroOrPositive.regExp"
+                               :disabled="fieldsDisabled"
+                               v-model.number="item.minlength"></pattern-input>
+            </div>
+        </div>
+
+
+        <div class="form-group row" v-if="item.array">
+            <label class="col-sm-2 col-form-label">Maxlength</label>
+            <div class="col-sm-2">
+                <pattern-input class="form-control text-truncate"
+                               :regExp="integerInputZeroOrPositive.regExp"
+                               :disabled="fieldsDisabled"
+                               v-model.number="item.maxlength"></pattern-input>
+            </div>
+        </div>
+
+
         <div class="form-group row">
             <label class="col-sm-2 col-form-label">Since</label>
             <div class="col-sm-10">
@@ -98,12 +102,9 @@
         </div>
 
 
-        <div class="form-group row" v-if="item.array">
+        <div class="form-group row">
             <label class="col-sm-2 col-form-label">Minvalue</label>
-            <!--            <label class="col-sm-10 col-form-label color-primary" style="text-transform:none">Minlength</label>-->
             <div class="col-sm-2">
-                <!--                                               :replacement="integerInputZeroOrPositive.replacement"
-                -->
                 <pattern-input class="form-control text-truncate"
                                :regExp="integerInputIncludingNegative.regExp"
                                :disabled="fieldsDisabled"
@@ -111,12 +112,9 @@
             </div>
         </div>
 
-        <div class="form-group row" v-if="item.array">
-            <label class="col-sm-2 col-form-label">Minvalue</label>
-            <!--            <label class="col-sm-10 col-form-label color-primary" style="text-transform:none">Minlength</label>-->
+        <div class="form-group row">
+            <label class="col-sm-2 col-form-label">Maxvalue</label>
             <div class="col-sm-2">
-                <!--                                               :replacement="integerInputZeroOrPositive.replacement"
-                -->
                 <pattern-input class="form-control text-truncate"
                                :regExp="integerInputIncludingNegative.regExp"
                                :disabled="fieldsDisabled"
@@ -124,36 +122,7 @@
             </div>
         </div>
 
-
-
-        <div class="form-group row" v-if="item.array">
-            <label class="col-sm-2 col-form-label">Minlength</label>
-            <!--            <label class="col-sm-10 col-form-label color-primary" style="text-transform:none">Minlength</label>-->
-            <div class="col-sm-2">
-                <!--                                               :replacement="integerInputZeroOrPositive.replacement"
-                -->
-                <pattern-input class="form-control text-truncate"
-                               :regExp="integerInputZeroOrPositive.regExp"
-                               :disabled="fieldsDisabled"
-                               v-model.number="item.minlength"></pattern-input>
-            </div>
-        </div>
-
-
-        <div class="form-group row" v-if="item.array">
-            <label class="col-sm-2 col-form-label">Maxlength</label>
-            <!--            <label class="col-sm-10 col-form-label color-primary" style="text-transform:none">Minlength</label>-->
-            <div class="col-sm-2">
-                <!--                                               :replacement="integerInputZeroOrPositive.replacement"
-                -->
-                <pattern-input class="form-control text-truncate"
-                               :regExp="integerInputZeroOrPositive.regExp"
-                               :disabled="fieldsDisabled"
-                               v-model.number="item.maxlength"></pattern-input>
-            </div>
-        </div>
-
-
+<!--        TODO update styling inline check other occurrences.-->
         <div v-for="(param, paramIndex) in item.params"
              style="border-left:1px solid black; margin:10px; padding:10px;"
         >
@@ -166,7 +135,6 @@
             ></schema-item>
         </div>
 
-        <!--        <div>item: {{ item }}{{ item.name }} {{ item.type }} {{ item.name && item.type === 'Struct' }} {{ item.params }}</div>-->
 
         <div id="add" class="another-rpc pointer"
              v-if="item.name && item.type === 'Struct'"

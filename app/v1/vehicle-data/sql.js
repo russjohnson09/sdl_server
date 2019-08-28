@@ -36,17 +36,17 @@ function insertVehicleDataItem(vehicleDataItem,vehicle_data_group_id,parent_id)
         parent_id: parent_id,
         key: vehicleDataItem.key,
         type: vehicleDataItem.type,
-        array: vehicleDataItem.array,
+        array: vehicleDataItem.array === true,
         since: vehicleDataItem.since,
         until: vehicleDataItem.until,
         removed: vehicleDataItem.removed,
         deprecated: vehicleDataItem.deprecated,
         minvalue: vehicleDataItem.minvalue,
         maxvalue: vehicleDataItem.maxvalue,
-        minsize: vehicleDataItem.minsize,
-        maxsize: vehicleDataItem.maxsize,
-        minlength: vehicleDataItem.minlength,
-        maxlength: vehicleDataItem.maxlength,
+        minsize: isNaN(parseInt(vehicleDataItem.minsize)) ? null : parseInt(vehicleDataItem.minsize),
+        maxsize: isNaN(parseInt(vehicleDataItem.maxsize)) ? null : parseInt(vehicleDataItem.maxsize),
+        minlength: isNaN(parseInt(vehicleDataItem.minlength)) ? null : parseInt(vehicleDataItem.minlength),
+        maxlength: isNaN(parseInt(vehicleDataItem.maxlength)) ? null : parseInt(vehicleDataItem.maxlength),
     };
 
     console.log(`insertVehicleDataItem`,data);
@@ -61,6 +61,7 @@ function insertVehicleData (vehicleData) {
 
     return sql.insert('vehicle_data_group', {
         status: vehicleData.status,
+        schema_version: vehicleData.schema_version,
         // exchange_after_x_ignition_cycles: moduleConfig.exchange_after_x_ignition_cycles,
         // exchange_after_x_kilometers: moduleConfig.exchange_after_x_kilometers,
         // exchange_after_x_days: moduleConfig.exchange_after_x_days,

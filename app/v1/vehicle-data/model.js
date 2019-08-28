@@ -91,7 +91,11 @@ function baseTemplate(objOverride) {
 function insertVehicleDataItem(client, item, vehicleDataGroupId, parentId, cb) {
 
     client.getOne(sql.insertVehicleDataItem(item, vehicleDataGroupId, parentId), function(error, newVehicleDataItem) {
-        console.log(`newVehicleDataItem`, newVehicleDataItem);
+        if (error)
+        {
+            console.error(error);
+        }
+        console.log(`newVehicleDataItem`, error ,newVehicleDataItem);
         if (item.params) {
             let transactions = [];
             for (let param of item.params) {
@@ -110,20 +114,15 @@ function insertVehicleDataItem(client, item, vehicleDataGroupId, parentId, cb) {
         }
     });
 
-    // flame.async.waterfall([
-    //                       //stage 1: insert module config
-    //                       client.getOne.bind(client, sql.insertVehicleDataItem(item)),
-    //
-    //                       //stage 2: insert module config retry seconds
-    //                       function(newVehicleDataItem, next) {
-    //                           console.log(`newVehicleDataItem`, newVehicleDataItem);
-    //                           next();
-    //                       },
-    //                   ], callback);
-
 }
 
-function getVehicleData(isProduction,cb)
+/**
+ * Get the most recent vehicle data.
+ * @param isProduction
+ * @param cb
+ * @returns {void|*}
+ */
+function getVehicleData(isProduction, cb)
 {
     let query;
     if (isProduction) {
@@ -169,25 +168,55 @@ WHERE vdg.id = (select max(id) FROM vehicle_data_group)
 
         let schema_items = [];
 
-        for (let id in schemaItemsById)
-        {
+        for (let id in schemaItemsById) {
             let item = schemaItemsById[id];
 
-            if (item.parent_id)
-            {
-                schemaItemsById[item.parent_id].params.push(item);
-            }
-            else {
-                schema_items.push(item);
+            if (item.parent_id) {
+                schemaItemsById[item.parent_id].params.push(
+                    {
+                        name: item.name,
+                        key: item.key,
+                        type: item.type,
+                        array: item.array,
+                        since: item.since,
+                        until: item.until,
+                        removed: item.removed,
+                        deprecated: item.deprecated,
+                        minvalue: item.minvalue,
+                        maxvalue: item.maxvalue,
+                        minsize: item.minsize,
+                        maxsize: item.maxsize,
+                        minlength: item.minlength,
+                        maxlength: item.maxlength,
+                        params: item.params,
+                    });
+            } else {
+                schema_items.push({
+                                      name: item.name,
+                                      key: item.key,
+                                      type: item.type,
+                                      array: item.array,
+                                      since: item.since,
+                                      until: item.until,
+                                      removed: item.removed,
+                                      deprecated: item.deprecated,
+                                      minvalue: item.minvalue,
+                                      maxvalue: item.maxvalue,
+                                      minsize: item.minsize,
+                                      maxsize: item.maxsize,
+                                      minlength: item.minlength,
+                                      maxlength: item.maxlength,
+                                      params: item.params,
+                                  });
             }
         }
 
         console.log(schema_items);
 
         return cb(null,{
+            schema_version,
             schema_items,
             status,
-            schema_version
         });
 
     });

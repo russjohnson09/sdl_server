@@ -61,6 +61,28 @@
 <!--                    <div> {{  vehicle_data.schema_items }}</div>-->
 
                     <div class="form-row">
+                        <h4 for="name">Schema Version</h4>
+                        <input v-model="vehicle_data.schema_version" :disabled="fieldsDisabled" class="form-control">
+
+<!--                        <input v-model="module_config.endpoints['0x04']" :disabled="fieldsDisabled" class="form-control">-->
+                    </div>
+
+                    <div class="form-row">
+                        <h4 for="name">Mapping</h4>
+
+<!--                        <div class="rpc-container white-box">-->
+<!--                            <div class="form-group row">-->
+<!--                                <label class="col-sm-2 col-form-label">Schema Version</label>-->
+<!--                                <div class="col-sm-10">-->
+<!--                                    <input v-model="vehicle_data.schema_version" :disabled="fieldsDisabled" class="form-control">-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                        </div>-->
+
+                    </div>
+
+
+                    <div class="form-row">
                         <div>
                             <div v-for="(item, index) in vehicle_data.schema_items">
                                 <div>
@@ -273,7 +295,7 @@
                         }
                     }, (err, res) => {
                         if (err) {
-                            console.log('Error fetching module config data: ');
+                            console.log('Error fetching vehicle data: ');
                             console.log(err);
                         } else {
                             res.json().then(parsed => {
@@ -281,7 +303,7 @@
                                 if (parsed.data.vehicle_data) {
                                     this.parseVehicleData(parsed.data.vehicle_data);
                                 } else {
-                                    // console.log('No module config data returned');
+                                    console.log('No vehicle data returned');
                                 }
                             });
                         }
@@ -297,7 +319,7 @@
                                 if (parsed.data.reserved_params) {
                                     this.reserved_params = parsed.data.reserved_params;
                                 } else {
-                                    // console.log('No module config data returned');
+                                    console.log('No vehicle data returned');
                                 }
                             });
                         }
@@ -337,7 +359,7 @@
                 this.handleModalClick('promote_button_loading', 'promoteModal', 'promoteConfig');
             },
             'promoteConfig': function(cb) {
-                this.httpRequest('post', 'module/promote', { 'body': this.module_config }, cb);
+                this.httpRequest('post', 'vehicle-data/promote', { 'body': this.module_config }, cb);
             },
             'addRetryUpdateElement': function() {
                 var newVal = this.module_config.seconds_between_retries.length ? this.module_config.seconds_between_retries[this.module_config.seconds_between_retries.length - 1] * 5 : 1;
