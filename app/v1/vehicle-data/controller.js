@@ -2,7 +2,6 @@
 const app = require('../app');
 const helper = require('./helper.js');
 const model = require('./model.js');
-const flow = app.locals.flow;
 const cache = require('../../../custom/cache');
 const async = require('async');
 

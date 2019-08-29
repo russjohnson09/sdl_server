@@ -1,7 +1,6 @@
 //Copyright (c) 2019, Livio, Inc.
 const app = require('../app');
 const flame = app.locals.flame;
-const flow = app.locals.flow;
 const db = app.locals.db;
 const sql = require('./sql.js');
 const async = require('async');
