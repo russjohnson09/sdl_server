@@ -275,15 +275,10 @@ function insertVehicleData(isProduction, vehicleData, next) {
     } else {
         vehicleData.status = 'STAGING';
     }
-    console.log(`vehicleData`);
-
-
-
     // process message groups synchronously (due to the SQL transaction)
     db.runAsTransaction(function(client, callback) {
 
         let transactions = [];
-        // let newVehicleDataGroup;
 
         //stage 1: insert module config
         transactions.push(client.getOne.bind(client, sql.insertVehicleData(vehicleData)));
@@ -298,11 +293,6 @@ function insertVehicleData(isProduction, vehicleData, next) {
                     next(null,newVehicleDataGroup);
                 });
             })
-            // transactions.push(client.getOne.bind(client,function(newVehicleDataGroup, next) {
-            //
-            //     console.log(`newVehicleDataGroup`, newVehicleDataGroup, vehicleData);
-            //     next();
-            // }))
         }
 
         flame.async.waterfall(transactions, callback);

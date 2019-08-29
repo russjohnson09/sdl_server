@@ -65,66 +65,38 @@ function getVehicleDataParamTypes(req, res, next) {
 
 
 function get(req, res, next) {
-    //if environment is not of value "staging", then set the environment to production
     const isProduction = !req.query.environment || req.query.environment.toLowerCase() !== 'staging';
 
-    console.log(`get start`);
+    async.waterfall(
+        [
+            function(cb) {
+                model.getVehicleData(isProduction, cb);
+            },
+        ]
+        , function(err, vehicle_data) {
 
-    async.waterfall([
-                        function(cb) {
-                            model.getVehicleData(isProduction, cb);
-                        },
-                        // function(data, cb) {
-                        //     console.log(`response step 2`, data);
-                        //     cb(null, data);
-                        // }
-                    ], function(err, vehicle_data) {
+            console.log(`got data`, vehicle_data);
 
-        console.log(`got data`, vehicle_data);
-
-        if (err) {
-            app.locals.log.error(err);
+            if (err) {
+                app.locals.log.error(err);
+                return res.parcel
+                    .setStatus(500)
+                    .setMessage('Internal server error')
+                    .deliver();
+            }
             return res.parcel
-                .setStatus(500)
-                .setMessage('Internal server error')
+                .setStatus(200)
+                .setData({
+                             vehicle_data: vehicle_data
+
+                         })
                 .deliver();
-        }
-        return res.parcel
-            .setStatus(200)
-            .setData({
-                         vehicle_data: vehicle_data
-
-                     })
-            .deliver();
-    });
-
-    // let chosenFlow;
-    //
-    // if (req.query.id) { //get module config of a specific id
-    // 	chosenFlow = helper.getModuleConfigFlow('id', req.query.id);
-    // }
-    // else { //get the most recent module config object
-    // 	chosenFlow = helper.getModuleConfigFlow('status', isProduction);
-    // }
-    //
-    // chosenFlow(function (err, data) {
-    //     if (err) {
-    //         app.locals.log.error(err);
-    //         return res.parcel
-    //             .setStatus(500)
-    //             .setMessage("Internal server error")
-    //             .deliver();
-    //     }
-    //     return res.parcel
-    //         .setStatus(200)
-    //         .setData({
-    //             "module_configs": data
-    //         })
-    //         .deliver();
-    // });
+        });
 }
 
+
 function post(isProduction, req, res, next) {
+    console.log(`received post`,{isProduction});
     helper.validatePost(req, res);
     if (res.parcel.message) {
         app.locals.log.error(res.parcel.message);

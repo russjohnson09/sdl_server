@@ -22,9 +22,28 @@
                 </div>
 
 
+                <!--                preview-->
+                <div class="form-row">
+                    <h4>Custom Vehicle Data Preview</h4>
+                </div>
+                <div v-if="vehicle_data">
+                    <vue-json-pretty :data="{
+                    vehicle_data: {
+                        schema_version: vehicle_data.schema_version,
+                        schema_items: vehicle_data.schema_items,
+                    }
+                    }"  :deep="2"
+                                     :showLine="showLine"
+                                     :showLength="showLength"
+                    ></vue-json-pretty>
+                </div>
 
 
-                <h5>Reserved Vehicle Data Params</h5>
+
+<!--                <h5>Reserved Vehicle Data Params</h5>-->
+                <div class="form-row">
+                    <h4>Reserved Vehicle Data Params</h4>
+                </div>
                 <p>
                     The following keys are the default vehicle data params defined by the Mobile API and cannot
                     be used for custom vehicle data.
@@ -138,6 +157,7 @@
                     </div>
                 </div>
 
+
                 <!-- PROMOTE GROUP MODAL -->
                 <b-modal ref="promoteModal" title="Promote Custom Vehicle Data to Production" hide-footer id="promoteModal"
                          tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
@@ -154,15 +174,24 @@
                         Yes, promote to production!
                     </vue-ladda>
                 </b-modal>
+
             </main>
         </div>
     </div>
 </template>
 
 <script>
+    import VueJsonPretty from 'vue-json-pretty';
+
     export default {
+        components: {
+            VueJsonPretty
+        },
         data() {
             return {
+                'showLine': false,
+                'showLength': true,
+                'deep': 0,
                 'environment': 'STAGING',
                 'environmentOptions': [
                     {
@@ -325,25 +354,25 @@
                         }
                     });
 
-                    this.httpRequest('get', 'vehicledata/param-types', {
-                        'params': {
-                            'environment': this.environment
-                        }
-                    }, (err, res) => {
-                        if (err) {
-                            console.log('Error fetching param-types');
-                            console.log(err);
-                        } else {
-                            res.json().then(parsed => {
-                                console.log(`vehicle data`,parsed,parsed.data);
-                                if (parsed.data.vehicle_data_types) {
-                                    this.vehicle_data_types = parsed.data.vehicle_data_types;
-                                } else {
-                                    // console.log('No module config data returned');
-                                }
-                            });
-                        }
-                    });
+                    // this.httpRequest('get', 'vehicledata/param-types', {
+                    //     'params': {
+                    //         'environment': this.environment
+                    //     }
+                    // }, (err, res) => {
+                    //     if (err) {
+                    //         console.log('Error fetching param-types');
+                    //         console.log(err);
+                    //     } else {
+                    //         res.json().then(parsed => {
+                    //             console.log(`vehicle data`,parsed,parsed.data);
+                    //             if (parsed.data.vehicle_data_types) {
+                    //                 this.vehicle_data_types = parsed.data.vehicle_data_types;
+                    //             } else {
+                    //                 // console.log('No module config data returned');
+                    //             }
+                    //         });
+                    //     }
+                    // });
                 });
             },
             'saveVehicleData': function() {
@@ -356,18 +385,18 @@
                 });
             },
             'promoteConfigClick': function() {
-                this.handleModalClick('promote_button_loading', 'promoteModal', 'promoteConfig');
+                this.handleModalClick('promote_button_loading', 'promoteModal', 'promoteVehicleData');
             },
-            'promoteConfig': function(cb) {
-                this.httpRequest('post', 'vehicle-data/promote', { 'body': this.module_config }, cb);
+            'promoteVehicleData': function(cb) {
+                this.httpRequest('post', 'vehicledata/promote', { 'body': this.vehicle_data }, cb);
             },
-            'addRetryUpdateElement': function() {
-                var newVal = this.module_config.seconds_between_retries.length ? this.module_config.seconds_between_retries[this.module_config.seconds_between_retries.length - 1] * 5 : 1;
-                this.module_config.seconds_between_retries.push(newVal);
-            },
-            'removeRetryUpdateElement': function(key) {
-                this.module_config.seconds_between_retries.splice(key, 1);
-            }
+            // 'addRetryUpdateElement': function() {
+            //     var newVal = this.module_config.seconds_between_retries.length ? this.module_config.seconds_between_retries[this.module_config.seconds_between_retries.length - 1] * 5 : 1;
+            //     this.module_config.seconds_between_retries.push(newVal);
+            // },
+            // 'removeRetryUpdateElement': function(key) {
+            //     this.module_config.seconds_between_retries.splice(key, 1);
+            // }
         },
         mounted: function() {
             this.environmentClick();
