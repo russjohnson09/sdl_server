@@ -27,8 +27,6 @@ function retrySecondsByStatus(isProduction) {
 }
 
 function insertVehicleDataItem(vehicleDataItem, vehicle_data_group_id, parent_id) {
-    console.log(`insertVehicleDataItem`, vehicleDataItem);
-
     let data = {
         name: vehicleDataItem.name,
         vehicle_data_group_id: vehicle_data_group_id,
@@ -48,15 +46,11 @@ function insertVehicleDataItem(vehicleDataItem, vehicle_data_group_id, parent_id
         maxlength: isNaN(parseInt(vehicleDataItem.maxlength)) ? null : parseInt(vehicleDataItem.maxlength),
     };
 
-    console.log(`insertVehicleDataItem`, data);
-
     return sql.insert('vehicle_data', data)
         .returning('*');
 }
 
 function insertVehicleData(vehicleData) {
-    console.log(`insertVehicleData`, vehicleData);
-
     return sql.insert('vehicle_data_group', {
         status: vehicleData.status,
         schema_version: vehicleData.schema_version,

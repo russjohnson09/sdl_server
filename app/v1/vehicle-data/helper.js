@@ -22,12 +22,10 @@ function extractParams(rpcSpec, next) {
     const getVehicleDataResponse = rpcSpec.interface.function.find(function(elem) {
         return elem['$'].name === 'GetVehicleData' && elem['$'].messagetype === 'request';
     });
-    console.log(`extractParams`, getVehicleDataResponse);
     const params = getVehicleDataResponse.param
         .map(function(param) {
             return param['$'].name;
         });
-    console.log(`extractParams`, params);
     next(null, params);
 }
 
@@ -35,7 +33,6 @@ function extractEnums(rpcSpec, next) {
     const enums = rpcSpec.interface.enum.map(function(elem) {
         return elem['$'].name;
     });
-    console.log(`enums`, enums);
     next(null, enums);
 }
 

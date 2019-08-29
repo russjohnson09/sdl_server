@@ -13,9 +13,6 @@ function getVehicleDataReservedParams(req, res, next) {
                 model.getVehicleDataReservedParams(cb);
             },
         ], function(err, reserved_params) {
-
-            console.log(`got data`, reserved_params);
-
             if (err) {
                 app.locals.log.error(err);
                 return res.parcel
@@ -39,9 +36,6 @@ function getVehicleDataParamTypes(req, res, next) {
                 model.getVehicleDataParamTypes(cb);
             },
         ], function(err, vehicle_data_types) {
-
-            console.log(`got data`, vehicle_data_types);
-
             if (err) {
                 app.locals.log.error(err);
                 return res.parcel
@@ -68,9 +62,6 @@ function get(req, res, next) {
             },
         ]
         , function(err, vehicle_data) {
-
-            console.log(`got data`, vehicle_data);
-
             if (err) {
                 app.locals.log.error(err);
                 return res.parcel
@@ -89,7 +80,6 @@ function get(req, res, next) {
 }
 
 function post(isProduction, req, res, next) {
-    console.log(`received post`, { isProduction });
     helper.validatePost(req, res);
     if (res.parcel.message) {
         app.locals.log.error(res.parcel.message);

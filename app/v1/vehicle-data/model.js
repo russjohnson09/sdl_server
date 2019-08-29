@@ -125,17 +125,15 @@ function getVehicleData(isProduction, cb) {
     if (isProduction) {
         query = `SELECT vd.*, vdg.schema_version, vdg.status
                  FROM vehicle_data vd
-                          LEFT JOIN vehicle_data_group vdg on vdg.id = vd.vehicle_data_group_id
+                    LEFT JOIN vehicle_data_group vdg on vdg.id = vd.vehicle_data_group_id
                  WHERE vdg.id = (select max(id) FROM vehicle_data_group WHERE status = 'PRODUCTION');`;
     } else {
         query = `SELECT vd.*, vdg.schema_version, vdg.status
                  FROM vehicle_data vd
-                          LEFT JOIN vehicle_data_group vdg on vdg.id = vd.vehicle_data_group_id
+                    LEFT JOIN vehicle_data_group vdg on vdg.id = vd.vehicle_data_group_id
                  WHERE vdg.id = (select max(id) FROM vehicle_data_group)
         ;`;
     }
-
-    console.log(`getMany`, isProduction, cb);
     return db.getMany(query, function(err, results) {
         if (err) {
             return cb(err);
@@ -203,8 +201,6 @@ function getVehicleData(isProduction, cb) {
                                   });
             }
         }
-
-        console.log(schema_items);
 
         return cb(null, {
             schema_version,
@@ -276,7 +272,6 @@ function insertVehicleData(isProduction, vehicleData, next) {
 
         for (let item of vehicleData.schema_items) {
             transactions.push(function(newVehicleDataGroup, next) {
-                console.log(`newVehicleDataGroup`, newVehicleDataGroup);
                 insertVehicleDataItem(client, item, newVehicleDataGroup.id, null, function(error) {
                     next(null, newVehicleDataGroup);
                 });
