@@ -11,40 +11,34 @@ const needle = require('needle');
 function validatePost(req, res) {
 }
 
-
-
-function getRpcSpec (next) {
+function getRpcSpec(next) {
     //use the url from the settings.js file
-    needle.get(app.locals.config.githubLanguageSourceUrl, function (err, res) {
+    needle.get(app.locals.config.githubLanguageSourceUrl, function(err, res) {
         next(err, res.body);
     });
 }
 
-function extractParams (rpcSpec, next) {
-    const getVehicleDataResponse = rpcSpec.interface.function.find(function (elem) {
-        return elem['$'].name === "GetVehicleData" && elem['$'].messagetype === "request";
+function extractParams(rpcSpec, next) {
+    const getVehicleDataResponse = rpcSpec.interface.function.find(function(elem) {
+        return elem['$'].name === 'GetVehicleData' && elem['$'].messagetype === 'request';
     });
-    console.log(`extractParams`,getVehicleDataResponse);
+    console.log(`extractParams`, getVehicleDataResponse);
     const params = getVehicleDataResponse.param
-        .map(function (param) {
-        return param['$'].name;
-    });
-    console.log(`extractParams`,params);
+        .map(function(param) {
+            return param['$'].name;
+        });
+    console.log(`extractParams`, params);
     next(null, params);
 }
 
-
-function extractEnums (rpcSpec, next) {
-    const enums = rpcSpec.interface.enum.map(function (elem) {
+function extractEnums(rpcSpec, next) {
+    const enums = rpcSpec.interface.enum.map(function(elem) {
         return elem['$'].name;
     });
-    console.log(`enums`,enums);
+    console.log(`enums`, enums);
     next(null, enums);
 }
 
-/**
- *
- */
 function updateVehicleDataEnums(next) {
     const messageStoreFlow = [
         getRpcSpec,
@@ -67,10 +61,6 @@ function updateVehicleDataEnums(next) {
     });
 }
 
-
-/**
- *
- */
 function updateVehicleDataReservedParams(next) {
     const messageStoreFlow = [
         getRpcSpec,

@@ -278,7 +278,7 @@
                 this.handleModalClick('save_button_loading', null, 'saveData');
             },
             'saveData': function(cb) {
-                this.httpRequest('post', 'vehicledata', { 'body': this.vehicle_data }, (err) => {
+                this.httpRequest('post', 'vehicle-data', { 'body': this.vehicle_data }, (err) => {
                     this.toTop();
                     cb();
                 });
@@ -287,7 +287,7 @@
                 this.handleModalClick('promote_button_loading', 'promoteModal', 'promoteVehicleData');
             },
             'promoteVehicleData': function(cb) {
-                this.httpRequest('post', 'vehicledata/promote', { 'body': this.vehicle_data }, cb);
+                this.httpRequest('post', 'vehicle-data/promote', { 'body': this.vehicle_data }, cb);
             },
         },
         mounted: function() {

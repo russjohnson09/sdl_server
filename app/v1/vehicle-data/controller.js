@@ -32,11 +32,6 @@ function getVehicleDataReservedParams(req, res, next) {
         });
 }
 
-
-function getVehicleDataEnums(req, res, next) {
-
-}
-
 function getVehicleDataParamTypes(req, res, next) {
     async.waterfall(
         [
@@ -62,7 +57,6 @@ function getVehicleDataParamTypes(req, res, next) {
                 .deliver();
         });
 }
-
 
 function get(req, res, next) {
     const isProduction = !req.query.environment || req.query.environment.toLowerCase() !== 'staging';
@@ -94,9 +88,8 @@ function get(req, res, next) {
         });
 }
 
-
 function post(isProduction, req, res, next) {
-    console.log(`received post`,{isProduction});
+    console.log(`received post`, { isProduction });
     helper.validatePost(req, res);
     if (res.parcel.message) {
         app.locals.log.error(res.parcel.message);
@@ -117,7 +110,6 @@ function post(isProduction, req, res, next) {
     });
 
 }
-
 
 module.exports = {
     get: get,
