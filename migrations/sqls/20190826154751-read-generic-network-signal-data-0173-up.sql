@@ -58,6 +58,10 @@ CREATE TABLE vehicle_data_enums
     id VARCHAR(255) NOT NULL CONSTRAINT vehicle_data_enums_pk PRIMARY KEY
 );
 
+CREATE TABLE vehicle_data_reserved_params
+(
+    id VARCHAR(255) NOT NULL CONSTRAINT vehicle_data_reserved_params_pk PRIMARY KEY
+);
 
 CREATE TABLE vehicle_data_group
 (

@@ -124,15 +124,14 @@ function getVehicleData(isProduction, cb) {
     let query;
     if (isProduction) {
         query = `SELECT vd.*, vdg.schema_version, vdg.status
-                 FROM vehicle_data vd
-                    LEFT JOIN vehicle_data_group vdg on vdg.id = vd.vehicle_data_group_id
-                 WHERE vdg.id = (select max(id) FROM vehicle_data_group WHERE status = 'PRODUCTION');`;
+                 FROM vehicle_data_group vdg
+                    LEFT JOIN vehicle_data vd ON vdg.id = vd.vehicle_data_group_id
+                 WHERE vdg.id = (SELECT max(id) FROM vehicle_data_group WHERE status = 'PRODUCTION');`;
     } else {
         query = `SELECT vd.*, vdg.schema_version, vdg.status
-                 FROM vehicle_data vd
-                    LEFT JOIN vehicle_data_group vdg on vdg.id = vd.vehicle_data_group_id
-                 WHERE vdg.id = (select max(id) FROM vehicle_data_group)
-        ;`;
+                 FROM vehicle_data_group vdg
+                    LEFT JOIN vehicle_data vd ON vdg.id = vd.vehicle_data_group_id
+                 WHERE vdg.id = (SELECT max(id) FROM vehicle_data_group);`;
     }
     return db.getMany(query, function(err, results) {
         if (err) {
