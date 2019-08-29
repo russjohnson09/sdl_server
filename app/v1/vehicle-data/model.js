@@ -1,4 +1,4 @@
-//Copyright (c) 2018, Livio, Inc.
+//Copyright (c) 2019, Livio, Inc.
 const app = require('../app');
 const flame = app.locals.flame;
 const flow = app.locals.flow;
@@ -91,11 +91,9 @@ function baseTemplate(objOverride) {
 function insertVehicleDataItem(client, item, vehicleDataGroupId, parentId, cb) {
 
     client.getOne(sql.insertVehicleDataItem(item, vehicleDataGroupId, parentId), function(error, newVehicleDataItem) {
-        if (error)
-        {
+        if (error) {
             console.error(error);
         }
-        console.log(`newVehicleDataItem`, error ,newVehicleDataItem);
         if (item.params) {
             let transactions = [];
             for (let param of item.params) {
@@ -122,26 +120,24 @@ function insertVehicleDataItem(client, item, vehicleDataGroupId, parentId, cb) {
  * @param cb
  * @returns {void|*}
  */
-function getVehicleData(isProduction, cb)
-{
+function getVehicleData(isProduction, cb) {
     let query;
     if (isProduction) {
-        query = `SELECT vd.*,vdg.schema_version,vdg.status
-FROM vehicle_data vd
-LEFT JOIN vehicle_data_group vdg on vdg.id = vd.vehicle_data_group_id
-WHERE vdg.id = (select max(id) FROM vehicle_data_group WHERE status = 'PRODUCTION');`;
+        query = `SELECT vd.*, vdg.schema_version, vdg.status
+                 FROM vehicle_data vd
+                          LEFT JOIN vehicle_data_group vdg on vdg.id = vd.vehicle_data_group_id
+                 WHERE vdg.id = (select max(id) FROM vehicle_data_group WHERE status = 'PRODUCTION');`;
     } else {
-        query = `SELECT vd.*,vdg.schema_version,vdg.status
-FROM vehicle_data vd
-LEFT JOIN vehicle_data_group vdg on vdg.id = vd.vehicle_data_group_id
-WHERE vdg.id = (select max(id) FROM vehicle_data_group)
-;`;
+        query = `SELECT vd.*, vdg.schema_version, vdg.status
+                 FROM vehicle_data vd
+                          LEFT JOIN vehicle_data_group vdg on vdg.id = vd.vehicle_data_group_id
+                 WHERE vdg.id = (select max(id) FROM vehicle_data_group)
+        ;`;
     }
 
-    console.log(`getMany`,isProduction,cb);
-    return db.getMany(query, function(err,results) {
-        if (err)
-        {
+    console.log(`getMany`, isProduction, cb);
+    return db.getMany(query, function(err, results) {
+        if (err) {
             return cb(err);
         }
 
@@ -150,14 +146,11 @@ WHERE vdg.id = (select max(id) FROM vehicle_data_group)
         // let schema_items = [];
         let schemaItemsById = {};
 
-        for (let item of results)
-        {
-            if (!schema_version)
-            {
+        for (let item of results) {
+            if (!schema_version) {
                 schema_version = item.schema_version;
             }
-            if (!status)
-            {
+            if (!status) {
                 status = item.status;
             }
             delete item.status;
@@ -213,7 +206,7 @@ WHERE vdg.id = (select max(id) FROM vehicle_data_group)
 
         console.log(schema_items);
 
-        return cb(null,{
+        return cb(null, {
             schema_version,
             schema_items,
             status,
@@ -221,16 +214,14 @@ WHERE vdg.id = (select max(id) FROM vehicle_data_group)
 
     });
 
-
 }
 
-function getVehicleDataParamTypes(cb)
-{
-    let query = `SELECT id FROM vehicle_data_enums vde;`;
+function getVehicleDataParamTypes(cb) {
+    let query = `SELECT id
+                 FROM vehicle_data_enums vde;`;
 
-    return db.getMany(query, function(err,results) {
-        if (err)
-        {
+    return db.getMany(query, function(err, results) {
+        if (err) {
             return cb(err);
         }
 
@@ -241,19 +232,18 @@ function getVehicleDataParamTypes(cb)
 
         let types = primitiveTypes.concat(enumTypes);
 
-        return cb(null,types);
+        return cb(null, types);
 
     });
 
 }
 
-
 function getVehicleDataReservedParams(cb) {
-    let query = `SELECT id FROM vehicle_data_reserved_params;`;
+    let query = `SELECT id
+                 FROM vehicle_data_reserved_params;`;
 
-    return db.getMany(query, function(err,results) {
-        if (err)
-        {
+    return db.getMany(query, function(err, results) {
+        if (err) {
             return cb(err);
         }
 
@@ -261,8 +251,7 @@ function getVehicleDataReservedParams(cb) {
             return el.id;
         });
 
-
-        return cb(null,params);
+        return cb(null, params);
 
     });
 }
@@ -285,14 +274,13 @@ function insertVehicleData(isProduction, vehicleData, next) {
 
         //stage 2: insert module config retry seconds
 
-        for (let item of vehicleData.schema_items)
-        {
-            transactions.push(function(newVehicleDataGroup,next) {
-                console.log(`newVehicleDataGroup`,newVehicleDataGroup);
-                insertVehicleDataItem(client,item,newVehicleDataGroup.id,null,function(error) {
-                    next(null,newVehicleDataGroup);
+        for (let item of vehicleData.schema_items) {
+            transactions.push(function(newVehicleDataGroup, next) {
+                console.log(`newVehicleDataGroup`, newVehicleDataGroup);
+                insertVehicleDataItem(client, item, newVehicleDataGroup.id, null, function(error) {
+                    next(null, newVehicleDataGroup);
                 });
-            })
+            });
         }
 
         flame.async.waterfall(transactions, callback);

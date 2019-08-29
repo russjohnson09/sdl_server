@@ -73,8 +73,6 @@ function generatePolicyTable (isProduction, useLongUuids = false, appPolicyObj, 
             }
             const policyTableMakeFlow = flame.flow(makePolicyTable, {method: 'parallel', eventLoop: true});
             policyTableMakeFlow(function (err, data) {
-                // console.log(`got data`,data,data.vehicleData);
-                // process.exit(1);
                 cache.setCacheData(isProduction, app.locals.version, cache.policyTableKey, data);
                 cb(err, data);
             });
@@ -83,9 +81,7 @@ function generatePolicyTable (isProduction, useLongUuids = false, appPolicyObj, 
 }
 
 /**
- *
  * https://github.com/smartdevicelink/sdl_evolution/blob/master/proposals/0173-Read-Generic-Network-Signal-data.md#versioning-and-endpoint-for-oem-network-mapping-table-and-to-provide-hmi-a-way-to-read-oem-network-mapping-table-version
- *
  * SDL core would need to include schema_version in sdl_snapshot while requesting the policy update.
  * SDL server would use this to decide whether schema_items schema needs to be pushed in PTU response.
  * schema_version would only be included in vehicle_data only if schema_items schema is included.
@@ -116,8 +112,6 @@ function setupVehicleData(isProduction, schemaVersion) {
             }
 
         });
-        //TODO check schema versions and return newest.
-        // return cb(null, { schema_version: '1' });
     };
 }
 
