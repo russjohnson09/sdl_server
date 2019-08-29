@@ -1,7 +1,6 @@
 <template>
 
-    <!--     v-if="item && false"-->
-    <div class="rpc-container white-box" style="border-bottom:none;">
+    <div class="rpc-container white-box left-border">
         <div class="form-group row">
             <h5>
                 <i aria-hidden="true" class="pointer pull-right fa fa-times hover-color-red"
@@ -82,7 +81,6 @@
         </div>
 
         <div class="form-group row">
-            <!--        color-bg-gray -->
             <b-form-checkbox
                     class="color-primary"
                     v-model="item.removed"
@@ -92,7 +90,6 @@
         </div>
 
         <div class="form-group row">
-            <!--        color-bg-gray -->
             <b-form-checkbox
                     class="color-primary"
                     v-model="item.deprecated"
@@ -122,9 +119,7 @@
             </div>
         </div>
 
-<!--        TODO update styling inline check other occurrences.-->
         <div v-for="(param, paramIndex) in item.params"
-             style="border-left:1px solid black; margin:10px; padding:10px;"
         >
 
             <schema-item
@@ -165,10 +160,6 @@
         },
         methods: {
             'addParam': function() {
-
-                console.log(`addParam`, this.item);
-
-                //Populating the object is required.
                 this.item.params.push(
                     {
                         name: '',
@@ -192,44 +183,6 @@
             'removeItem': function() {
                 this.$delete(this.items, this.index);
             }
-        },
-        // beforeMount() {
-        //     this.item = {
-        //         name: this.item.name,
-        //         key: this.item.key,
-        //         array: this.item.array,
-        //         since: this.item.since,
-        //         until: this.item.until,
-        //         removed: this.item.removed,
-        //         deprecated: this.item.deprecated,
-        //         minvalue: this.item.minvalue || '',
-        //         maxvalue: this.item.maxvalue || '',
-        //         minsize: this.item.minsize || '',
-        //         maxsize: this.item.maxsize || '',
-        //         minlength: this.item.minlength  || '',
-        //         maxlength: this.item.maxlength || '',
-        //         params: this.item.params,
-        //     };
-        //     console.log(`beforeMount`, this.item, this.index);
-        // },
-        // mounted: function() {
-        //     this.item = {
-        //         name: this.item.name,
-        //         key: this.item.key,
-        //         array: this.item.array,
-        //         since: this.item.since,
-        //         until: this.item.until,
-        //         removed: this.item.removed,
-        //         deprecated: this.item.deprecated,
-        //         minvalue: this.item.minvalue || '',
-        //         maxvalue: this.item.maxvalue || '',
-        //         minsize: this.item.minsize || '',
-        //         maxsize: this.item.maxsize || '',
-        //         minlength: this.item.minlength  || '',
-        //         maxlength: this.item.maxlength || '',
-        //         params: this.item.params,
-        //     };
-        //     console.log(`mounted`, this.item, this.index);
-        // },
+        }
     };
 </script>

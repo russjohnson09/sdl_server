@@ -146,7 +146,7 @@ const router = new Router({
             component: VehicleData,
             meta: {
                 auth: true,
-                title: 'Policy Server - Proprietary Vehicle Data'
+                title: 'Policy Server - Custom Vehicle Data'
             }
         },
         {

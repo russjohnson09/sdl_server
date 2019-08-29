@@ -22,25 +22,18 @@
                 </div>
 
 
-                <!--                preview-->
                 <div class="form-row">
                     <h4>Custom Vehicle Data Preview</h4>
                 </div>
                 <div v-if="vehicle_data">
-                    <vue-json-pretty :data="{
-                    vehicle_data: {
-                        schema_version: vehicle_data.schema_version,
-                        schema_items: vehicle_data.schema_items,
-                    }
-                    }"  :deep="2"
+                    <vue-json-pretty :data="vehicleDataPreview"
+                                     :deep="2"
                                      :showLine="showLine"
                                      :showLength="showLength"
                     ></vue-json-pretty>
                 </div>
 
 
-
-<!--                <h5>Reserved Vehicle Data Params</h5>-->
                 <div class="form-row">
                     <h4>Reserved Vehicle Data Params</h4>
                 </div>
@@ -54,12 +47,6 @@
                 </ul>
 
 
-<!--                <h5>Custom Vehicle Data Params</h5>-->
-<!--                <p>-->
-<!--                    Define custom vehicle params supported by the manufacturer's HMI.-->
-<!--                </p>-->
-
-
                 <div class="form-row">
                     <h4>Custom Vehicle Data Mapping</h4>
                 </div>
@@ -71,32 +58,15 @@
                 </div>
 
 
-
-
-                <!-- module config data -->
                 <div class="functional-content" v-if="vehicle_data">
-<!--                    <div> reserved: {{ reserved_params }}</div>-->
-
-<!--                    <div> {{  vehicle_data.schema_items }}</div>-->
 
                     <div class="form-row">
                         <h4 for="name">Schema Version</h4>
                         <input v-model="vehicle_data.schema_version" :disabled="fieldsDisabled" class="form-control">
-
-<!--                        <input v-model="module_config.endpoints['0x04']" :disabled="fieldsDisabled" class="form-control">-->
                     </div>
 
                     <div class="form-row">
                         <h4 for="name">Mapping</h4>
-
-<!--                        <div class="rpc-container white-box">-->
-<!--                            <div class="form-group row">-->
-<!--                                <label class="col-sm-2 col-form-label">Schema Version</label>-->
-<!--                                <div class="col-sm-10">-->
-<!--                                    <input v-model="vehicle_data.schema_version" :disabled="fieldsDisabled" class="form-control">-->
-<!--                                </div>-->
-<!--                            </div>-->
-<!--                        </div>-->
 
                     </div>
 
@@ -105,9 +75,6 @@
                         <div>
                             <div v-for="(item, index) in vehicle_data.schema_items">
                                 <div>
-                                    <!--                            :item="item"-->
-
-<!--                                    <div> item: {{ item }}</div>-->
                                     <schema-item
                                             v-if="!item.deleted"
 
@@ -116,15 +83,10 @@
                                             :index="index"
                                             :items="vehicle_data.schema_items"
                                     ></schema-item>
-
-                                    <!--                            <h3>Name: {{ item.name }}</h3>-->
-
                                 </div>
                             </div>
                             <!-- save button -->
                             <div>
-                                <!--                                                        v-if="!fieldsDisabled"
-                                -->
 
                                 <div id="add" class="another-rpc pointer"
                                      v-on:click="addSchemaItem()"
@@ -132,11 +94,6 @@
                                     Add Schema Item
                                     <i class="fa fa-plus middle-middle"></i></div>
 
-<!--                                <button-->
-<!--                                        v-on:click="addSchemaItem()"-->
-<!--                                >-->
-<!--                                    Add Schema Item-->
-<!--                                </button>-->
 
                             </div>
 
@@ -158,18 +115,19 @@
                 </div>
 
 
-                <!-- PROMOTE GROUP MODAL -->
-                <b-modal ref="promoteModal" title="Promote Custom Vehicle Data to Production" hide-footer id="promoteModal"
+                <b-modal ref="promoteModal" title="Promote Custom Vehicle Data to Production" hide-footer
+                         id="promoteModal"
                          tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
                     <small class="form-text text-muted">
-                        This will promote the custom vehicle data mappings to production, immediately updating the production policy
+                        This will promote the custom vehicle data mappings to production, immediately updating the
+                        production policy
                         table. Are you sure you want to do this?
                     </small>
                     <vue-ladda
                             type="button"
                             class="btn btn-card btn-style-green"
                             data-style="zoom-in"
-                            v-on:click="promoteConfigClick()"
+                            v-on:click="promoteVehicleDataClick()"
                             v-bind:loading="promote_button_loading">
                         Yes, promote to production!
                     </vue-ladda>
@@ -217,6 +175,15 @@
             };
         },
         computed: {
+            vehicleDataPreview: function() {
+                let vehicle_data = this.vehicle_data;
+                return {
+                    vehicle_data: {
+                        schema_version: vehicle_data.schema_version,
+                        schema_items: vehicle_data.schema_items,
+                    }
+                };
+            },
             canPromote: function() {
                 return this.vehicle_data && this.vehicle_data.status === 'STAGING';
             },
@@ -226,67 +193,24 @@
         },
         methods: {
             'parseVehicleData': function(vehicle_data) {
-                // let schema_items = [];
-                function updateItem(item)
-                {
-                    console.log(`updateItem`,item);
-                    item.minvalue =  item.minvalue || '';
-                    item.maxvalue =     item.maxvalue || '';
+                function updateItem(item) {
+                    item.minvalue = item.minvalue || '';
+                    item.maxvalue = item.maxvalue || '';
                     item.minsize = item.minsize || '';
                     item.maxsize = item.maxsize || '';
-                    item.minlength = item.minlength  || '';
+                    item.minlength = item.minlength || '';
                     item.maxlength = item.maxlength || '';
-                    if (item.params)
-                    {
-                        for (let param of item.params)
-                        {
+                    if (item.params) {
+                        for (let param of item.params) {
                             updateItem(param);
                         }
                     }
                 }
-                for (let schema_item of vehicle_data.schema_items)
-                {
 
+                for (let schema_item of vehicle_data.schema_items) {
                     updateItem(schema_item);
-
-                    // schema_item.minvalue =  schema_item.minvalue || '';
-                    // schema_item.maxvalue =     schema_item.maxvalue || '';
-                    // schema_item.minsize = schema_item.minsize || '';
-                    // schema_item.maxsize = schema_item.maxsize || '';
-                    // schema_item.minlength = schema_item.minlength  || '';
-                    // schema_item.maxlength = schema_item.maxlength || '';
-
-
-                    // item.params;
-
-                    // let item = {
-                    //             name: schema_item.name,
-                    //             key: schema_item.key,
-                    //             array: schema_item.array,
-                    //             since: schema_item.since,
-                    //             until: schema_item.until,
-                    //             removed: schema_item.removed,
-                    //             deprecated: schema_item.deprecated,
-                    //             minvalue: schema_item.minvalue || '',
-                    //             maxvalue: schema_item.maxvalue || '',
-                    //             minsize: schema_item.minsize || '',
-                    //             maxsize: schema_item.maxsize || '',
-                    //             minlength: schema_item.minlength  || '',
-                    //             maxlength: schema_item.maxlength || '',
-                    //             params: schema_item.params,
-                    //         };
-
-
                 }
                 this.vehicle_data = vehicle_data;
-
-                // console.log(`parsedVehicleData`,vehicle_data);
-                // let data = {
-                //
-                //     schema_items: vehicle_data.schema_items,
-                // };
-
-
             },
             'addSchemaItem': function() {
                 this.vehicle_data.schema_items.push(
@@ -306,7 +230,6 @@
                         minlength: '',
                         maxlength: '',
                         params: []
-
                     }
                 );
 
@@ -314,11 +237,9 @@
             'toTop': function() {
                 this.$scrollTo('body', 500);
             },
-            'getData': function() {
-            },
             'environmentClick': function() {
                 this.$nextTick(function() {
-                    this.httpRequest('get', 'vehicledata', {
+                    this.httpRequest('get', 'vehicle-data', {
                         'params': {
                             'environment': this.environment
                         }
@@ -328,7 +249,6 @@
                             console.log(err);
                         } else {
                             res.json().then(parsed => {
-                                console.log(`vehicle data`,parsed,parsed.data);
                                 if (parsed.data.vehicle_data) {
                                     this.parseVehicleData(parsed.data.vehicle_data);
                                 } else {
@@ -338,41 +258,20 @@
                         }
                     });
 
-                    this.httpRequest('get', 'vehicledata/reserved-params',{}, (err, res) => {
+                    this.httpRequest('get', 'vehicle-data/reserved-params', {}, (err, res) => {
                         if (err) {
-                            console.log('Error fetching reserved_params');
+                            console.log('Error fetching reserved params: ');
                             console.log(err);
                         } else {
                             res.json().then(parsed => {
-                                console.log(`vehicle data reserved_params`,parsed,parsed.data);
                                 if (parsed.data.reserved_params) {
                                     this.reserved_params = parsed.data.reserved_params;
                                 } else {
-                                    console.log('No vehicle data returned');
+                                    console.log('No reserved params returned');
                                 }
                             });
                         }
                     });
-
-                    // this.httpRequest('get', 'vehicledata/param-types', {
-                    //     'params': {
-                    //         'environment': this.environment
-                    //     }
-                    // }, (err, res) => {
-                    //     if (err) {
-                    //         console.log('Error fetching param-types');
-                    //         console.log(err);
-                    //     } else {
-                    //         res.json().then(parsed => {
-                    //             console.log(`vehicle data`,parsed,parsed.data);
-                    //             if (parsed.data.vehicle_data_types) {
-                    //                 this.vehicle_data_types = parsed.data.vehicle_data_types;
-                    //             } else {
-                    //                 // console.log('No module config data returned');
-                    //             }
-                    //         });
-                    //     }
-                    // });
                 });
             },
             'saveVehicleData': function() {
@@ -384,19 +283,12 @@
                     cb();
                 });
             },
-            'promoteConfigClick': function() {
+            'promoteVehicleDataClick': function() {
                 this.handleModalClick('promote_button_loading', 'promoteModal', 'promoteVehicleData');
             },
             'promoteVehicleData': function(cb) {
                 this.httpRequest('post', 'vehicledata/promote', { 'body': this.vehicle_data }, cb);
             },
-            // 'addRetryUpdateElement': function() {
-            //     var newVal = this.module_config.seconds_between_retries.length ? this.module_config.seconds_between_retries[this.module_config.seconds_between_retries.length - 1] * 5 : 1;
-            //     this.module_config.seconds_between_retries.push(newVal);
-            // },
-            // 'removeRetryUpdateElement': function(key) {
-            //     this.module_config.seconds_between_retries.splice(key, 1);
-            // }
         },
         mounted: function() {
             this.environmentClick();

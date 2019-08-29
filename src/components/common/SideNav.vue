@@ -14,7 +14,7 @@
                 <a class="nav-link">Consumer Messages <span v-if="badge_counts.consumer_messages" class="badge badge-circle badge-danger">{{ badge_counts.consumer_messages }}</span></a>
             </router-link>
             <router-link tag="li" class="nav-item" to="/vehicledata" active-class="active">
-                <a class="nav-link">Proprietary Vehicle Data</a>
+                <a class="nav-link">Custom Vehicle Data</a>
             </router-link>
             <router-link tag="li" class="nav-item" to="/moduleconfig" active-class="active">
                 <a class="nav-link">Module Config</a>

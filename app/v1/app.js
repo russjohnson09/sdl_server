@@ -90,12 +90,11 @@ function exposeRoutes() {
     app.post('/module', auth.validateAuth, moduleConfig.post);
     app.post('/module/promote', auth.validateAuth, moduleConfig.promote);
     app.get('/about', auth.validateAuth, about.getInfo);
-
-    app.post('/vehicledata', auth.validateAuth, vehicleData.post);
-    app.get('/vehicledata', auth.validateAuth, vehicleData.get);
-    app.get('/vehicledata/reserved-params', auth.validateAuth, vehicleData.getVehicleDataReservedParams);
-    // app.get('/vehicledata/enums', auth.validateAuth, vehicleData.getVehicleDataEnums);
-    app.post('/vehicledata/promote', auth.validateAuth, vehicleData.promote);
+    //begin vehicle data routes
+    app.post('/vehicle-data', auth.validateAuth, vehicleData.post);
+    app.get('/vehicle-data', auth.validateAuth, vehicleData.get);
+    app.get('/vehicle-data/reserved-params', auth.validateAuth, vehicleData.getVehicleDataReservedParams);
+    app.post('/vehicle-data/promote', auth.validateAuth, vehicleData.promote);
 
 }
 
