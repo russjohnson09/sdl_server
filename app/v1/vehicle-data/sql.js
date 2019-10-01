@@ -11,11 +11,25 @@ function insertRpcSpec(spcSpec) {
         .returning('*');
 }
 
+function getLatestRpcSpec()
+{
+    return sql.select('max(id)').from('rpc_spec').where();
+    return sql.insert('rpc_spec')
+    .returning('*');
+
+}
+
+
+
 function insertRpcSpecParam(rpcSpecParams, rpcSpecTypeByName) {
     let ary = [];
+    console.log({rpcSpecParams, rpcSpecTypeByName});
     for (let rpcSpecParam of rpcSpecParams) {
         if (rpcSpecTypeByName[rpcSpecParam.rpc_spec_type_name]) {
             rpcSpecParam['rpc_spec_type_id'] = rpcSpecTypeByName[rpcSpecParam.rpc_spec_type_name].id;
+        }
+        else {
+            rpcSpecParam['rpc_spec_type_id'] = null;
         }
         delete rpcSpecParam['rpc_spec_type_name'];
 
@@ -39,4 +53,5 @@ module.exports = {
     insertRpcSpec: insertRpcSpec,
     insertRpcSpecType: insertRpcSpecType,
     insertRpcSpecParam: insertRpcSpecParam,
+    // getRpcSpec: getRpcSpec,
 };

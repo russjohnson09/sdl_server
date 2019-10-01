@@ -70,12 +70,16 @@ function extractRpcSpecTypes(data, next) {
 
     const enumerations = _.get(data, 'xml.interface.enum');
     const structs = _.get(data, 'xml.interface.struct');
+    const functions = _.get(data, 'xml.interface.function');
 
     if (!enumerations) {
         return next('enum not defined in the imported rpc spec');
     }
     if (!structs) {
         return next('struct not defined in the imported rpc spec');
+    }
+    if (!functions) {
+        return next('function not defined in the imported rpc spec');
     }
 
     //extract enums
@@ -119,54 +123,106 @@ function extractRpcSpecTypes(data, next) {
 
         }
 
-        //TODO remove
-        break;
     }
 
     //extract structs
-    // for (let struct of structs) {
-    //     let structData = {
-    //         element_type: 'STRUCT',
-    //     };
-    //
-    //     const enumerationAttributes = _.get(enumeration,'$',{});
-    //
-    //     if (!enumerationAttributes['name']) {
-    //         return next('Enum must have a name defined.');
-    //     }
-    //     if (!enumeration['element']) {
-    //         return next('Enum must have element defined.');
-    //     }
-    //
-    //     for (let key in mapping) {
-    //         enumData[mapping[key]] = _.get(enumerationAttributes, key, null);
-    //     }
-    //
-    //     rpcSpecTypes.push(enumData);
-    //
-    //
-    //     for (let element of enumeration.element) {
-    //         let param = {
-    //             rpc_spec_type_name: enumData.name
-    //         };
-    //
-    //         const elementAttributes = _.get(element,'$',{});
-    //
-    //         if (!elementAttributes['name']) {
-    //             return next('Element of enum must have a name defined.');
-    //         }
-    //
-    //         for (let key in paramMapping) {
-    //             param[paramMapping[key]] = _.get(elementAttributes, key, null);
-    //         }
-    //
-    //         data.rpcSpecParams.push(param);
-    //
-    //     }
-    //
-    //     //TODO remove
-    //     break;
-    // }
+    for (let struct of structs) {
+        let structData = {
+            element_type: 'STRUCT',
+        };
+
+        const attributes = _.get(struct, '$', {});
+
+        if (!attributes['name']) {
+            return next('Struct must have a name defined.');
+        }
+
+
+        for (let key in mapping) {
+            structData[mapping[key]] = _.get(attributes, key, null);
+        }
+
+        rpcSpecTypes.push(structData);
+
+        //example struct with no params.
+       // <struct name="MediaServiceManifest" since="5.1"></struct>
+        if (!struct['param'])
+        {
+            continue;
+        }
+
+        for (let element of struct.param) {
+            let param = {
+                rpc_spec_type_name: structData.name
+            };
+
+            const elementAttributes = _.get(element, '$', {});
+
+            if (!elementAttributes['name']) {
+                return next('Param of struct must have a name defined.');
+            }
+
+            for (let key in paramMapping) {
+                param[paramMapping[key]] = _.get(elementAttributes, key, null);
+            }
+
+            data.rpcSpecParams.push(param);
+
+        }
+    }
+
+    //extract functions
+    for (let func of functions) {
+        let funcData = {
+            element_type: 'FUNCTION',
+        };
+
+        const attributes = _.get(func, '$', {});
+
+        if (!attributes['name']) {
+            return next('Struct must have a name defined.');
+        }
+
+        //example function with no params.
+        //<function name="UnregisterAppInterface" functionID="UnregisterAppInterfaceID" messagetype="request" since="1.0"></function>
+        if (!func['param']) {
+            continue;
+        }
+
+        for (let key in mapping) {
+            funcData[mapping[key]] = _.get(attributes, key, null);
+        }
+
+        rpcSpecTypes.push(funcData);
+
+        for (let element of func.param) {
+            let name = funcData.name;
+            if (funcData.message_type)
+            {
+                name = `${name}.${funcData.message_type}`;
+            }
+            let param = {
+                rpc_spec_type_name: name
+            };
+
+            const elementAttributes = _.get(element, '$', {});
+
+            if (!elementAttributes['name']) {
+                return next('Param of func must have a name defined.');
+            }
+
+            for (let key in paramMapping) {
+                param[paramMapping[key]] = _.get(elementAttributes, key, null);
+            }
+
+            data.rpcSpecParams.push(param);
+
+        }
+
+    }
+
+
+
 
     data.rpcSpecTypes = rpcSpecTypes;
 
@@ -209,7 +265,12 @@ function updateRpcSpec(next) {
                         data.rpcSpecTypesByName = {};
 
                         for (let rpcSpecType of result) {
-                            data.rpcSpecTypesByName[rpcSpecType.name] = rpcSpecType;
+                            let name = rpcSpecType.name;
+                            if (rpcSpecType.message_type)
+                            {
+                                name = `${name}.${rpcSpecType.message_type}`
+                            }
+                            data.rpcSpecTypesByName[name] = rpcSpecType;
                         }
                         callback(null, data);
                     });
