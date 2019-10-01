@@ -137,12 +137,12 @@ flame.async.parallel([
 			next();
 		});
 	},
-     // function(next) {
-     //     vehicleData.updateRpcSpec(function() {
-     //         log.info('Reserved Vehicle Data Params Updated');
-     //         next();
-     //     });
-     // },
+     function(next) {
+         vehicleData.updateRpcSpec(function() {
+             log.info('Reserved Vehicle Data Params Updated');
+             next();
+         });
+     },
 
 
 						 /*function(next) {
