@@ -1,29 +1,27 @@
 //Copyright (c) 2019, Livio, Inc.
 const sql = require('sql-bricks-postgres');
 
-function insertRpcSpec(spcSpec) {
+function insertRpcSpec(rpcSpec) {
     let data = {
-        version: spcSpec.version,
-        min_version: spcSpec.min_version,
-        date: spcSpec.date,
+        version: rpcSpec.version,
+        min_version: rpcSpec.min_version,
+        date: rpcSpec.date,
     };
     return sql.insert('rpc_spec', data)
         .returning('*');
 }
 
-function getLatestRpcSpec()
-{
-    return sql.select('max(id)').from('rpc_spec').where();
-    return sql.insert('rpc_spec')
-    .returning('*');
-
+function getLatestRpcSpec() {
+    return sql.select('version')
+        .from('rpc_spec')
+        .orderBy('created_ts DESC')
+        .limit(1);
 }
 
 
 
 function insertRpcSpecParam(rpcSpecParams, rpcSpecTypeByName) {
     let ary = [];
-    console.log({rpcSpecParams, rpcSpecTypeByName});
     for (let rpcSpecParam of rpcSpecParams) {
         if (rpcSpecTypeByName[rpcSpecParam.rpc_spec_type_name]) {
             rpcSpecParam['rpc_spec_type_id'] = rpcSpecTypeByName[rpcSpecParam.rpc_spec_type_name].id;
@@ -53,5 +51,5 @@ module.exports = {
     insertRpcSpec: insertRpcSpec,
     insertRpcSpecType: insertRpcSpecType,
     insertRpcSpecParam: insertRpcSpecParam,
-    // getRpcSpec: getRpcSpec,
+    getLatestRpcSpec: getLatestRpcSpec,
 };

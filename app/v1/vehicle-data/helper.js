@@ -23,11 +23,11 @@ function getRpcSpec(next) {
 
 function extractRpcSpecVersion(data, next) {
     data.rpcSpec = {
-        version: _.get(data.xml, "interface.$.version", null),
-        min_version: _.get(data.xml, "interface.$.minVersion", null),
-        date: _.get(data.xml, "interface.$.date", null)
+        version: _.get(data.xml, 'interface.$.version', null),
+        min_version: _.get(data.xml, 'interface.$.minVersion', null),
+        date: _.get(data.xml, 'interface.$.date', null)
     };
-    next(null,data);
+    next(null, data);
 }
 
 function extractRpcSpecTypes(data, next) {
@@ -88,7 +88,7 @@ function extractRpcSpecTypes(data, next) {
             element_type: 'ENUM',
         };
 
-        const enumerationAttributes = _.get(enumeration,'$',{});
+        const enumerationAttributes = _.get(enumeration, '$', {});
 
         if (!enumerationAttributes['name']) {
             return next('Enum must have a name defined.');
@@ -103,13 +103,12 @@ function extractRpcSpecTypes(data, next) {
 
         rpcSpecTypes.push(enumData);
 
-
         for (let element of enumeration.element) {
             let param = {
                 rpc_spec_type_name: enumData.name
             };
 
-            const elementAttributes = _.get(element,'$',{});
+            const elementAttributes = _.get(element, '$', {});
 
             if (!elementAttributes['name']) {
                 return next('Element of enum must have a name defined.');
@@ -137,7 +136,6 @@ function extractRpcSpecTypes(data, next) {
             return next('Struct must have a name defined.');
         }
 
-
         for (let key in mapping) {
             structData[mapping[key]] = _.get(attributes, key, null);
         }
@@ -145,9 +143,8 @@ function extractRpcSpecTypes(data, next) {
         rpcSpecTypes.push(structData);
 
         //example struct with no params.
-       // <struct name="MediaServiceManifest" since="5.1"></struct>
-        if (!struct['param'])
-        {
+        // <struct name="MediaServiceManifest" since="5.1"></struct>
+        if (!struct['param']) {
             continue;
         }
 
@@ -197,8 +194,7 @@ function extractRpcSpecTypes(data, next) {
 
         for (let element of func.param) {
             let name = funcData.name;
-            if (funcData.message_type)
-            {
+            if (funcData.message_type) {
                 name = `${name}.${funcData.message_type}`;
             }
             let param = {
@@ -221,9 +217,6 @@ function extractRpcSpecTypes(data, next) {
 
     }
 
-
-
-
     data.rpcSpecTypes = rpcSpecTypes;
 
     next(null, data);
@@ -243,36 +236,37 @@ function updateRpcSpec(next) {
                 extractRpcSpecVersion,
                 //check rpc version exists exit if already exists.
                 function(data, callback) {
-                    console.log(data);
                     let rpcSpec = data.rpcSpec;
-
-                    //TODO remove
-                    rpcSpec.version = Date.now() + '';
-
-                    console.log(`insert spec`, rpcSpec);
+                    client.getOne(sql.getLatestRpcSpec(), function(err, result) {
+                        if (result && result.version) {
+                            if (rpcSpec.version === result.version) {
+                                return callback({ skipReason: 'Rpc spec no update required' });
+                            }
+                        }
+                        callback(err, data);
+                    });
+                },
+                function(data, callback) {
+                    let rpcSpec = data.rpcSpec;
                     client.getOne(sql.insertRpcSpec(rpcSpec), function(err, result) {
-                        console.log(`inserted`, err, result);
                         data.rpcSpecInsert = result;
-                        callback(null, data);
+                        callback(err, data);
                     });
                 },
                 extractRpcSpecTypes,
                 function(data, callback) {
-                    console.log(`insert rpc_spec_type`, data);
                     client.getMany(sql.insertRpcSpecType(data.rpcSpecInsert.id, data.rpcSpecTypes), function(err, result) {
-                        console.log(`inserted`, err, result);
 
                         data.rpcSpecTypesByName = {};
 
                         for (let rpcSpecType of result) {
                             let name = rpcSpecType.name;
-                            if (rpcSpecType.message_type)
-                            {
-                                name = `${name}.${rpcSpecType.message_type}`
+                            if (rpcSpecType.message_type) {
+                                name = `${name}.${rpcSpecType.message_type}`;
                             }
                             data.rpcSpecTypesByName[name] = rpcSpecType;
                         }
-                        callback(null, data);
+                        callback(err, data);
                     });
                 },
                 function(data, callback) {
@@ -282,8 +276,17 @@ function updateRpcSpec(next) {
                 }
             ], callback);
     }, function(err, response) {
+
         if (err) {
-            app.locals.log.error(err);
+            if (err.skipReason) {
+                //warning only, spec already imported etc.
+                app.locals.log.info(err.skipReason);
+            } else {
+                app.locals.log.error(err);
+            }
+        }
+        else {
+            app.locals.log.info('Rpc spec updated');
         }
         next();
     });

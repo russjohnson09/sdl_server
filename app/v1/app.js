@@ -137,20 +137,11 @@ flame.async.parallel([
 			next();
 		});
 	},
-     function(next) {
-         vehicleData.updateRpcSpec(function() {
-             log.info('Reserved Vehicle Data Params Updated');
-             next();
-         });
-     },
-
-
-						 /*function(next) {
-         vehicleData.updateVehicleDataEnums(function() {
-             log.info('Vehicle Data Enums Updated');
-             next();
-         });
-     },*/
+	function(next) {
+	 	vehicleData.updateRpcSpec(function() {
+		 	next();
+	 	});
+	},
 ], function () {
 	log.info("Start up complete. Exposing routes.");
 	exposeRoutes();
