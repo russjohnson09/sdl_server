@@ -69,9 +69,13 @@ function extractRpcSpecTypes(data, next) {
     data.rpcSpecParams = [];
 
     const enumerations = _.get(data, 'xml.interface.enum');
+    const structs = _.get(data, 'xml.interface.struct');
 
     if (!enumerations) {
         return next('enum not defined in the imported rpc spec');
+    }
+    if (!structs) {
+        return next('struct not defined in the imported rpc spec');
     }
 
     //extract enums
@@ -116,8 +120,53 @@ function extractRpcSpecTypes(data, next) {
         }
 
         //TODO remove
-        // break;
+        break;
     }
+
+    //extract structs
+    // for (let struct of structs) {
+    //     let structData = {
+    //         element_type: 'STRUCT',
+    //     };
+    //
+    //     const enumerationAttributes = _.get(enumeration,'$',{});
+    //
+    //     if (!enumerationAttributes['name']) {
+    //         return next('Enum must have a name defined.');
+    //     }
+    //     if (!enumeration['element']) {
+    //         return next('Enum must have element defined.');
+    //     }
+    //
+    //     for (let key in mapping) {
+    //         enumData[mapping[key]] = _.get(enumerationAttributes, key, null);
+    //     }
+    //
+    //     rpcSpecTypes.push(enumData);
+    //
+    //
+    //     for (let element of enumeration.element) {
+    //         let param = {
+    //             rpc_spec_type_name: enumData.name
+    //         };
+    //
+    //         const elementAttributes = _.get(element,'$',{});
+    //
+    //         if (!elementAttributes['name']) {
+    //             return next('Element of enum must have a name defined.');
+    //         }
+    //
+    //         for (let key in paramMapping) {
+    //             param[paramMapping[key]] = _.get(elementAttributes, key, null);
+    //         }
+    //
+    //         data.rpcSpecParams.push(param);
+    //
+    //     }
+    //
+    //     //TODO remove
+    //     break;
+    // }
 
     data.rpcSpecTypes = rpcSpecTypes;
 
@@ -145,7 +194,7 @@ function updateRpcSpec(next) {
                     rpcSpec.version = Date.now() + '';
 
                     console.log(`insert spec`, rpcSpec);
-                    client.getOne(sql.insert.rpcSpec(rpcSpec), function(err, result) {
+                    client.getOne(sql.insertRpcSpec(rpcSpec), function(err, result) {
                         console.log(`inserted`, err, result);
                         data.rpcSpecInsert = result;
                         callback(null, data);
@@ -154,7 +203,7 @@ function updateRpcSpec(next) {
                 extractRpcSpecTypes,
                 function(data, callback) {
                     console.log(`insert rpc_spec_type`, data);
-                    client.getMany(sql.insert.rpcSpecType(data.rpcSpecInsert.id, data.rpcSpecTypes), function(err, result) {
+                    client.getMany(sql.insertRpcSpecType(data.rpcSpecInsert.id, data.rpcSpecTypes), function(err, result) {
                         console.log(`inserted`, err, result);
 
                         data.rpcSpecTypesByName = {};
@@ -166,7 +215,7 @@ function updateRpcSpec(next) {
                     });
                 },
                 function(data, callback) {
-                    client.getOne(sql.insert.rpcSpecParam(data.rpcSpecParams, data.rpcSpecTypesByName), function(err, result) {
+                    client.getOne(sql.insertRpcSpecParam(data.rpcSpecParams, data.rpcSpecTypesByName), function(err, result) {
                         callback(err, data);
                     });
                 }
@@ -180,53 +229,7 @@ function updateRpcSpec(next) {
 
 }
 
-function updateVehicleDataEnums(next) {
-    const messageStoreFlow = [
-        getRpcSpec,
-        parseXml,
-        extractEnums,
-        insertVehicleDataEnums
-    ];
-
-    function insertVehicleDataEnums(params, next) {
-        app.locals.flow(app.locals.db.setupSqlCommands(sql.insert.vehicleDataEnums(params)), { method: 'parallel' })(next);
-    }
-
-    app.locals.flow(messageStoreFlow, { method: 'waterfall', eventLoop: true })(function(err, res) {
-        if (err) {
-            app.locals.log.error(err);
-        }
-        if (next) {
-            next(); //done
-        }
-    });
-}
-
-function updateVehicleDataReservedParams(next) {
-    const messageStoreFlow = [
-        getRpcSpec,
-        parseXml,
-        extractParams,
-        insertVehicleDataReservedParams
-    ];
-
-    function insertVehicleDataReservedParams(params, next) {
-        app.locals.flow(app.locals.db.setupSqlCommands(sql.insert.vehicleDataReservedParams(params)), { method: 'parallel' })(next);
-    }
-
-    app.locals.flow(messageStoreFlow, { method: 'waterfall', eventLoop: true })(function(err, res) {
-        if (err) {
-            app.locals.log.error(err);
-        }
-        if (next) {
-            next(); //done
-        }
-    });
-}
-
 module.exports = {
     validatePost: validatePost,
-    updateVehicleDataReservedParams: updateVehicleDataReservedParams,
-    updateVehicleDataEnums: updateVehicleDataEnums,
     updateRpcSpec: updateRpcSpec,
 };
