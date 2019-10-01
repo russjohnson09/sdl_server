@@ -90,12 +90,26 @@ function insertVehicleDataReservedParams(vehicleDataReservedParams) {
     });
 }
 
-function insertVehicleDataEnums(enums) {
+function insertVehicleDataEnums(enums,rpc_spec_id) {
+    // "id" SERIAL NOT NULL,
+    //     "rpc_spec_id" INTEGER NOT NULL REFERENCES rpc_spec (id) ON UPDATE CASCADE ON DELETE CASCADE,
+    //     "element_type" TEXT NOT NULL, -- ENUM, STRUCT, FUNCTION
+    // "name" TEXT NOT NULL,
+    //     "since" TEXT,
+    //     "until" TEXT,
+    //     "deprecated" TEXT,
+    //     "removed" TEXT,
+    //     "internal_scope" TEXT,
+    //     "platform" TEXT,
+    //     "function_id" TEXT, -- actually functionID
+    // "message_type" TEXT, -- actually messagetype
+
+
     return enums.map(function(param) {
-        return sql.insert('vehicle_data_enums', 'id')
+        return sql.insert('rpc_spec_type', 'rpc_spec_id')
             .select
             (
-                `'${param}' AS id`
+                // `'${param}' AS id`
             )
             .where(
                 sql.not(
@@ -114,6 +128,7 @@ function insertVehicleDataEnums(enums) {
 
 module.exports = {
     insert: {
+        vehicleDataReservedParams: insertVehicleDataReservedParams,
         vehicleDataReservedParams: insertVehicleDataReservedParams,
         vehicleDataEnums: insertVehicleDataEnums,
     },
