@@ -4,6 +4,7 @@ const sql = require('./sql.js');
 const parseXml = require('xml2js').parseString;
 const request = require('request');
 const async = require('async');
+const _ = require('lodash');
 
 function validatePost(req, res) {
 }
@@ -12,66 +13,24 @@ function getRpcSpec(next) {
     request(
         {
             method: 'GET',
-            url: app.locals.config.githubLanguageSourceUrl
-        }, function(err, res, body) {
+            url: app.locals.config.rpcSpecXmlUrl
+        },
+        function(err, res, body) {
             next(err, body);
-        });
+        }
+    );
 }
 
-function extractParams(rpcSpec, next) {
-    const getVehicleDataResponse = rpcSpec.interface.function.find(function(elem) {
-        return elem['$'].name === 'GetVehicleData' && elem['$'].messagetype === 'request';
-    });
-    const params = getVehicleDataResponse.param
-        .map(function(param) {
-            return param['$'].name;
-        });
-    next(null, params);
-}
-
-function extractEnums(rpcSpec, next) {
-    const enums = rpcSpec.interface.enum.map(function(elem) {
-        return elem['$'].name;
-    });
-    next(null, enums);
-}
-
-function extractRpc(data, next) {
-    console.log(`extractRpc`);
-    //<interface name="SmartDeviceLink RAPI" version="6.0.0" minVersion="1.0" date="2019-03-19">
-    // "version" TEXT NOT NULL,
-    // "min_version" TEXT,
-    // "date" TEXT,
-    let spec = {
-        version: data.xml.interface.$.version,
-        min_version: data.xml.interface.$.minVersion,
-        date: data.xml.interface.$.date
+function extractRpcSpecVersion(data, next) {
+    data.rpcSpec = {
+        version: _.get(data.xml, "interface.$.version", null),
+        min_version: _.get(data.xml, "interface.$.minVersion", null),
+        date: _.get(data.xml, "interface.$.date", null)
     };
-
-    data.rpcSpec = spec;
-
-    // const enums = rpcSpec.interface.enum.map(function(elem) {
-    //     return elem['$'].name;
-    // });
-    next(null, data);
+    next(null,data);
 }
 
-// "id" SERIAL NOT NULL,
-//     "rpc_spec_id" INTEGER NOT NULL REFERENCES rpc_spec (id) ON UPDATE CASCADE ON DELETE CASCADE,
-//     "element_type" TEXT NOT NULL, -- ENUM, STRUCT, FUNCTION
-// "name" TEXT NOT NULL,
-//     "since" TEXT,
-//     "until" TEXT,
-//     "deprecated" TEXT,
-//     "removed" TEXT,
-//     "internal_scope" TEXT,
-//     "platform" TEXT,
-//     "function_id" TEXT, -- actually functionID
-// "message_type" TEXT, -- actually messagetype
-
-//loop function and structs.
 function extractRpcSpecTypes(data, next) {
-    // let keys = ['since','until','deprecated','removed','internal_scope','functionID','messagetype'];
     let mapping = {
         'name': 'name',
         'since': 'since',
@@ -83,27 +42,6 @@ function extractRpcSpecTypes(data, next) {
         'messagetype': 'message_type'
     };
 
-
-    //     "name" TEXT NOT NULL,
-//     "type" TEXT,
-//     "internal_name" TEXT,
-//     "root_screen" TEXT, -- actually rootscreen
-//      "mandatory" TEXT,
-//     "since" TEXT,
-//     "until" TEXT,
-//     "deprecated" TEXT,
-//     "removed" TEXT,
-//     "value" TEXT,
-//     "hex_value" TEXT, -- actually hexvalue
-// "min_length" TEXT, -- actually minlength
-// "max_length" TEXT, -- actually maxlength
-// "min_size" TEXT, -- actually minsize
-// "max_size" TEXT, -- actually maxsize
-// "min_value" TEXT, -- actually minvalue
-// "max_value" TEXT, -- actually maxvalue
-// "array" TEXT,
-//     "platform" TEXT,
-//     "def_value" TEXT, -- actually defvalue
     let paramMapping = {
         'name': 'name',
         'type': 'type',
@@ -114,90 +52,74 @@ function extractRpcSpecTypes(data, next) {
         'deprecated': 'deprecated',
         'removed': 'removed',
         'value': 'value',
-        'hex_value': 'hex_value',
-        'min_length': 'hex_value',
-        'max_length': 'hex_value',
-        'min_size': 'hex_value',
-        'max_size': 'hex_value',
-        'min_value': 'hex_value',
-        'max_value': 'hex_value',
+        'hexvalue': 'hex_value',
+        'minlength': 'min_length',
+        'maxlength': 'max_length',
+        'minsize': 'min_size',
+        'maxsize': 'max_size',
+        'minvalue': 'min_value',
+        'maxvalue': 'max_value',
         'array': 'array',
         'platform': 'platform',
         'defvalue': 'def_value',
     };
-    console.log(`extractRpcSpecTypes`);
-    //<interface name="SmartDeviceLink RAPI" version="6.0.0" minVersion="1.0" date="2019-03-19">
-    // "version" TEXT NOT NULL,
-    // "min_version" TEXT,
-    // "date" TEXT,
-    // let spec = {
-    //     version: data.xml.interface.$.version,
-    //     min_version: data.xml.interface.$.minVersion,
-    //     date: data.xml.interface.$.date
-    // };
-    //
-    // data.rpcSpec = spec;
-
-    // const enums = rpcSpec.interface.enum.map(function(elem) {
-    //     return elem['$'].name;
-    // });
 
     let rpcSpecTypes = [];
 
     data.rpcSpecParams = [];
 
-    let count = 0;
+    const enumerations = _.get(data, 'xml.interface.enum');
+
+    if (!enumerations) {
+        return next('enum not defined in the imported rpc spec');
+    }
+
     //extract enums
-    for (let enumeration of data.xml.interface.enum) {
+    for (let enumeration of enumerations) {
         let enumData = {
             element_type: 'ENUM',
         };
-        for (let key in mapping)
-        {
-            let dbName = mapping[key];
-            console.log(`enumeration`,enumeration,key,dbName);
-            enumData[mapping[key]] = enumeration.$[key];
 
+        const enumerationAttributes = _.get(enumeration,'$',{});
+
+        if (!enumerationAttributes['name']) {
+            return next('Enum must have a name defined.');
         }
-        console.log(`enumeration`,enumeration,enumData);
+        if (!enumeration['element']) {
+            return next('Enum must have element defined.');
+        }
 
-        // process.exit(1);
+        for (let key in mapping) {
+            enumData[mapping[key]] = _.get(enumerationAttributes, key, null);
+        }
 
-        rpcSpecTypes.push(
-            enumData
-        );
+        rpcSpecTypes.push(enumData);
 
-        for (let element of enumeration.element)
-        {
+
+        for (let element of enumeration.element) {
             let param = {
                 rpc_spec_type_name: enumData.name
             };
 
-            for (let key in paramMapping)
-            {
-                let dbName = mapping[key];
-                console.log(`enumeration`,element,key,dbName);
-                param[mapping[key]] = element.$[key];
+            const elementAttributes = _.get(element,'$',{});
+
+            if (!elementAttributes['name']) {
+                return next('Element of enum must have a name defined.');
+            }
+
+            for (let key in paramMapping) {
+                param[paramMapping[key]] = _.get(elementAttributes, key, null);
             }
 
             data.rpcSpecParams.push(param);
 
-
-
         }
 
-        count++;
-        if (count === 1)
-        {
-            break;
-        }
+        //TODO remove
         // break;
-
     }
 
     data.rpcSpecTypes = rpcSpecTypes;
-
-
 
     next(null, data);
 }
@@ -208,72 +130,51 @@ function updateRpcSpec(next) {
         async.waterfall(
             [
                 getRpcSpec,
-                function(rpcString,callback)
-                {
-                    parseXml(rpcString,function(err,xml) {
-                        callback(err,{xml: xml})
-                    })
+                function(rpcString, callback) {
+                    parseXml(rpcString, function(err, xml) {
+                        callback(err, { xml: xml });
+                    });
                 },
-                extractRpc,
-                extractRpcSpecTypes,
-                function(data,callback) {
+                extractRpcSpecVersion,
+                //check rpc version exists exit if already exists.
+                function(data, callback) {
                     console.log(data);
                     let rpcSpec = data.rpcSpec;
 
                     //TODO remove
-                    rpcSpec.version = Date.now() + "";
+                    rpcSpec.version = Date.now() + '';
 
-                    console.log(`insert spec`,rpcSpec);
-                    client.getOne(sql.insert.rpcSpec(rpcSpec),function(err,result) {
-                        console.log(`inserted`,err,result);
+                    console.log(`insert spec`, rpcSpec);
+                    client.getOne(sql.insert.rpcSpec(rpcSpec), function(err, result) {
+                        console.log(`inserted`, err, result);
                         data.rpcSpecInsert = result;
-                        callback(null,data);
-                    })
-                    // client.getOne(sql.getApp.base['uuidFilter'](req.body.uuid), callback);
-
-                    // callback(null,{
-                    //     rpcSpec: rpcSpec,
-                    // });
+                        callback(null, data);
+                    });
                 },
-                function(data,callback) {
-                    console.log(`insert rpc_spec_type`,data);
-                    client.getMany(sql.insert.rpcSpecType(data.rpcSpecInsert.id,data.rpcSpecTypes),function(err,result) {
-                        console.log(`inserted`,err,result);
-
-                        //function, enum, and struct
-                        //rpcSpecTypesByName populate
+                extractRpcSpecTypes,
+                function(data, callback) {
+                    console.log(`insert rpc_spec_type`, data);
+                    client.getMany(sql.insert.rpcSpecType(data.rpcSpecInsert.id, data.rpcSpecTypes), function(err, result) {
+                        console.log(`inserted`, err, result);
 
                         data.rpcSpecTypesByName = {};
 
-                        for (let rpcSpecType of result)
-                        {
+                        for (let rpcSpecType of result) {
                             data.rpcSpecTypesByName[rpcSpecType.name] = rpcSpecType;
                         }
-
-
-                        // data.rpcSpecInsert = result;
-                        callback(null,data);
+                        callback(null, data);
                     });
-                    // callback(null,data);
-                    // client.getOne(sql.getApp.base['uuidFilter'](req.body.uuid), callback);
                 },
                 function(data, callback) {
-                    // console.log(`rpcId`, rpcId);
-                    // console.log(`insert rpc_spec_type`,data);
-                    client.getOne(sql.insert.rpcSpecParam(data.rpcSpecParams,data.rpcSpecTypesByName),function(err,result) {
-                        console.log(`inserted`,err,result);
-
-                        // data.rpcSpecInsert = result;
-                        callback(null,data);
+                    client.getOne(sql.insert.rpcSpecParam(data.rpcSpecParams, data.rpcSpecTypesByName), function(err, result) {
+                        callback(err, data);
                     });
-                    callback(null);
                 }
-                // function(result, callback) {
-                //     client.getOne(sql.insertHybridPreference(req.body), callback);
-                // }
             ], callback);
     }, function(err, response) {
-        console.log({ err, response });
+        if (err) {
+            app.locals.log.error(err);
+        }
         next();
     });
 

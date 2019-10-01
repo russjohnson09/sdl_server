@@ -178,7 +178,7 @@ function getRpcSpec(next) {
     request(
         {
             method: 'GET',
-            url: app.locals.config.githubLanguageSourceUrl
+            url: app.locals.config.rpcSpecXmlUrl
         }, function(err, res, body) {
             next(err, body);
         });

@@ -177,73 +177,42 @@ function insertVehicleDataEnums(enums,rpc_spec_id) {
 // WITH ( OIDS = FALSE );
 
 //includes enum value elements.
-function insertRpcSpecParam(rpcSpecParams,rpcSpecTypeByName)
-{
-    console.log(`insertRpcSpecParam`,rpcSpecTypeByName);
-
+function insertRpcSpecParam(rpcSpecParams, rpcSpecTypeByName) {
     let ary = [];
-    for (let rpcSpecParam of rpcSpecParams)
-    {
-        if (rpcSpecParam.rpc_spec_type_name)
-        {
-            rpcSpecParam['id'] = rpcSpecTypeByName[rpcSpecParam.rpc_spec_type_name];
-            delete rpcSpecParam.rpc_spec_type_name;
-            let data = Object.assign({},rpcSpecParam);
-            ary.push(data);
+    for (let rpcSpecParam of rpcSpecParams) {
+        if (rpcSpecParam.rpc_spec_type_name) {
+            if (!rpcSpecTypeByName[rpcSpecParam.rpc_spec_type_name])
+            {
+                delete rpcSpecParam['rpc_spec_type_name'];
+            }
+            else {
+                rpcSpecParam['rpc_spec_type_id'] = rpcSpecTypeByName[rpcSpecParam.rpc_spec_type_name].id;
+
+                delete rpcSpecParam['rpc_spec_type_name'];
+
+            }
+            ary.push(rpcSpecParam);
         }
     }
 
     let result = sql.insert('rpc_spec_param', ary)
         .returning('*');
 
-    console.log(`insert`,result.toString());
+    console.log(`insert`, result.toString());
     return result;
 
 }
 
 function insertRpcSpecType(rpc_spec_id,rpcSpecTypes)
 {
-    console.log(`insertRpcSpecType`,rpcSpecTypes,rpc_spec_id)
-    // let data = {
-    //     rpc_spec_id: rpc_spec_id,
-    //     name: vehicleDataItem.name,
-    //     vehicle_data_group_id: vehicle_data_group_id,
-    //     parent_id: parent_id,
-    //     key: vehicleDataItem.key,
-    //     type: vehicleDataItem.type,
-    //     array: vehicleDataItem.array === true,
-    //     since: vehicleDataItem.since,
-    //     until: vehicleDataItem.until,
-    //     removed: vehicleDataItem.removed,
-    //     deprecated: vehicleDataItem.deprecated,
-    //     minvalue: vehicleDataItem.minvalue,
-    //     maxvalue: vehicleDataItem.maxvalue,
-    //     minsize: isNaN(parseInt(vehicleDataItem.minsize)) ? null : parseInt(vehicleDataItem.minsize),
-    //     maxsize: isNaN(parseInt(vehicleDataItem.maxsize)) ? null : parseInt(vehicleDataItem.maxsize),
-    //     minlength: isNaN(parseInt(vehicleDataItem.minlength)) ? null : parseInt(vehicleDataItem.minlength),
-    //     maxlength: isNaN(parseInt(vehicleDataItem.maxlength)) ? null : parseInt(vehicleDataItem.maxlength),
-    // };
-
-    let ary = [];
-
     for (let rpcSpecType of rpcSpecTypes)
     {
-        let data = {
-            rpc_spec_id: rpc_spec_id,
-        };
-
-        Object.assign(data,rpcSpecType);
-
-        ary.push(data);
+        rpcSpecType.rpc_spec_id = rpc_spec_id;
     }
 
-    console.log(`do insert`,ary);
-
-
-    let result = sql.insert('rpc_spec_type', ary)
+    let result = sql.insert('rpc_spec_type', rpcSpecTypes)
         .returning('*');
 
-    console.log(`insert`,result.toString());
     return result;
 }
 
