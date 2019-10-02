@@ -19,6 +19,5 @@ function insertVehicleData(obj, cb)
 }
 
 module.exports = {
-
     insertVehicleData: insertVehicleData,
 };

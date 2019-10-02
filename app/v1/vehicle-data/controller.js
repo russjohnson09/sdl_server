@@ -54,6 +54,13 @@ function get(req, res, next) {
     );
 }
 
+/**
+ * TODO validate parent_id is valid if given. Should be the most recent version.
+ * @param req
+ * @param res
+ * @param next
+ * @returns {*|void}
+ */
 function post(req, res, next) {
     helper.validatePost(req, res);
     if (res.parcel.message) {
@@ -61,14 +68,17 @@ function post(req, res, next) {
         return res.parcel.deliver();
     }
 
-    model.insertVehicleData(req.body, function(err) {
+    model.insertVehicleData(req.body, function(err, result) {
         if (err) {
             app.locals.log.error(err);
             res.parcel
                 .setMessage('Internal server error')
                 .setStatus(500);
         } else {
-            res.parcel.setStatus(200);
+            const responseData = { custom_vehicle_data: result };
+            res.parcel
+                .setData(responseData)
+                .setStatus(200);
         }
         res.parcel.deliver();
     });

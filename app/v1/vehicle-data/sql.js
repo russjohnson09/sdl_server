@@ -33,7 +33,8 @@ function getVehicleData(isProduction) {
             .from('view_custom_vehicle_data')
             .where({
                        status: 'PRODUCTION'
-                   });
+                   })
+            .orderBy('view_custom_vehicle_data.id');
     } else { //if staging, select the most recently update custom_vehicle_data record regardless of status.
         let sub = sql.select('max(id) AS id')
             .from('view_custom_vehicle_data')
@@ -43,7 +44,8 @@ function getVehicleData(isProduction) {
             .from('(' + sub + ') sub')
             .innerJoin('view_custom_vehicle_data', {
                 'view_custom_vehicle_data.id': 'sub.id'
-            });
+            })
+            .orderBy('view_custom_vehicle_data.id');
     }
 
     return statement;
