@@ -34,7 +34,7 @@ function getVehicleDataParamTypes(req, res, next) {
     async.waterfall(
         [
             function(cb) {
-                model.getVehicleDataParamTypes(cb);
+                helper.getVehicleDataParamTypes(cb);
             },
         ],
         function(err, vehicle_data_types) {
@@ -61,7 +61,7 @@ function get(req, res, next) {
     async.waterfall(
         [
             function(cb) {
-                model.getVehicleData(isProduction, cb);
+                helper.getVehicleData(isProduction, cb);
             },
         ],
         function(err, vehicle_data) {

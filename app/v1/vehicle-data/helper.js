@@ -6,6 +6,92 @@ const request = require('request');
 const async = require('async');
 const _ = require('lodash');
 
+function getVehicleData(isProduction, cb) {
+    async.waterfall(
+        [
+            //TODO use bind instead?
+            function(callback) {
+                app.locals.db.sqlCommand(sql.getVehicleData(isProduction), function(err, res) {
+                    callback(null, res);
+                });
+            },
+            function(data, callback) {
+                console.log(`got data`, data);
+
+                data = [
+                    {
+                        'id': 5,
+                        'parent_id': 3,
+                        'status': 'STAGING',
+                        'name': 'data child',
+                        'type': 'String',
+                        'key': null,
+                        'mandatory': null,
+                        'min_length': null,
+                        'max_length': null,
+                        'min_size': null,
+                        'max_size': null,
+                        'min_value': null,
+                        'max_value': null,
+                        'array': null,
+                        'is_deleted': false,
+                        'created_ts': '2019-10-02T22:05:59.507Z',
+                        'updated_ts': '2019-10-02T22:05:59.507Z'
+                    },
+                    {
+                        'id': 3,
+                        'parent_id': null,
+                        'status': 'STAGING',
+                        'name': 'data',
+                        'type': 'Struct',
+                        'key': null,
+                        'mandatory': null,
+                        'min_length': null,
+                        'max_length': null,
+                        'min_size': null,
+                        'max_size': null,
+                        'min_value': null,
+                        'max_value': null,
+                        'array': null,
+                        'is_deleted': false,
+                        'created_ts': '2019-10-02T22:05:16.211Z',
+                        'updated_ts': '2019-10-02T22:05:16.211Z'
+                    }
+                ];
+
+                //vd by id
+                let vehicleDataById = {};
+                for (let customVehicleDataItem of data)
+                {
+                    vehicleDataById[customVehicleDataItem.id] = customVehicleDataItem;
+                }
+
+                let result = [];
+                for (let customVehicleDataItem of data)
+                {
+                    if (customVehicleDataItem.parent_id)
+                    {
+                        vehicleDataById[customVehicleDataItem.parent_id].params = customVehicleDataItem;
+                    }
+                    else {
+                        result.push(customVehicleDataItem);
+
+                    }
+
+                }
+
+                callback(null,result);
+
+                //create nested data.
+
+            }
+        ], function(err, response) {
+            console.log(`got response`, err, response);
+            cb(err, response);
+        }
+    );
+}
+
 function getRpcSpec(next) {
     request(
         {
@@ -215,7 +301,8 @@ function extractRpcSpecTypes(data, next) {
     next(null, data);
 }
 
-function updateRpcSpec(next = function(){}) {
+function updateRpcSpec(next = function() {
+}) {
 
     app.locals.db.runAsTransaction(function(client, callback) {
         async.waterfall(
@@ -277,8 +364,7 @@ function updateRpcSpec(next = function(){}) {
             } else {
                 app.locals.log.error(err);
             }
-        }
-        else {
+        } else {
 
             app.locals.log.info('Rpc spec updated');
         }
@@ -288,5 +374,6 @@ function updateRpcSpec(next = function(){}) {
 }
 
 module.exports = {
+    getVehicleData: getVehicleData,
     updateRpcSpec: updateRpcSpec,
 };

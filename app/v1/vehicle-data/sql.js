@@ -18,6 +18,18 @@ function getLatestRpcSpec() {
         .limit(1);
 }
 
+/**
+ * Returns a postgres sql query object to run against
+ * using the postgres sdl_server/custom/databases/postgres/index.js
+ * module.
+ * @param isProduction
+ */
+function getVehicleData(isProduction)
+{
+    return sql.select('*')
+        .from('view_custom_vehicle_data');
+}
+
 
 
 function insertRpcSpecParam(rpcSpecParams, rpcSpecTypeByName) {
@@ -46,6 +58,7 @@ function insertRpcSpecType(rpc_spec_id, rpcSpecTypes) {
 }
 
 module.exports = {
+    getVehicleData: getVehicleData,
     insertRpcSpec: insertRpcSpec,
     insertRpcSpecType: insertRpcSpecType,
     insertRpcSpecParam: insertRpcSpecParam,
