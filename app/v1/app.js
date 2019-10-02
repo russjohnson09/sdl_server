@@ -93,13 +93,10 @@ function exposeRoutes () {
 	app.post('/module/promote', auth.validateAuth, moduleConfig.promote);
 	app.get('/about', auth.validateAuth, about.getInfo);
     //begin vehicle data routes
-    // app.post('/vehicle-data', auth.validateAuth, vehicleData.post);
+    app.post('/vehicle-data', auth.validateAuth, vehicleData.post);
     app.get('/vehicle-data', auth.validateAuth, vehicleData.get);
     // app.get('/vehicle-data/reserved-params', auth.validateAuth, vehicleData.getVehicleDataReservedParams);
     app.post('/vehicle-data/promote', auth.validateAuth, vehicleData.promote);
-
-    //TODO remove
-	app.get('/vehicle-data/promote', auth.validateAuth, vehicleData.promote);
 
 }
 

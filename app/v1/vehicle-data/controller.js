@@ -23,8 +23,8 @@ function getVehicleDataReservedParams(req, res, next) {
             return res.parcel
                 .setStatus(200)
                 .setData({
-                    reserved_params: reserved_params
-                })
+                             reserved_params: reserved_params
+                         })
                 .deliver();
         }
     );
@@ -48,8 +48,8 @@ function getVehicleDataParamTypes(req, res, next) {
             return res.parcel
                 .setStatus(200)
                 .setData({
-                    vehicle_data_types: vehicle_data_types
-                })
+                             vehicle_data_types: vehicle_data_types
+                         })
                 .deliver();
         }
     );
@@ -61,7 +61,7 @@ function get(req, res, next) {
     async.waterfall(
         [
             function(cb) {
-                helper.getVehicleData(isProduction,req.query.id,
+                helper.getVehicleData(isProduction, req.query.id,
                                       cb);
             },
         ],
@@ -76,21 +76,21 @@ function get(req, res, next) {
             return res.parcel
                 .setStatus(200)
                 .setData({
-                     custom_vehicle_data: custom_vehicle_data
-                 })
+                             custom_vehicle_data: custom_vehicle_data
+                         })
                 .deliver();
         }
     );
 }
 
-function post(isProduction, req, res, next) {
+function post(req, res, next) {
     helper.validatePost(req, res);
     if (res.parcel.message) {
         app.locals.log.error(res.parcel.message);
         return res.parcel.deliver();
     }
 
-    model.insertVehicleData(isProduction, req.body, function(err) {
+    model.insertVehicleData(req.body, function(err) {
         if (err) {
             app.locals.log.error(err);
             res.parcel
@@ -112,34 +112,7 @@ function post(isProduction, req, res, next) {
  * @param next
  * @returns {*|void}
  */
-function promote (req, res, next) {
-    // helper.validatePromote(req, res);
-    // //If validate comes up with some error exit before promoting.
-    // if (res.parcel.message) {
-    //     return res.parcel.deliver();
-    // }
-    //make sure the data in id is an array in the end
-    // if (check.number(req.body.id)) {
-    //     req.body.id = [req.body.id];
-    // }
-
-    // const getFuncGroupsFlow = flow(req.body.id.map(function (id) {
-    //     return helper.createFuncGroupFlow('idFilter', id, true);
-    // }), {method: 'parallel', eventLoop: true});
-    //
-    // const getAndInsertFlow = app.locals.flow([
-    //                                              getFuncGroupsFlow,
-    //                                              function (funcGroups, next) {
-    //                                                  const notNullGroups = funcGroups.map(function (funcGroup) {
-    //                                                      return funcGroup[0];
-    //                                                  }).filter(function (elem) {
-    //                                                      return elem;
-    //                                                  });
-    //                                                  //format the functional groups so it's a single array
-    //                                                  next(null, notNullGroups);
-    //                                              },
-    //                                              model.insertFunctionalGroupsWithTransaction.bind(null, true)
-    //                                          ], {method: 'waterfall'});
+function promote(req, res, next) {
 
     async.waterfall(
         [
@@ -172,10 +145,9 @@ function promote (req, res, next) {
 
 }
 
-
 module.exports = {
     get: get,
-    post: post.bind(null, false),
+    post: post,
     promote: promote,
     updateVehicleDataReservedParams: helper.updateVehicleDataReservedParams,
     updateVehicleDataEnums: helper.updateVehicleDataEnums,

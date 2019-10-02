@@ -6,12 +6,7 @@ const request = require('request');
 const async = require('async');
 const _ = require('lodash');
 
-function validatePromote(req, res) {
-    if (!check.array(req.body.id) && !check.number(req.body.id)) {
-        res.parcel
-            .setStatus(400)
-            .setMessage('Required: id (array) or id (number)');
-    }
+function validatePost(req, res) {
     return;
 }
 

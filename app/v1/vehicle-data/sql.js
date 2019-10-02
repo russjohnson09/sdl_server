@@ -32,12 +32,12 @@ function getVehicleData(isProduction) {
         statement = sql.select('view_custom_vehicle_data.*')
             .from('view_custom_vehicle_data')
             .where({
-                            status: 'PRODUCTION'
-                        });
+                       status: 'PRODUCTION'
+                   });
     } else { //if staging, select the most recently update custom_vehicle_data record regardless of status.
         let sub = sql.select('max(id) AS id')
             .from('view_custom_vehicle_data')
-            .groupBy(['view_custom_vehicle_data.name','view_custom_vehicle_data.parent_id']);
+            .groupBy(['view_custom_vehicle_data.name', 'view_custom_vehicle_data.parent_id']);
 
         statement = sql.select('view_custom_vehicle_data.*')
             .from('(' + sub + ') sub')
@@ -74,8 +74,26 @@ function insertRpcSpecType(rpc_spec_id, rpcSpecTypes) {
         .returning('*');
 }
 
-function insertProductionCustomVehicleData(obj)
-{
+function insertStagingCustomVehicleData(obj) {
+    let data = {
+        parent_id: obj.parent_id,
+        status: 'STAGING',
+        name: obj.name,
+        type: obj.type,
+        key: obj.key,
+        mandatory: obj.mandatory,
+        min_length: obj.min_length,
+        max_length: obj.max_length,
+        min_size: obj.min_size,
+        max_size: obj.max_size,
+        max_value: obj.max_value,
+        array: obj.array,
+    };
+    return sql.insert('custom_vehicle_data', data)
+        .returning('*');
+}
+
+function insertProductionCustomVehicleData(obj) {
     //parent_id should be updated before reaching this point.
 
     // "id" SERIAL NOT NULL,
@@ -112,7 +130,7 @@ function insertProductionCustomVehicleData(obj)
         //TODO should created be based on the original record?
         // created: obj.created,
     };
-    console.log(`insert data`,data);
+    console.log(`insert data`, data);
     return sql.insert('custom_vehicle_data', data)
         .returning('*');
 }
@@ -124,4 +142,5 @@ module.exports = {
     insertRpcSpecParam: insertRpcSpecParam,
     getLatestRpcSpec: getLatestRpcSpec,
     insertProductionCustomVehicleData: insertProductionCustomVehicleData,
+    insertStagingCustomVehicleData: insertStagingCustomVehicleData,
 };
