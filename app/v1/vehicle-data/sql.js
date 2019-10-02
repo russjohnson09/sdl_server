@@ -7,8 +7,7 @@ function insertRpcSpec(rpcSpec) {
         min_version: rpcSpec.min_version,
         date: rpcSpec.date,
     };
-    return sql.insert('rpc_spec', data)
-        .returning('*');
+    return sql.insert('rpc_spec', data).returning('*');
 }
 
 function getLatestRpcSpec() {
@@ -31,9 +30,7 @@ function getVehicleData(isProduction) {
     if (isProduction) {
         statement = sql.select('view_custom_vehicle_data.*')
             .from('view_custom_vehicle_data')
-            .where({
-                       status: 'PRODUCTION'
-                   })
+            .where({ status: 'PRODUCTION' })
             .orderBy('view_custom_vehicle_data.id');
     } else { //if staging, select the most recently update custom_vehicle_data record regardless of status.
         let sub = sql.select('max(id) AS id')
@@ -91,8 +88,7 @@ function insertStagingCustomVehicleData(obj) {
         max_value: obj.max_value,
         array: obj.array,
     };
-    return sql.insert('custom_vehicle_data', data)
-        .returning('*');
+    return sql.insert('custom_vehicle_data', data).returning('*');
 }
 
 function insertProductionCustomVehicleData(obj) {
@@ -110,8 +106,7 @@ function insertProductionCustomVehicleData(obj) {
         max_value: obj.max_value,
         array: obj.array,
     };
-    return sql.insert('custom_vehicle_data', data)
-        .returning('*');
+    return sql.insert('custom_vehicle_data', data).returning('*');
 }
 
 module.exports = {
