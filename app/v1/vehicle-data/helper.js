@@ -11,15 +11,11 @@ function validatePost(req, res) {
 }
 
 function promoteCustomVehicleData(client, obj, parentIdMapping = {}) {
-    console.log(`get promoteCustomVehicleData`);
     return function(cb) {
-        console.log(`call promoteCustomVehicleData`, obj);
-
         let originalParentId = obj.parent_id;
         if (obj.parent_id) {
             let parent_id = parentIdMapping[obj.parent_id];
-            if (!parent_id)
-            {
+            if (!parent_id) {
                 return cb(`Orphaned record`);
             }
             obj.parent_id = parent_id;
@@ -30,50 +26,37 @@ function promoteCustomVehicleData(client, obj, parentIdMapping = {}) {
             [
                 function(callback) {
                     //skip update if status is on production and not a child that has had its parentId changed.
-                    if (obj.status === 'PRODUCTION' && !(obj.parent_id && obj.parent_id != originalParentId ))
-                    {
+                    if (obj.status === 'PRODUCTION' && !(obj.parent_id && obj.parent_id != originalParentId)) {
                         parentIdMapping[obj.id] = obj.id;
-                        return callback(null)
+                        return callback(null);
                     }
                     client.getOne(sql.insertProductionCustomVehicleData(obj), function(err, result) {
-                        if (!err && result)
-                        {
+                        if (!err && result) {
                             parentIdMapping[obj.id] = result.id;
                         }
                         callback(err, result);
                     });
                 }
             ], function(err) {
-                if (err)
-                {
+                if (err) {
                     return cb(err);
                 }
-
 
                 //update children.
                 if (obj.params && obj.params.length > 0) {
                     let functions = [];
                     for (let param of obj.params) {
-                        functions.push(promoteCustomVehicleData(client,param,parentIdMapping))
+                        functions.push(promoteCustomVehicleData(client, param, parentIdMapping));
                     }
-                    //TODO parallel.
-                    console.log(`update children`);
-                    return async.waterfall(functions,function(err) {
-                        console.log(`updated children`,err);
+                    return async.waterfall(functions, function(err) {
                         cb(err);
                     });
-                }
-                else {
+                } else {
                     cb(err);
                 }
 
-            });
-
-
-        //promote parent if required
-
-        // cb();
-
+            }
+        );
     };
 }
 
@@ -90,8 +73,7 @@ function promoteCustomVehicleData(client, obj, parentIdMapping = {}) {
  *
  * @param cb
  */
-function promote(cb)
-{
+function promote(cb) {
     app.locals.db.runAsTransaction(function(client, callback) {
         async.waterfall(
             [
@@ -112,11 +94,9 @@ function promote(cb)
                     for (let customVehicleDataItem of data) {
                         if (customVehicleDataItem.parent_id) {
                             //old record not included.
-                            if (!vehicleDataById[customVehicleDataItem.parent_id])
-                            {
+                            if (!vehicleDataById[customVehicleDataItem.parent_id]) {
                                 continue;
-                            }
-                            else {
+                            } else {
                                 vehicleDataById[customVehicleDataItem.parent_id].params.push(customVehicleDataItem);
                             }
                         } else {
@@ -126,14 +106,12 @@ function promote(cb)
                     callback(null, result);
                 },
                 //insert data
-                function(data,callback)
-                {
+                function(data, callback) {
                     let functions = [];
                     for (let customVehicleDataItem of data) {
-                        functions.push(promoteCustomVehicleData(client,customVehicleDataItem))
+                        functions.push(promoteCustomVehicleData(client, customVehicleDataItem));
                     }
-                    //TODO parallel.
-                    async.waterfall(functions,callback)
+                    async.waterfall(functions, callback);
                 }
             ], callback
         );
@@ -150,82 +128,12 @@ function promote(cb)
 function getVehicleData(isProduction, id, cb) {
     async.waterfall(
         [
-            //TODO use bind instead?
             function(callback) {
                 app.locals.db.sqlCommand(sql.getVehicleData(isProduction), function(err, res) {
                     callback(null, res);
                 });
             },
             function(data, callback) {
-                console.log(`got data`, data);
-
-                let exampleData = [
-                    {
-                        'id': 5,
-                        'parent_id': 3,
-                        'status': 'STAGING',
-                        'name': 'data child',
-                        'type': 'String',
-                        'key': 'OEM_KEY1',
-                        'mandatory': 'false',
-                        //string length 1 - 100
-                        'min_length': '1',
-                        'max_length': '100',
-                        'min_size': null,
-                        'max_size': null,
-                        'min_value': null,
-                        'max_value': null,
-                        'array': 'false',
-                        'is_deleted': false,
-                        'created_ts': '2019-10-02T22:05:59.507Z',
-                        'updated_ts': '2019-10-02T22:05:59.507Z'
-                    },
-                    {
-                        'id': 3,
-                        'parent_id': null,
-                        'status': 'STAGING',
-                        'name': 'data',
-                        'type': 'Struct',
-                        'key': 'OEM_KEY2',
-                        'mandatory': 'false',
-                        'min_length': null,
-                        'max_length': null,
-                        'min_size': null,
-                        'max_size': null,
-                        'min_value': null,
-                        'max_value': null,
-                        'array': 'false',
-                        'is_deleted': false,
-                        'created_ts': '2019-10-02T22:05:16.211Z',
-                        'updated_ts': '2019-10-02T22:05:16.211Z'
-                    },
-                    {
-                        'id': 6,
-                        'parent_id': null,
-                        'status': 'STAGING',
-                        'name': 'data2',
-                        'type': 'String',
-                        'key': 'OEM_KEY4',
-                        'mandatory': 'false',
-                        'min_length': '1',
-                        'max_length': '100',
-                        'min_size': '0',
-                        'max_size': '10',
-                        'min_value': null,
-                        'max_value': null,
-                        'array': 'true',
-                        'is_deleted': false,
-                        'created_ts': '2019-10-02T22:05:16.211Z',
-                        'updated_ts': '2019-10-02T22:05:16.211Z'
-                    }
-                ];
-
-                //TODO remove.
-                if (false) {
-                    data = exampleData;
-                }
-
-                //vd by id
                 let vehicleDataById = {};
                 for (let customVehicleDataItem of data) {
                     vehicleDataById[customVehicleDataItem.id] = customVehicleDataItem;
@@ -236,17 +144,14 @@ function getVehicleData(isProduction, id, cb) {
                 for (let customVehicleDataItem of data) {
                     if (customVehicleDataItem.parent_id) {
                         //if we are filtering by id the parent will not be included.
-                        if (vehicleDataById[customVehicleDataItem.parent_id])
-                        {
+                        if (vehicleDataById[customVehicleDataItem.parent_id]) {
                             vehicleDataById[customVehicleDataItem.parent_id].params.push(customVehicleDataItem);
                         }
 
-                        if (id && id == customVehicleDataItem.id)
-                        {
+                        if (id && id == customVehicleDataItem.id) {
                             result.push(customVehicleDataItem);
                         }
                     } else {
-                        console.log({id,customVehicleDataItem});
                         if (!id || id == customVehicleDataItem.id) {
                             result.push(customVehicleDataItem);
                         }
@@ -254,14 +159,9 @@ function getVehicleData(isProduction, id, cb) {
                     }
 
                 }
-
                 callback(null, result);
-
-                //create nested data.
-
             }
         ], function(err, response) {
-            console.log(`got response`, err, response);
             cb(err, response);
         }
     );
@@ -549,6 +449,7 @@ function updateRpcSpec(next = function() {
 }
 
 module.exports = {
+    validatePost: validatePost,
     promote: promote,
     getVehicleData: getVehicleData,
     updateRpcSpec: updateRpcSpec,

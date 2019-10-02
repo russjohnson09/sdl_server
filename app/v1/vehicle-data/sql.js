@@ -94,25 +94,6 @@ function insertStagingCustomVehicleData(obj) {
 }
 
 function insertProductionCustomVehicleData(obj) {
-    //parent_id should be updated before reaching this point.
-
-    // "id" SERIAL NOT NULL,
-    // "parent_id" INTEGER REFERENCES custom_vehicle_data (id) ON UPDATE CASCADE ON DELETE CASCADE,
-    // "status" edit_status NOT NULL DEFAULT 'STAGING'::edit_status,
-    // "name" TEXT NOT NULL,
-    // "type" TEXT,
-    // "key" TEXT, -- OEM Data Reference string (proprietary)\
-    // "mandatory" TEXT,
-    // "min_length" TEXT, -- actually minlength
-    // "max_length" TEXT, -- actually maxlength
-    // "min_size" TEXT, -- actually minsize
-    // "max_size" TEXT, -- actually maxsize
-    // "min_value" TEXT, -- actually minvalue
-    // "max_value" TEXT, -- actually maxvalue
-    // "array" TEXT,
-    // "is_deleted" BOOLEAN NOT NULL DEFAULT false,
-    // "created_ts" TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT now(),
-    // "updated_ts" TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT now(),
     let data = {
         parent_id: obj.parent_id,
         status: 'PRODUCTION',
@@ -126,11 +107,7 @@ function insertProductionCustomVehicleData(obj) {
         max_size: obj.max_size,
         max_value: obj.max_value,
         array: obj.array,
-
-        //TODO should created be based on the original record?
-        // created: obj.created,
     };
-    console.log(`insert data`, data);
     return sql.insert('custom_vehicle_data', data)
         .returning('*');
 }
