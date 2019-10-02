@@ -61,7 +61,8 @@ function get(req, res, next) {
     async.waterfall(
         [
             function(cb) {
-                helper.getVehicleData(isProduction, cb);
+                helper.getVehicleData(isProduction,req.query.id,
+                                      cb);
             },
         ],
         function(err, custom_vehicle_data) {

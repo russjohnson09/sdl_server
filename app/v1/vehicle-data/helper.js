@@ -6,7 +6,13 @@ const request = require('request');
 const async = require('async');
 const _ = require('lodash');
 
-function getVehicleData(isProduction, cb) {
+/**
+ * Returns a list of custom vehicle data items filtered by status and optionally by id.
+ * @param isProduction - If true return status = PRODUCTION otherwise status = STAGING
+ * @param id - return only this id and child params.
+ * @param cb
+ */
+function getVehicleData(isProduction, id, cb) {
     async.waterfall(
         [
             //TODO use bind instead?
@@ -18,23 +24,23 @@ function getVehicleData(isProduction, cb) {
             function(data, callback) {
                 console.log(`got data`, data);
 
-                data = [
+                let exampleData = [
                     {
                         'id': 5,
                         'parent_id': 3,
                         'status': 'STAGING',
                         'name': 'data child',
                         'type': 'String',
-                        'key': "OEM_KEY1",
-                        'mandatory': "false",
+                        'key': 'OEM_KEY1',
+                        'mandatory': 'false',
                         //string length 1 - 100
-                        'min_length': "1",
-                        'max_length': "100",
+                        'min_length': '1',
+                        'max_length': '100',
                         'min_size': null,
                         'max_size': null,
                         'min_value': null,
                         'max_value': null,
-                        'array': "false",
+                        'array': 'false',
                         'is_deleted': false,
                         'created_ts': '2019-10-02T22:05:59.507Z',
                         'updated_ts': '2019-10-02T22:05:59.507Z'
@@ -45,43 +51,76 @@ function getVehicleData(isProduction, cb) {
                         'status': 'STAGING',
                         'name': 'data',
                         'type': 'Struct',
-                        'key': "OEM_KEY2",
-                        'mandatory': "false",
+                        'key': 'OEM_KEY2',
+                        'mandatory': 'false',
                         'min_length': null,
                         'max_length': null,
                         'min_size': null,
                         'max_size': null,
                         'min_value': null,
                         'max_value': null,
-                        'array': "false",
+                        'array': 'false',
+                        'is_deleted': false,
+                        'created_ts': '2019-10-02T22:05:16.211Z',
+                        'updated_ts': '2019-10-02T22:05:16.211Z'
+                    },
+                    {
+                        'id': 6,
+                        'parent_id': null,
+                        'status': 'STAGING',
+                        'name': 'data2',
+                        'type': 'String',
+                        'key': 'OEM_KEY4',
+                        'mandatory': 'false',
+                        'min_length': '1',
+                        'max_length': '100',
+                        'min_size': '0',
+                        'max_size': '10',
+                        'min_value': null,
+                        'max_value': null,
+                        'array': 'true',
                         'is_deleted': false,
                         'created_ts': '2019-10-02T22:05:16.211Z',
                         'updated_ts': '2019-10-02T22:05:16.211Z'
                     }
                 ];
 
+                //TODO remove.
+                if (false) {
+                    data = exampleData;
+                }
+
                 //vd by id
                 let vehicleDataById = {};
-                for (let customVehicleDataItem of data)
-                {
+                for (let customVehicleDataItem of data) {
                     vehicleDataById[customVehicleDataItem.id] = customVehicleDataItem;
+                    customVehicleDataItem.params = [];
                 }
 
                 let result = [];
-                for (let customVehicleDataItem of data)
-                {
-                    if (customVehicleDataItem.parent_id)
-                    {
-                        vehicleDataById[customVehicleDataItem.parent_id].params = customVehicleDataItem;
-                    }
-                    else {
-                        result.push(customVehicleDataItem);
+                for (let customVehicleDataItem of data) {
+                    if (customVehicleDataItem.parent_id) {
+                        //if we are filtering by id the parent will not be included.
+                        if (vehicleDataById[customVehicleDataItem.parent_id])
+                        {
+                            vehicleDataById[customVehicleDataItem.parent_id].params.push(customVehicleDataItem);
+                        }
+
+                        if (id && id == customVehicleDataItem.id)
+                        {
+                            result.push(customVehicleDataItem);
+                        }
+                    } else {
+                        console.log({id,customVehicleDataItem});
+                        if (!id || id == customVehicleDataItem.id) {
+                            result.push(customVehicleDataItem);
+                        }
 
                     }
 
                 }
 
-                callback(null,result);
+                callback(null, result);
 
                 //create nested data.
 

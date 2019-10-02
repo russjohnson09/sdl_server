@@ -24,13 +24,22 @@ function getLatestRpcSpec() {
  * module.
  * @param isProduction
  */
-function getVehicleData(isProduction)
-{
-    return sql.select('*')
+function getVehicleData(isProduction) {
+    let statement = sql.select('*')
         .from('view_custom_vehicle_data');
+
+    if (isProduction) {
+        statement.where({
+                            status: 'PRODUCTION'
+                        });
+    } else {
+        statement.where({
+                            status: 'STAGING'
+                        });
+    }
+
+    return statement;
 }
-
-
 
 function insertRpcSpecParam(rpcSpecParams, rpcSpecTypeByName) {
     let ary = [];
