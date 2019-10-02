@@ -25,17 +25,25 @@ function getLatestRpcSpec() {
  * @param isProduction
  */
 function getVehicleData(isProduction) {
-    let statement = sql.select('*')
-        .from('view_custom_vehicle_data');
 
+    let statement;
+    //if looking for production just filter on the status.
     if (isProduction) {
-        statement.where({
+        statement = sql.select('view_custom_vehicle_data.*')
+            .from('view_custom_vehicle_data')
+            .where({
                             status: 'PRODUCTION'
                         });
-    } else {
-        statement.where({
-                            status: 'STAGING'
-                        });
+    } else { //if staging, select the most recently update custom_vehicle_data record regardless of status.
+        let sub = sql.select('max(id) AS id')
+            .from('view_custom_vehicle_data')
+            .groupBy(['view_custom_vehicle_data.name','view_custom_vehicle_data.parent_id']);
+
+        statement = sql.select('view_custom_vehicle_data.*')
+            .from('(' + sub + ') sub')
+            .innerJoin('view_custom_vehicle_data', {
+                'view_custom_vehicle_data.id': 'sub.id'
+            });
     }
 
     return statement;

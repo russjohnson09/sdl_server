@@ -105,10 +105,49 @@ function post(isProduction, req, res, next) {
 
 }
 
+function promoteIds (req, res, next) {
+    helper.validatePromote(req, res);
+    //If validate comes up with some error exit before promoting.
+    if (res.parcel.message) {
+        return res.parcel.deliver();
+    }
+    //make sure the data in id is an array in the end
+    if (check.number(req.body.id)) {
+        req.body.id = [req.body.id];
+    }
+
+    const getFuncGroupsFlow = flow(req.body.id.map(function (id) {
+        return helper.createFuncGroupFlow('idFilter', id, true);
+    }), {method: 'parallel', eventLoop: true});
+
+    const getAndInsertFlow = app.locals.flow([
+                                                 getFuncGroupsFlow,
+                                                 function (funcGroups, next) {
+                                                     const notNullGroups = funcGroups.map(function (funcGroup) {
+                                                         return funcGroup[0];
+                                                     }).filter(function (elem) {
+                                                         return elem;
+                                                     });
+                                                     //format the functional groups so it's a single array
+                                                     next(null, notNullGroups);
+                                                 },
+                                                 model.insertFunctionalGroupsWithTransaction.bind(null, true)
+                                             ], {method: 'waterfall'});
+
+    getAndInsertFlow(function () {
+        cache.deleteCacheData(true, app.locals.version, cache.policyTableKey);
+        res.parcel
+            .setStatus(200)
+            .deliver(); //done
+    });
+
+}
+
+
 module.exports = {
     get: get,
     post: post.bind(null, false),
-    promote: post.bind(null, true),
+    promote: promoteIds,
     updateVehicleDataReservedParams: helper.updateVehicleDataReservedParams,
     updateVehicleDataEnums: helper.updateVehicleDataEnums,
     getVehicleDataReservedParams: getVehicleDataReservedParams,
