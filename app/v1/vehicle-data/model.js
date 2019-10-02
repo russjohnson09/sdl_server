@@ -233,21 +233,22 @@ function getVehicleDataParamTypes(cb) {
 }
 
 function getVehicleDataReservedParams(cb) {
-    let query = `SELECT id
-                 FROM vehicle_data_reserved_params;`;
-
-    return db.getMany(query, function(err, results) {
-        if (err) {
-            return cb(err);
-        }
-
-        let params = results.map(function(el) {
-            return el.id;
-        });
-
-        return cb(null, params);
-
-    });
+    return cb(null,[]);
+    // let query = `SELECT id
+    //              FROM vehicle_data_reserved_params;`;
+    //
+    // return db.getMany(query, function(err, results) {
+    //     if (err) {
+    //         return cb(err);
+    //     }
+    //
+    //     let params = results.map(function(el) {
+    //         return el.id;
+    //     });
+    //
+    //     return cb(null, params);
+    //
+    // });
 }
 
 //store the information using a SQL transaction
