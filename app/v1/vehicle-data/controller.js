@@ -64,7 +64,7 @@ function get(req, res, next) {
                 helper.getVehicleData(isProduction, cb);
             },
         ],
-        function(err, vehicle_data) {
+        function(err, custom_vehicle_data) {
             if (err) {
                 app.locals.log.error(err);
                 return res.parcel
@@ -75,7 +75,7 @@ function get(req, res, next) {
             return res.parcel
                 .setStatus(200)
                 .setData({
-                     vehicle_data: vehicle_data
+                     custom_vehicle_data: custom_vehicle_data
                  })
                 .deliver();
         }
