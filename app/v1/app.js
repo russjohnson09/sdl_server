@@ -97,6 +97,9 @@ function exposeRoutes () {
     app.get('/vehicle-data', auth.validateAuth, vehicleData.get);
     app.post('/vehicle-data/promote', auth.validateAuth, vehicleData.promote);
 
+	// app.get('/vehicle-data/template', auth.validateAuth, vehicleData.post);
+
+
 }
 
 //do not allow routes to be exposed until these async functions are completed

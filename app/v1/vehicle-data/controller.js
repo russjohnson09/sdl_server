@@ -68,42 +68,48 @@ function post(req, res, next) {
         return res.parcel.deliver();
     }
 
-    //
-    // async.waterfall(
-    //     [
-    //         function(cb) {
-    //             helper.insertCustomVehicleDataItem(req.body,cb);
-    //         },
-    //     ],
-    //     function(err) {
-    //         if (err) {
-    //             app.locals.log.error(err);
-    //             return res.parcel
-    //                 .setStatus(500)
-    //                 .setMessage('Internal server error')
-    //                 .deliver();
-    //         }
-    //         return res.parcel
-    //             .setStatus(200)
-    //             .deliver();
-    //     }
-    // );
+
+    async.waterfall(
+        [
+            function(cb) {
+                app.locals.db.runAsTransaction(function(client, callback) {
+                    helper.insertCustomVehicleDataItem(client,req.body, callback);
+                },cb)
+            },
+        ],
+        function(err,result) {
+            if (err) {
+                app.locals.log.error(err);
+                return res.parcel
+                    .setStatus(500)
+                    .setMessage('Internal server error')
+                    .deliver();
+            }
+            console.log({result});
+                    const responseData = { custom_vehicle_data: [ result ] };
+
+            return res.parcel
+                .setData(responseData)
+                .setStatus(200)
+                .deliver();
+        }
+    );
 
     //if an id is given also create new STAGING records for all children.
-    model.insertVehicleData(req.body, function(err, result) {
-        if (err) {
-            app.locals.log.error(err);
-            res.parcel
-                .setMessage('Internal server error')
-                .setStatus(500);
-        } else {
-            const responseData = { custom_vehicle_data: result };
-            res.parcel
-                .setData(responseData)
-                .setStatus(200);
-        }
-        res.parcel.deliver();
-    });
+    // model.insertVehicleData(req.body, function(err, result) {
+    //     if (err) {
+    //         app.locals.log.error(err);
+    //         res.parcel
+    //             .setMessage('Internal server error')
+    //             .setStatus(500);
+    //     } else {
+    //         const responseData = { custom_vehicle_data: result };
+    //         res.parcel
+    //             .setData(responseData)
+    //             .setStatus(200);
+    //     }
+    //     res.parcel.deliver();
+    // });
 
 }
 

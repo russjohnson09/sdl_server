@@ -119,69 +119,100 @@ function promote(cb) {
 
 }
 
-
-function insertCustomVehicleDataItem(data,cb) {
+function insertCustomVehicleDataItem(client, data, cb) {
     let newParentId;
     let oldParentId = data.id;
-    let children = [];
-    app.locals.db.runAsTransaction(function(client, callback) {
-        async.waterfall(
-            [
-                function(callback) {
-                    app.locals.db.sqlCommand(sql.insertStagingCustomVehicleData(data), function(err, res) {
-                        if (err)
-                        {
-                            return cb(err,res);
-                        }
-                        if (oldParentId)
-                        {
-                            newParentId = res.id;
-                        }
-                        cb(err, res);
-                    });
-                },
-                function(res, callback) {
-                    if (!oldParentId) //new record no children.
-                    {
-                        return callback(null,res);
+    let insertResult;
+    // let children = [];
+
+    if (!cb)
+    {
+        console.log(`cb not a function `,data);
+        throw new Error(`cb not a function`);
+    }
+
+    async.waterfall(
+        [
+            function(callback) {
+                client.getOne(sql.insertStagingCustomVehicleData(data), function(err, res) {
+                    if (err) {
+                        return cb(err, res);
                     }
-                    newParentId = res.id;
-                    getVehicleData(false,oldParentId,callback);
-                },
-                //create nested data.
-                function(res, callback) {
-                    let vehicleDataById = {};
-                    for (let customVehicleDataItem of customVehicleDataItems) {
-                        vehicleDataById[customVehicleDataItem.id] = customVehicleDataItem;
-                        customVehicleDataItem.params = [];
+                    if (oldParentId) {
+                        newParentId = res.id;
+                    }
+                    insertResult = res;
+                    callback(err, res);
+                });
+            },
+            function(res, callback) { //insert new children
+                if (!oldParentId) //new record no children.
+                {
+                    return callback(null, res);
+                }
+                newParentId = res.id;
+
+                client.getMany(sql.getDirectChildren(oldParentId), function(err, res) {
+                    if (err) {
+                        return callback(err);
                     }
 
-                    let result = [];
-                    for (let customVehicleDataItem of data) {
-                        if (customVehicleDataItem.parent_id) {
-                            //old record not included.
-                            if (!vehicleDataById[customVehicleDataItem.parent_id]) {
-                                continue;
-                            } else {
-                                vehicleDataById[customVehicleDataItem.parent_id].params.push(customVehicleDataItem);
-                            }
-                        } else {
-                            result.push(customVehicleDataItem);
-                        }
-                    }
-                    callback(null, result);
-                },
-                //insert data
-                function(data, callback) {
                     let functions = [];
-                    for (let customVehicleDataItem of data) {
-                        functions.push(promoteCustomVehicleData(client, customVehicleDataItem));
+                    for (let child of res) {
+                        child.parent_id = newParentId;
+                        child.status = 'STAGING';
+                        functions.push(function(cb) {
+                            console.log(`insert child called`,child);
+                            insertCustomVehicleDataItem(client, child, cb);
+                        });
                     }
-                    async.waterfall(functions, callback);
-                }
-            ], callback
-        );
-    }, cb);
+                    async.parallel(functions, function(err) {
+                        console.log('finished',err);
+                        // console.log(`insert children res`, { childRes });
+                        if (err) {
+                            return callback(err);
+                        }
+                        console.log(err,insertResult);
+                        return callback(err);
+                    });
+                });
+            },
+            //create nested data.
+            // function(res, callback) {
+            //     let vehicleDataById = {};
+            //     for (let customVehicleDataItem of customVehicleDataItems) {
+            //         vehicleDataById[customVehicleDataItem.id] = customVehicleDataItem;
+            //         customVehicleDataItem.params = [];
+            //     }
+            //
+            //     let result = [];
+            //     for (let customVehicleDataItem of data) {
+            //         if (customVehicleDataItem.parent_id) {
+            //             //old record not included.
+            //             if (!vehicleDataById[customVehicleDataItem.parent_id]) {
+            //                 continue;
+            //             } else {
+            //                 vehicleDataById[customVehicleDataItem.parent_id].params.push(customVehicleDataItem);
+            //             }
+            //         } else {
+            //             result.push(customVehicleDataItem);
+            //         }
+            //     }
+            //     callback(null, result);
+            // },
+            // //insert data
+            // function(data, callback) {
+            //     let functions = [];
+            //     for (let customVehicleDataItem of data) {
+            //         functions.push(promoteCustomVehicleData(client, customVehicleDataItem));
+            //     }
+            //     async.waterfall(functions, callback);
+            // }
+        ], function(err,res) {
+            console.log(`finished all`);
+            cb(err,res);
+        }
+    );
 
 }
 
@@ -531,6 +562,7 @@ function updateRpcSpec(next = function() {
 }
 
 module.exports = {
+    insertCustomVehicleDataItem: insertCustomVehicleDataItem,
     getNestedCustomVehicleData: getNestedCustomVehicleData,
     validatePost: validatePost,
     promote: promote,
