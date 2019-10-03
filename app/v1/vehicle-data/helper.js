@@ -123,13 +123,6 @@ function insertCustomVehicleDataItem(client, data, cb) {
     let newParentId;
     let oldParentId = data.id;
     let insertResult;
-    // let children = [];
-
-    if (!cb)
-    {
-        console.log(`cb not a function `,data);
-        throw new Error(`cb not a function`);
-    }
 
     async.waterfall(
         [
@@ -162,56 +155,18 @@ function insertCustomVehicleDataItem(client, data, cb) {
                         child.parent_id = newParentId;
                         child.status = 'STAGING';
                         functions.push(function(cb) {
-                            console.log(`insert child called`,child);
                             insertCustomVehicleDataItem(client, child, cb);
                         });
                     }
                     async.parallel(functions, function(err) {
-                        console.log('finished',err);
-                        // console.log(`insert children res`, { childRes });
                         if (err) {
                             return callback(err);
                         }
-                        console.log(err,insertResult);
                         return callback(err);
                     });
                 });
             },
-            //create nested data.
-            // function(res, callback) {
-            //     let vehicleDataById = {};
-            //     for (let customVehicleDataItem of customVehicleDataItems) {
-            //         vehicleDataById[customVehicleDataItem.id] = customVehicleDataItem;
-            //         customVehicleDataItem.params = [];
-            //     }
-            //
-            //     let result = [];
-            //     for (let customVehicleDataItem of data) {
-            //         if (customVehicleDataItem.parent_id) {
-            //             //old record not included.
-            //             if (!vehicleDataById[customVehicleDataItem.parent_id]) {
-            //                 continue;
-            //             } else {
-            //                 vehicleDataById[customVehicleDataItem.parent_id].params.push(customVehicleDataItem);
-            //             }
-            //         } else {
-            //             result.push(customVehicleDataItem);
-            //         }
-            //     }
-            //     callback(null, result);
-            // },
-            // //insert data
-            // function(data, callback) {
-            //     let functions = [];
-            //     for (let customVehicleDataItem of data) {
-            //         functions.push(promoteCustomVehicleData(client, customVehicleDataItem));
-            //     }
-            //     async.waterfall(functions, callback);
-            // }
-        ], function(err,res) {
-            console.log(`finished all`);
-            cb(err,res);
-        }
+        ], cb
     );
 
 }
@@ -250,8 +205,7 @@ function getNestedCustomVehicleData(customVehicleDataItems, isForPolicyTable, cb
             //if we are filtering by id the parent will not be included.
             if (vehicleDataById[customVehicleDataItem.parent_id]) {
                 vehicleDataById[customVehicleDataItem.parent_id].params.push(getCustomVehicleDataItem(customVehicleDataItem, isForPolicyTable));
-            }
-            else { //if no parent_id matches, assume this is a top level item.
+            } else { //if no parent_id matches, assume this is a top level item.
                 result.push(getCustomVehicleDataItem(customVehicleDataItem, isForPolicyTable));
             }
         } else {

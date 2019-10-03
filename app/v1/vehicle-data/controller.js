@@ -1,7 +1,6 @@
 //Copyright (c) 2019, Livio, Inc.
 const app = require('../app');
 const helper = require('./helper.js');
-const model = require('./model.js');
 const async = require('async');
 
 function getVehicleDataParamTypes(req, res, next) {
@@ -94,22 +93,6 @@ function post(req, res, next) {
                 .deliver();
         }
     );
-
-    //if an id is given also create new STAGING records for all children.
-    // model.insertVehicleData(req.body, function(err, result) {
-    //     if (err) {
-    //         app.locals.log.error(err);
-    //         res.parcel
-    //             .setMessage('Internal server error')
-    //             .setStatus(500);
-    //     } else {
-    //         const responseData = { custom_vehicle_data: result };
-    //         res.parcel
-    //             .setData(responseData)
-    //             .setStatus(200);
-    //     }
-    //     res.parcel.deliver();
-    // });
 
 }
 
