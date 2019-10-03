@@ -67,16 +67,15 @@ function post(req, res, next) {
         return res.parcel.deliver();
     }
 
-
     async.waterfall(
         [
             function(cb) {
                 app.locals.db.runAsTransaction(function(client, callback) {
-                    helper.insertCustomVehicleDataItem(client,req.body, callback);
-                },cb)
+                    helper.insertCustomVehicleDataItem(client, req.body, callback);
+                }, cb);
             },
         ],
-        function(err,result) {
+        function(err, result) {
             if (err) {
                 app.locals.log.error(err);
                 return res.parcel
@@ -84,8 +83,7 @@ function post(req, res, next) {
                     .setMessage('Internal server error')
                     .deliver();
             }
-            console.log({result});
-                    const responseData = { custom_vehicle_data: [ result ] };
+            const responseData = { custom_vehicle_data: [result] };
 
             return res.parcel
                 .setData(responseData)
@@ -127,6 +125,55 @@ function promote(req, res, next) {
 
 }
 
+function getValidTypes(req, res) {
+    async.waterfall(
+        [
+            function(cb) {
+                helper.getValidTypes(cb);
+            },
+        ],
+        function(err, data) {
+            if (err) {
+                app.locals.log.error(err);
+                return res.parcel
+                    .setStatus(500)
+                    .setMessage('Internal server error')
+                    .deliver();
+            }
+            const responseData = { type: data };
+            return res.parcel
+                .setData(responseData)
+                .setStatus(200)
+                .deliver();
+        }
+    );
+}
+
+
+function getTemplate(req, res) {
+    async.waterfall(
+        [
+            function(cb) {
+                helper.getTemplate(cb);
+            },
+        ],
+        function(err, data) {
+            if (err) {
+                app.locals.log.error(err);
+                return res.parcel
+                    .setStatus(500)
+                    .setMessage('Internal server error')
+                    .deliver();
+            }
+            const responseData = { custom_vehicle_data: data };
+            return res.parcel
+                .setData(responseData)
+                .setStatus(200)
+                .deliver();
+        }
+    );
+}
+
 module.exports = {
     get: get,
     post: post,
@@ -134,4 +181,6 @@ module.exports = {
     updateVehicleDataEnums: helper.updateVehicleDataEnums,
     getVehicleDataParamTypes: getVehicleDataParamTypes,
     updateRpcSpec: helper.updateRpcSpec,
+    getValidTypes: getValidTypes,
+    getTemplate: getTemplate,
 };

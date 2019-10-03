@@ -515,11 +515,85 @@ function updateRpcSpec(next = function() {
 
 }
 
+function getTemplate(cb) {
+    return cb(
+        null,
+        {
+            'id': null,
+            'parent_id': null,
+            'status': 'STAGING',
+            'name': null,
+            'type': null,
+            'key': null,
+            'mandatory': false,
+            'min_length': null,
+            'max_length': null,
+            'min_size': null,
+            'max_size': null,
+            'min_value': null,
+            'max_value': null,
+            'array': false,
+            'is_deleted': false
+        }
+    );
+}
+
+function getEnums(cb)
+{
+
+}
+
+function getValidTypes(cb) {
+
+
+    //primitive types and struct
+    let types = [
+        {
+            name: "Float",
+            allow_params: false,
+        },
+        {
+            name: "String",
+            allow_params: false,
+        },
+        {
+            name: "Boolean",
+            allow_params: false,
+        },
+        {
+            name: "Integer",
+            allow_params: false,
+        },
+        {
+            name: "Struct",
+            allow_params: false,
+        }
+    ];
+
+    app.locals.db.sqlCommand(sql.getEnums(), function(err, enums) {
+        if (err) {
+            return cb(err);
+        }
+        for (let item of enums) {
+            types.push(
+                {
+                    name: item.name,
+                    allow_params: false
+                }
+            );
+        }
+
+        return cb(null,types)
+    });
+}
+
 module.exports = {
+    getTemplate: getTemplate,
     insertCustomVehicleDataItem: insertCustomVehicleDataItem,
     getNestedCustomVehicleData: getNestedCustomVehicleData,
     validatePost: validatePost,
     promote: promote,
     getVehicleData: getVehicleData,
+    getValidTypes: getValidTypes,
     updateRpcSpec: updateRpcSpec,
 };
