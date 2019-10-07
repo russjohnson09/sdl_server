@@ -18,19 +18,22 @@ function getLatestRpcSpec() {
 }
 
 function getEnums() {
+    let sub = sql.select('max(id) AS max_spec_id')
+        .from('rpc_spec');
+
     return sql.select('rpc_spec_type.name')
         .from('rpc_spec_type')
+        .innerJoin(
+            '(' + sub + ') sub',
+            {
+                'max_spec_id': 'rpc_spec_id'
+            }
+        )
         .groupBy(['rpc_spec_type.name'])
         .where(
-            { element_type: 'ENUM' }
-        );
-}
-
-function getDirectChildren(parent_id) {
-    return sql.select('view_custom_vehicle_data.*')
-        .from('view_custom_vehicle_data')
-        .where(
-            { parent_id: parent_id }
+            {
+                element_type: 'ENUM'
+            },
         );
 }
 
@@ -47,7 +50,9 @@ function getVehicleData(isProduction, id, hideDeleted = false) {
         statement = sql.select('view_custom_vehicle_data.*')
             .from('view_custom_vehicle_data')
             .where(
-                { status: 'PRODUCTION' }
+                {
+                    status: 'PRODUCTION'
+                }
             );
     } else { //if staging, select the most recently update custom_vehicle_data record regardless of status.
         let sub = sql.select('max(view_custom_vehicle_data.id) AS id')
@@ -58,30 +63,40 @@ function getVehicleData(isProduction, id, hideDeleted = false) {
             .from('(' + sub + ') sub')
             .innerJoin(
                 'view_custom_vehicle_data',
-                { 'view_custom_vehicle_data.id': 'sub.id' }
+                {
+                    'view_custom_vehicle_data.id': 'sub.id'
+                }
             );
     }
 
     if (id) {
         statement.where(
-            { 'view_custom_vehicle_data.id': id }
+            {
+                'view_custom_vehicle_data.id': id
+            }
         );
     } else { //remove any old staging custom_vehicle_data records.
         statement.where(
-            { 'view_custom_vehicle_data.parent_id': null }
+            {
+                'view_custom_vehicle_data.parent_id': null
+            }
         );
     }
 
     let unionStatement = sql.select('cvd.*').from('view_custom_vehicle_data cvd')
         .join('children c',
-              { 'c.id': 'cvd.parent_id' }
+              {
+                  'c.id': 'cvd.parent_id'
+              }
         );
 
     statement.union(unionStatement);
 
     if (hideDeleted) {
         statement.where(
-            { 'view_custom_vehicle_data.is_deleted': false }
+            {
+                'view_custom_vehicle_data.is_deleted': false
+            }
         );
     } else {
         statement.where(
@@ -126,10 +141,9 @@ function insertRpcSpecType(rpc_spec_id, rpcSpecTypes) {
         .returning('*');
 }
 
-function insertStagingCustomVehicleData(obj) {
+function insertCustomVehicleData(obj, isProduction = true) {
     let data = {
         parent_id: obj.parent_id,
-        status: 'STAGING',
         name: obj.name,
         type: obj.type,
         key: obj.key,
@@ -142,36 +156,20 @@ function insertStagingCustomVehicleData(obj) {
         array: obj.array === true,
         is_deleted: obj.is_deleted === true
     };
-    return sql.insert('custom_vehicle_data', data).returning('*');
-}
-
-function insertProductionCustomVehicleData(obj) {
-    let data = {
-        parent_id: obj.parent_id,
-        status: 'PRODUCTION',
-        name: obj.name,
-        type: obj.type,
-        key: obj.key,
-        mandatory: obj.mandatory,
-        min_length: obj.min_length,
-        max_length: obj.max_length,
-        min_size: obj.min_size,
-        max_size: obj.max_size,
-        max_value: obj.max_value,
-        array: obj.array,
-        is_deleted: obj.is_deleted
-    };
+    if (isProduction) {
+        data.status = 'PRODUCTION';
+    } else {
+        data.status = 'STAGING';
+    }
     return sql.insert('custom_vehicle_data', data).returning('*');
 }
 
 module.exports = {
     getEnums: getEnums,
-    getDirectChildren: getDirectChildren,
     getVehicleData: getVehicleData,
     insertRpcSpec: insertRpcSpec,
     insertRpcSpecType: insertRpcSpecType,
     insertRpcSpecParam: insertRpcSpecParam,
     getLatestRpcSpec: getLatestRpcSpec,
-    insertProductionCustomVehicleData: insertProductionCustomVehicleData,
-    insertStagingCustomVehicleData: insertStagingCustomVehicleData,
+    insertCustomVehicleData: insertCustomVehicleData
 };
