@@ -12,25 +12,23 @@ const check = require('check-types');
  * Required fields are name, type, and key. All other fields are
  * optional.
  *
- * Any other items should be transformed to their
- * defaults if not given.
  * @param req
  * @param res
  */
 function validatePost(req, res) {
-    if (!check.string(req.body.name)) {
+    if (!check.string(req.body.name) || req.body.name.length < 1) {
         res.parcel
             .setStatus(400)
             .setMessage("Required: name (string)");
         return;
     }
-    if (!check.string(req.body.key)) {
+    if (!check.string(req.body.key)|| req.body.key.length < 1) {
         res.parcel
             .setStatus(400)
             .setMessage("Required: key (string)");
         return;
     }
-    if (!check.string(req.body.key)) {
+    if (!check.string(req.body.type)|| req.body.type.length < 1) {
         res.parcel
             .setStatus(400)
             .setMessage("Required: type (string)");
@@ -101,7 +99,6 @@ function promoteCustomVehicleData(client, obj, parentObjectMapping = {}) {
  *
  * This will be done as a single transaction with top level records being created first.
  *
- * //TODO if parent is deleted, mark all children as deleted.
  *
  * @param cb
  */
@@ -116,6 +113,7 @@ function promote(cb) {
                 },
                 //create nested data.
                 function(data, callback) {
+                    return getNestedCustomVehicleData(data,false,callback);
                     let vehicleDataById = {};
                     for (let customVehicleDataItem of data) {
                         vehicleDataById[customVehicleDataItem.id] = customVehicleDataItem;

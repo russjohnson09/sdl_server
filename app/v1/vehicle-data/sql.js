@@ -21,22 +21,24 @@ function getEnums() {
     return sql.select('rpc_spec_type.name')
         .from('rpc_spec_type')
         .groupBy(['rpc_spec_type.name'])
-        .where({ element_type: 'ENUM' });
+        .where(
+            { element_type: 'ENUM' }
+        );
 }
 
 function getDirectChildren(parent_id) {
     return sql.select('view_custom_vehicle_data.*')
         .from('view_custom_vehicle_data')
-        .where({ parent_id: parent_id });
+        .where(
+            { parent_id: parent_id }
+        );
 }
 
 /**
- * Returns a postgres sql query object to run against
- * using the postgres sdl_server/custom/databases/postgres/index.js
- *
- * TODO order by name LOWERCASE?
- * module.
+ * Returns a postgres sql string to run.
  * @param isProduction
+ * @param id
+ * @param hideDeleted
  */
 function getVehicleData(isProduction, id, hideDeleted = false) {
     let statement;
@@ -44,7 +46,9 @@ function getVehicleData(isProduction, id, hideDeleted = false) {
     if (isProduction) {
         statement = sql.select('view_custom_vehicle_data.*')
             .from('view_custom_vehicle_data')
-            .where({ status: 'PRODUCTION' });
+            .where(
+                { status: 'PRODUCTION' }
+            );
     } else { //if staging, select the most recently update custom_vehicle_data record regardless of status.
         let sub = sql.select('max(view_custom_vehicle_data.id) AS id')
             .from('view_custom_vehicle_data')
@@ -52,22 +56,33 @@ function getVehicleData(isProduction, id, hideDeleted = false) {
 
         statement = sql.select('view_custom_vehicle_data.*')
             .from('(' + sub + ') sub')
-            .innerJoin('view_custom_vehicle_data', { 'view_custom_vehicle_data.id': 'sub.id' });
+            .innerJoin(
+                'view_custom_vehicle_data',
+                { 'view_custom_vehicle_data.id': 'sub.id' }
+            );
     }
 
     if (id) {
-        statement.where({ 'view_custom_vehicle_data.id': id });
+        statement.where(
+            { 'view_custom_vehicle_data.id': id }
+        );
     } else { //remove any old staging custom_vehicle_data records.
-        statement.where({ 'view_custom_vehicle_data.parent_id': null });
+        statement.where(
+            { 'view_custom_vehicle_data.parent_id': null }
+        );
     }
 
     let unionStatement = sql.select('cvd.*').from('view_custom_vehicle_data cvd')
-        .join('children c').on('c.id', 'cvd.parent_id');
+        .join('children c',
+              { 'c.id': 'cvd.parent_id' }
+        );
 
     statement.union(unionStatement);
 
     if (hideDeleted) {
-        statement.where({ 'view_custom_vehicle_data.is_deleted': false });
+        statement.where(
+            { 'view_custom_vehicle_data.is_deleted': false }
+        );
     } else {
         statement.where(
             sql.or(
@@ -81,10 +96,8 @@ function getVehicleData(isProduction, id, hideDeleted = false) {
 
     let str = `WITH RECURSIVE children AS (
         ${statement.toString()}
-    ) SELECT * FROM children;
-    `;
+    ) SELECT * FROM children ORDER BY LOWER(children.name) ASC;`;
 
-    console.log(str);
     return str;
 }
 
