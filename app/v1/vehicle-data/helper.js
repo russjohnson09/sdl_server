@@ -113,27 +113,7 @@ function promote(cb) {
                 },
                 //create nested data.
                 function(data, callback) {
-                    return getNestedCustomVehicleData(data,false,callback);
-                    let vehicleDataById = {};
-                    for (let customVehicleDataItem of data) {
-                        vehicleDataById[customVehicleDataItem.id] = customVehicleDataItem;
-                        customVehicleDataItem.params = [];
-                    }
-
-                    let result = [];
-                    for (let customVehicleDataItem of data) {
-                        if (customVehicleDataItem.parent_id) {
-                            //old record not included.
-                            if (!vehicleDataById[customVehicleDataItem.parent_id]) {
-                                continue;
-                            } else {
-                                vehicleDataById[customVehicleDataItem.parent_id].params.push(customVehicleDataItem);
-                            }
-                        } else {
-                            result.push(customVehicleDataItem);
-                        }
-                    }
-                    callback(null, result);
+                    return getNestedCustomVehicleData(data, false, callback);
                 },
                 //insert data
                 function(data, callback) {
@@ -150,9 +130,8 @@ function promote(cb) {
 }
 
 function insertCustomVehicleDataItem(client, data, cb) {
-    let newParentId;
-    let oldParentId = data.id;
-    let insertResult;
+    // let newParentId;
+    // let oldParentId = data.id;
 
     async.waterfall(
         [
@@ -161,16 +140,15 @@ function insertCustomVehicleDataItem(client, data, cb) {
                     if (err) {
                         return cb(err, res);
                     }
-                    if (oldParentId) {
-                        newParentId = res.id;
-                    }
-                    insertResult = res;
+                    // if (oldParentId) {
+                    //     newParentId = res.id;
+                    // }
                     callback(err, res);
                 });
             },
             function(res, callback) { //insert new children
-                if (data.params) { //params are being passed in so all new children are created.
-                    let functions = [];
+                let functions = [];
+                if (data.params) {
                     for (let child of data.params) {
                         child.status = 'STAGING';
                         child.parent_id = res.id;
@@ -178,40 +156,14 @@ function insertCustomVehicleDataItem(client, data, cb) {
                             insertCustomVehicleDataItem(client, child, cb);
                         });
                     }
-                    async.parallel(functions, function(err) {
-                        if (err) {
-                            return callback(err);
-                        }
-                        return callback(err);
-                    });
-                } else {
-                    if (!oldParentId) //new record no children.
-                    {
-                        return callback(null, res);
-                    }
-                    newParentId = res.id;
-
-                    client.getMany(sql.getDirectChildren(oldParentId), function(err, res) {
-                        if (err) {
-                            return callback(err);
-                        }
-
-                        let functions = [];
-                        for (let child of res) {
-                            child.parent_id = newParentId;
-                            child.status = 'STAGING';
-                            functions.push(function(cb) {
-                                insertCustomVehicleDataItem(client, child, cb);
-                            });
-                        }
-                        async.parallel(functions, function(err) {
-                            if (err) {
-                                return callback(err);
-                            }
-                            return callback(err);
-                        });
-                    });
                 }
+
+                async.parallel(functions, function(err) {
+                    if (err) {
+                        return callback(err);
+                    }
+                    return callback(err);
+                });
             },
         ], cb
     );
