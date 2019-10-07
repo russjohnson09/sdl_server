@@ -36,6 +36,8 @@ function generateRpcHash (isProduction = false, callback) {
     finalFlow(callback);
 }
 
+//TODO check that the function group returns the correct values. some deleted or staging are appearing?
+//TODO children of deleted items that are still set to in production are showing up.
 //only needs to be generated once, because the RPC list and permission relations cannot be changed after server start up
 //used as a step in generating a functional group response
 //an exception is made for this being synchronous due to the conditions in which this runs

@@ -5,21 +5,51 @@ const parseXml = require('xml2js').parseString;
 const request = require('request');
 const async = require('async');
 const _ = require('lodash');
+const check = require('check-types');
 
+
+/**
+ * Required fields are name, type, and key. All other fields are
+ * optional.
+ *
+ * Any other items should be transformed to their
+ * defaults if not given.
+ * @param req
+ * @param res
+ */
 function validatePost(req, res) {
+    if (!check.string(req.body.name)) {
+        res.parcel
+            .setStatus(400)
+            .setMessage("Required: name (string)");
+        return;
+    }
+    if (!check.string(req.body.key)) {
+        res.parcel
+            .setStatus(400)
+            .setMessage("Required: key (string)");
+        return;
+    }
+    if (!check.string(req.body.key)) {
+        res.parcel
+            .setStatus(400)
+            .setMessage("Required: type (string)");
+        return;
+    }
     return;
 }
 
-function promoteCustomVehicleData(client, obj, parentIdMapping = {}) {
+function promoteCustomVehicleData(client, obj, parentObjectMapping = {}) {
     return function(cb) {
         let originalParentId = obj.parent_id;
         if (obj.parent_id) {
-            let parent_id = parentIdMapping[obj.parent_id];
-            if (!parent_id) {
+            let parent = parentObjectMapping[obj.parent_id];
+            if (!parent.id) {
                 return cb(`Orphaned record`);
             }
-            obj.parent_id = parent_id;
             //assign parent_id based on parentIdMapping.
+            obj.parent_id = parent.id;
+            obj.is_deleted = parent.is_deleted === true;
         }
 
         async.waterfall(
@@ -27,12 +57,12 @@ function promoteCustomVehicleData(client, obj, parentIdMapping = {}) {
                 function(callback) {
                     //skip update if status is on production and not a child that has had its parentId changed.
                     if (obj.status === 'PRODUCTION' && !(obj.parent_id && obj.parent_id != originalParentId)) {
-                        parentIdMapping[obj.id] = obj.id;
+                        parentObjectMapping[obj.id] = obj;
                         return callback(null);
                     }
                     client.getOne(sql.insertProductionCustomVehicleData(obj), function(err, result) {
                         if (!err && result) {
-                            parentIdMapping[obj.id] = result.id;
+                            parentObjectMapping[obj.id] = result;
                         }
                         callback(err, result);
                     });
@@ -46,7 +76,7 @@ function promoteCustomVehicleData(client, obj, parentIdMapping = {}) {
                 if (obj.params && obj.params.length > 0) {
                     let functions = [];
                     for (let param of obj.params) {
-                        functions.push(promoteCustomVehicleData(client, param, parentIdMapping));
+                        functions.push(promoteCustomVehicleData(client, param, parentObjectMapping));
                     }
                     return async.waterfall(functions, function(err) {
                         cb(err);
@@ -70,6 +100,8 @@ function promoteCustomVehicleData(client, obj, parentIdMapping = {}) {
  * If the child record is in STAGING a new PRODUCTION record will be created using staging and the parent_id.
  *
  * This will be done as a single transaction with top level records being created first.
+ *
+ * //TODO if parent is deleted, mark all children as deleted.
  *
  * @param cb
  */

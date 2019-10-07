@@ -33,6 +33,8 @@ function getDirectChildren(parent_id) {
 /**
  * Returns a postgres sql query object to run against
  * using the postgres sdl_server/custom/databases/postgres/index.js
+ *
+ * TODO order by name LOWERCASE?
  * module.
  * @param isProduction
  */
