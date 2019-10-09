@@ -125,7 +125,7 @@ function autoPost (req, res, next) {
 			return res.parcel.setStatus(500).deliver();
 		}
 		if (!results.length) {
-			return res.parcel.setStatus(400).deliver();
+			return res.parcel.setMessage("No application matching uuid found.").setStatus(400).deliver();
 		}
 
 		let chosenCommand;
