@@ -148,6 +148,8 @@ function storeApps (includeApprovalStatus, notifyOEM, apps, callback) {
 }
 
 function appCerts(apps, callback){
+    //check app certs on import.
+    console.log(`checking appCerts`);
     async.mapSeries(apps, function(app, next){
         db.sqlCommand(sql.getApp.certificate(app.uuid), function(err, data){
             if(err){
@@ -162,8 +164,8 @@ function appCerts(apps, callback){
                     }
                     //console.log(cert)
                     certificates.createPkcs12(
-                        cert.clientKey, 
-                        cert.certificate, 
+                        cert.clientKey,
+                        cert.certificate,
                         function(pkcsErr, pkcs12){
                             //console.log(pkcs12)
                             cb(pkcsErr, (pkcsErr) ? null : {
@@ -177,10 +179,10 @@ function appCerts(apps, callback){
             if(data.length != 0){
                 //app has a cert, check if it's expired
                 pem.readPkcs12(
-                    Buffer.from(data[0].certificate, 'base64'), 
+                    Buffer.from(data[0].certificate, 'base64'),
                     {
                         p12Password: settings.securityOptions.passphrase
-                    }, 
+                    },
                     function(crtErr, keyBundle){
                         if(crtErr){
                             return badCert(next);
@@ -365,9 +367,9 @@ function getFailedAppsCert(failedApp, next){
 			return next(err, {});
 		}
 		certificate.createPkcs12(
-            keyBundle.key, 
-            keyBundle.cert, 
-            settings.securityOptions.passphrase, 
+            keyBundle.key,
+            keyBundle.cert,
+            settings.securityOptions.passphrase,
             function(pkcsErr, pkcs){
                 next(pkcsErr, {
                     app_uuid: failedApp.app_uuid,

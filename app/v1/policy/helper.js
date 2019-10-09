@@ -43,6 +43,15 @@ function validateAppPolicyOnlyPost (req, res) {
 
 //helper functions
 
+/**
+ *
+ * @param isProduction
+ * @param useLongUuids
+ * @param appPolicyObj
+ * @param returnPreview
+ * @param module_config
+ * @param cb - This could be any callback but right now it is handlePolicyTableFlow with the first couple arguments assigned with bind.
+ */
 function generatePolicyTable (isProduction, useLongUuids = false, appPolicyObj, returnPreview, module_config, cb) {
     let makePolicyTable = {};
     if (appPolicyObj) { //existence of appPolicyObj implies to return the app policy object
@@ -59,7 +68,8 @@ function generatePolicyTable (isProduction, useLongUuids = false, appPolicyObj, 
             const policyTableMakeFlow = flame.flow(makePolicyTable, {method: 'parallel', eventLoop: true});
             policyTableMakeFlow(function (err, data) {
                 cacheData.appPolicies = data.appPolicies;
-                cb(err, cacheData);
+                const certificateMatch = data.moduleConfig && module_config && (data.moduleConfig.certificate == module_config.certificate);
+                cb(err, certificateMatch, data);
             });
         } else {
             if (returnPreview) {

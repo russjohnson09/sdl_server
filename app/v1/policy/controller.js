@@ -43,13 +43,11 @@ function handlePolicyTableFlow (res, isProduction, err, encrypt = false, pieces)
         app.locals.log.error(err);
         return res.parcel.setStatus(500).deliver();
     }
-    console.log(`handlePolicyTableFlow`,pieces);
     //convert from this point down to asynchronous to make use of certificate library
     createPolicyTableResponse(res, isProduction, pieces, encrypt);
 }
 
 function createPolicyTableResponse (res, isProduction, pieces, encrypt = false) {
-    console.log(`createPolicyTableResponse`,pieces);
 	const policy_table = [
         {
             policy_table: {

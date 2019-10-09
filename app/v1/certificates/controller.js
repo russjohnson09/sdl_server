@@ -19,6 +19,11 @@ const csrConfigIsValid = fs.existsSync(settings.securityOptions.certificate.csrC
 
 const openSSLEnabled = authorityKey && authorityCertificate && csrConfigIsValid && settings.securityOptions.passphrase;
 
+console.log(`openSSLEnabled`,openSSLEnabled,{authorityCertificate,csrConfigIsValid,passphrase:settings.securityOptions.passphrase,
+authorityCertificateName: settings.certificateAuthority.authorityCertFileName,
+    csrConfigFile: settings.securityOptions.certificate.csrConfigFile
+})
+
 function checkAuthorityValidity(cb){
     pem.createPkcs12(
         authorityKey,
@@ -34,6 +39,13 @@ function checkAuthorityValidity(cb){
     );
 }
 
+/**
+ * res.body.options most be valid according to
+ * https://www.deineagentur.com/projects/pem/module-pem.html#.createPrivateKey
+ * @param req
+ * @param res
+ * @param next
+ */
 function createPrivateKey(req, res, next){
     if(openSSLEnabled){
         let options = getKeyOptions(req.body.options);
@@ -108,6 +120,14 @@ function createCertificate(req, res, next){
 }
 
 function createCertificateFlow(options, next){
+    console.log(`createCertificateFlow`);
+    try {
+        throw new Error(`Not configured`);
+    }
+    catch (e)
+    {
+        console.log(e);
+    }
     if(openSSLEnabled){
         options.serviceKey = authorityKey;
         options.serviceCertificate = authorityCertificate;
@@ -116,7 +136,8 @@ function createCertificateFlow(options, next){
         if(csrConfigIsValid){
             logger.info("using csr config file");
             tasks.push(function(cb){
-                writeCSRConfigFile(getCertificateOptions(options), cb);
+                let opts = getCertificateOptions(options);
+                writeCSRConfigFile(opts, cb);
             });
         }
 
