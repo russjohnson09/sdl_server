@@ -3,18 +3,15 @@ const pem = require('pem');
 const fs = require('fs');
 const logger = require('../../../custom/loggers/winston/index');
 const settings = require('../../../settings.js');
-const tmp = require('tmp');
-const { spawnSync } = require('child_process');
-const forge = require('node-forge');
 
-const authorityKey = (fs.existsSync(__dirname + '/../../../customizable/ssl/' + settings.certificateAuthority.authorityKeyFileName)) ? 
+const authorityKey = (fs.existsSync(__dirname + '/../../../customizable/ssl/' + settings.certificateAuthority.authorityKeyFileName)) ?
     //file exists
-    fs.readFileSync(__dirname + '/../../../customizable/ssl/' + settings.certificateAuthority.authorityKeyFileName).toString() : 
+    fs.readFileSync(__dirname + '/../../../customizable/ssl/' + settings.certificateAuthority.authorityKeyFileName).toString() :
     //file does not exist
     null;
-const authorityCertificate = (fs.existsSync(__dirname + '/../../../customizable/ssl/' + settings.certificateAuthority.authorityCertFileName)) ? 
+const authorityCertificate = (fs.existsSync(__dirname + '/../../../customizable/ssl/' + settings.certificateAuthority.authorityCertFileName)) ?
     //file exists
-    fs.readFileSync(__dirname + '/../../../customizable/ssl/' + settings.certificateAuthority.authorityCertFileName).toString() : 
+    fs.readFileSync(__dirname + '/../../../customizable/ssl/' + settings.certificateAuthority.authorityCertFileName).toString() :
     //file does not exist
     null;
 
@@ -24,13 +21,13 @@ const openSSLEnabled = authorityKey && authorityCertificate && csrConfigIsValid 
 
 function checkAuthorityValidity(cb){
     pem.createPkcs12(
-        authorityKey, 
-        authorityCertificate, 
-        settings.certificateAuthority.passphrase, 
+        authorityKey,
+        authorityCertificate,
+        settings.certificateAuthority.passphrase,
         {
             cipher: 'aes128',
             clientKeyPassword: settings.certificateAuthority.passphrase
-        }, 
+        },
         function(err, pkcs12){
             cb((err) ? false : true);
         }
@@ -41,8 +38,8 @@ function createPrivateKey(req, res, next){
     if(openSSLEnabled){
         let options = getKeyOptions(req.body.options);
         pem.createPrivateKey(
-            options.keyBitsize, 
-            options, 
+            options.keyBitsize,
+            options,
             function(err, privateKey){
                 if(err){
                     return res.parcel.setStatus(400)
@@ -164,9 +161,9 @@ function createPkcs12(clientKey, certificate, cb){
             cb(null, null);
             return;
         }
-        pem.createPkcs12(clientKey, 
-            certificate, 
-            settings.securityOptions.passphrase, 
+        pem.createPkcs12(clientKey,
+            certificate,
+            settings.securityOptions.passphrase,
             function(err, pkcs12){
                 return cb(err, err ? null : pkcs12.pkcs12.toString('base64'));
             }
@@ -184,7 +181,7 @@ function writeCSRConfigFile(options, cb){
         'distinguished_name = req_distinguished_name\n' +
         'prompt = no\n' +
         '[ req_distinguished_name ]\n';
-    
+
     if(options.country){
         csrConfig += 'C = ' + options.country + '\n';
     }
@@ -212,8 +209,8 @@ function writeCSRConfigFile(options, cb){
         csrConfig += 'serialNumber = ' + options.serialNumber;
     }
     fs.writeFile(
-        settings.securityOptions.certificate.csrConfigFile, 
-        csrConfig, 
+        settings.securityOptions.certificate.csrConfigFile,
+        csrConfig,
         function(err){
             cb(err, options);
         }

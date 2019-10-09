@@ -15,7 +15,7 @@ function postFromCore (isProduction) {
             const useLongUuids = GET(policy_table, "module_config.full_app_id_supported", false) ? true : false;
             helper.generatePolicyTable(isProduction, useLongUuids, policy_table.app_policies, true, policy_table.module_config, handlePolicyTableFlow.bind(null, res, isProduction));
         }
-        
+
         encryption.decryptPolicyTable(req.body.policy_table, isProduction, function(policy_table){
             processPolicies(policy_table);
         });
@@ -23,6 +23,7 @@ function postFromCore (isProduction) {
 }
 
 function getPreview (req, res, next) {
+    console.log(`getPreview`);
     const isProduction = !req.query.environment || req.query.environment.toLowerCase() !== 'staging';
     helper.generatePolicyTable(isProduction, false, {}, true, null, handlePolicyTableFlow.bind(null, res, isProduction));
 }
@@ -42,11 +43,13 @@ function handlePolicyTableFlow (res, isProduction, err, encrypt = false, pieces)
         app.locals.log.error(err);
         return res.parcel.setStatus(500).deliver();
     }
+    console.log(`handlePolicyTableFlow`,pieces);
     //convert from this point down to asynchronous to make use of certificate library
     createPolicyTableResponse(res, isProduction, pieces, encrypt);
 }
 
 function createPolicyTableResponse (res, isProduction, pieces, encrypt = false) {
+    console.log(`createPolicyTableResponse`,pieces);
 	const policy_table = [
         {
             policy_table: {
@@ -57,7 +60,7 @@ function createPolicyTableResponse (res, isProduction, pieces, encrypt = false) 
             }
         }
     ];
-    return (encrypt ? encryption.encryptPolicyTable(isProduction, policy_table, 
+    return (encrypt ? encryption.encryptPolicyTable(isProduction, policy_table,
         function(policy_table){
             res.parcel.setStatus(200)
                 .setData(policy_table)
