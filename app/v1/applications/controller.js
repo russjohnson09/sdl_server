@@ -296,11 +296,6 @@ function queryAndStoreApplicationsFlow (queryObj, notifyOEM = true) {
  * queries SHAID to get new categories and stores them into the database
  */
 function queryAndStoreNewCategories(cb) {
-
-	// console.log(`queryAndStoreNewCategories`);
-	// app.locals.shaid.getCategories({},function(err,result) {
-	// 	console.log(err,result);
-	// });
 	return flow(
 		[
 			app.locals.shaid.getCategories.bind(null, {}),
