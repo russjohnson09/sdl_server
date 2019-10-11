@@ -89,6 +89,41 @@ function createAppInfoFlow (filterTypeFunc, value) {
 	return app.locals.flow([getAppFlow, model.constructFullAppObjs], {method: "waterfall", eventLoop: true});
 }
 
+function checkCategoryNeedsInsertion(category,callback)
+{
+    console.log(`checkCategoryNeedsInsertion`,category,callback);
+    db.sqlCommand(sql.getCategoryByName(category.name), function(err, data){
+        if (!err && data.length === 0)
+        {
+            console.log(`no category found `,category);
+
+            db.sqlCommand(sql.insertCategory(category), function(err, data){
+                callback(err);
+            });
+        }
+        else {
+            callback(null);
+        }
+    });
+}
+
+function storeCategories(categories,callback) {
+
+    let flowAry = [];
+
+    for (let category of categories)
+    {
+        // console.log(`check insert categories`,category);
+
+
+        flowAry.push(checkCategoryNeedsInsertion.bind(null,category))
+    }
+    const fullFlow = flow(flowAry, {method: "parallel"});
+    fullFlow(function(err) {
+        console.log(`storeCategories`,err);
+    });
+}
+
 //application store functions
 
 function storeApps (includeApprovalStatus, notifyOEM, apps, callback) {
@@ -273,5 +308,6 @@ module.exports = {
 	validateServicePermissionPut: validateServicePermissionPut,
     validateWebHook: validateWebHook,
 	createAppInfoFlow: createAppInfoFlow,
-	storeApps: storeApps
+	storeApps: storeApps,
+    storeCategories: storeCategories,
 }

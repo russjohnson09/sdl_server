@@ -292,6 +292,23 @@ function queryAndStoreApplicationsFlow (queryObj, notifyOEM = true) {
     ], {method: 'waterfall', eventLoop: true});
 }
 
+/**
+ * queries SHAID to get new categories and stores them into the database
+ */
+function queryAndStoreNewCategories(cb) {
+
+	// console.log(`queryAndStoreNewCategories`);
+	// app.locals.shaid.getCategories({},function(err,result) {
+	// 	console.log(err,result);
+	// });
+	return flow(
+		[
+			app.locals.shaid.getCategories.bind(null, {}),
+			helper.storeCategories.bind(null)
+		],
+		{ method: 'waterfall', eventLoop: true })(cb);
+}
+
 module.exports = {
 	get: get,
 	actionPost: actionPost,
@@ -301,5 +318,6 @@ module.exports = {
 	passthroughPost: passthroughPost,
 	hybridPost: hybridPost,
 	webhook: webhook,
-	queryAndStoreApplicationsFlow: queryAndStoreApplicationsFlow
+	queryAndStoreApplicationsFlow: queryAndStoreApplicationsFlow,
+	queryAndStoreNewCategories: queryAndStoreNewCategories,
 };

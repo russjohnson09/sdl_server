@@ -29,6 +29,7 @@ const self = module.exports = {
         });
     },
     getCategories: function (queryObj, next) {
+        console.log(`getCategories`,queryObj,next);
         shaid.read(shaid.entity.category, queryObj, function (err, res) {
             next(err, res.data.categories);
         });
