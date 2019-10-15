@@ -37,6 +37,17 @@ function postAppPolicy (req, res, next) {
     helper.generatePolicyTable(isProduction, useLongUuids, req.body.policy_table.app_policies, false, null, handlePolicyTableFlow.bind(null, res, isProduction));
 }
 
+/**
+ * Used as the callback in generatePolicyTable. Encrypt is set to
+ * true when the certificate of the request matches the certificate
+ * currently stored in module_config.certificate.
+ * @param res
+ * @param isProduction
+ * @param err
+ * @param encrypt
+ * @param pieces
+ * @returns {*|void}
+ */
 function handlePolicyTableFlow (res, isProduction, err, encrypt = false, pieces) {
     if (err) {
         app.locals.log.error(err);
@@ -46,7 +57,7 @@ function handlePolicyTableFlow (res, isProduction, err, encrypt = false, pieces)
     createPolicyTableResponse(res, isProduction, pieces, encrypt);
 }
 
-function createPolicyTableResponse (res, isProduction, pieces, encrypt = false) {
+function createPolicyTableResponse(res, isProduction, pieces, encrypt = false) {
 	const policy_table = [
         {
             policy_table: {

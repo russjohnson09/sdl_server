@@ -172,6 +172,7 @@ function createPkcs12(clientKey, certificate, cb){
             }
         );
     } else {
+        //TODO res is not defined.
         res.parcel.setStatus(400)
             .setMessage('Security options have not been properly configured')
             .deliver();
