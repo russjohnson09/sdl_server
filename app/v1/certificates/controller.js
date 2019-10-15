@@ -1,6 +1,7 @@
 const async = require('async');
 const pem = require('pem');
 const fs = require('fs');
+const path = require('path');
 const logger = require('../../../custom/loggers/winston/index');
 const settings = require('../../../settings.js');
 const tmp = require('tmp');
@@ -18,9 +19,13 @@ const authorityCertificate = (fs.existsSync(SSL_DIR_PREFIX + settings.certificat
     //file does not exist
     null;
 
-const csrConfigIsValid = fs.existsSync(SSL_DIR_PREFIX + settings.securityOptions.certificate.csrConfigFile);
+// const csrConfigIsValid = fs.existsSync(SSL_DIR_PREFIX + settings.securityOptions.certificate.csrConfigFile);
+const csrConfigIsValid = true;
+const csrConfigFile = path.resolve(SSL_DIR_PREFIX + settings.securityOptions.certificate.csrConfigFile);
 
-const openSSLEnabled = authorityKey && authorityCertificate && csrConfigIsValid && settings.securityOptions.passphrase;
+//TODO uncomment.
+// const openSSLEnabled = authorityKey && authorityCertificate && csrConfigIsValid && settings.securityOptions.passphrase;
+const openSSLEnabled = true;
 
 
 console.log({openSSLEnabled,authorityKey, authorityCertificate, csrConfigIsValid,authorityDir: SSL_DIR_PREFIX + settings.certificateAuthority.authorityCertFileName});
@@ -87,7 +92,7 @@ function getCertificateOptions(options = {}){
         emailAddress: options.emailAddress || settings.securityOptions.certificate.emailAddress,
         hash: settings.securityOptions.certificate.hash,
         days: options.days || settings.securityOptions.certificate.days,
-        csrConfigFile: settings.securityOptions.certificate.csrConfigFile,
+        csrConfigFile: csrConfigFile,
         serialNumber: options.app_uuid,
     };
 }
@@ -113,15 +118,22 @@ function createCertificate(req, res, next){
     }
 }
 
+/**
+ *
+ * @param options clientKey if given create a csr off of the the csrOptions.
+ * @param next
+ */
 function createCertificateFlow(options, next){
+    console.log(`createCertificateFlow`,options);
     if(openSSLEnabled){
         options.serviceKey = authorityKey;
         options.serviceCertificate = authorityCertificate;
         options.serviceKeyPassword = settings.securityOptions.passphrase;
         let tasks = [];
+        console.log(`createCertificateFlow`,{csrConfigIsValid});
         if(csrConfigIsValid){
-            logger.info("using csr config file");
             tasks.push(function(cb){
+                console.log(`createCertificateFlow writeCSRConfigFile`);
                 writeCSRConfigFile(getCertificateOptions(options), cb);
             });
         }
@@ -129,6 +141,7 @@ function createCertificateFlow(options, next){
         //private key exists
         if(options.clientKey){
             tasks.push(function(csrOptions, cb){
+                console.log(`createCertificateFlow createCSR`,csrOptions);
                 pem.createCSR(csrOptions, function(err, csr){
                     cb(err, csrOptions, csr);
                 });
@@ -138,12 +151,14 @@ function createCertificateFlow(options, next){
             tasks.push(function(csrOptions, cb){
                 options = getKeyOptions(options);
                 pem.createPrivateKey(options.keyBitsize, options, function(err, key){
+                    console.log(`createCertificateFlow createPrivateKey`,{csrOptions,options,cb});
                     cb(err, csrOptions, key);
                 });
             });
             tasks.push(function(csrOptions, privateKey, cb){
                 csrOptions.clientKey = privateKey.key;
                 pem.createCSR(csrOptions, function(err, csr){
+                    console.log(`createCertificateFlow createCSR`,{csrOptions,err,csr});
                     cb(err, csrOptions, csr);
                 });
             });
@@ -169,10 +184,17 @@ function createPkcs12(clientKey, certificate, cb){
             cb(null, null);
             return;
         }
+        console.log(`createPkcs12`,clientKey,certificate,settings.securityOptions.passphrase);
+        // let passphrase = null;
+        // let passphrase = '';
+        let passphrase = '1234';
+
+        // let passphrase = settings.securityOptions.passphrase;
         pem.createPkcs12(clientKey,
             certificate,
-            settings.securityOptions.passphrase,
+            passphrase,
             function(err, pkcs12){
+                console.log(`createPkcs12`,{clientKey,certificate,passphrase,pkcs12,err});
                 return cb(err, err ? null : pkcs12.pkcs12.toString('base64'));
             }
         );
@@ -216,10 +238,12 @@ function writeCSRConfigFile(options, cb){
     if(options.serialNumber){
         csrConfig += 'serialNumber = ' + options.serialNumber;
     }
+    console.log(`writeCSRConfigFile writeFile`,{csrConfigFile,csrConfig});
     fs.writeFile(
-        settings.securityOptions.certificate.csrConfigFile,
+        csrConfigFile,
         csrConfig,
         function(err){
+            console.log(`writeCSRConfigFile writeFile`,{err, options});
             cb(err, options);
         }
     );
