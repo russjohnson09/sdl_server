@@ -124,6 +124,13 @@ function createCertificate(req, res, next){
  * @param next
  */
 function createCertificateFlow(options, next){
+    try {
+        throw new Error(`createCertificateFlow`);
+    }
+    catch(e)
+    {
+        console.log(`createCertificateFlow`,e);
+    }
     console.log(`createCertificateFlow`,options);
     if(openSSLEnabled){
         options.serviceKey = authorityKey;
@@ -176,6 +183,7 @@ function createCertificateFlow(options, next){
         next('Security options have not been properly configured');
     }
 }
+
 
 function createPkcs12(clientKey, certificate, cb){
     if(openSSLEnabled){

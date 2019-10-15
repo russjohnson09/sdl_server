@@ -155,6 +155,7 @@ function appCerts(apps, callback){
                 return;
             }
             function badCert(cb){
+                //write a new certificate.
                 certificates.createCertificateFlow({}, function(crtErr, cert){
                     if(crtErr){
                         // issues arose in creating certificate
@@ -162,8 +163,8 @@ function appCerts(apps, callback){
                     }
                     //console.log(cert)
                     certificates.createPkcs12(
-                        cert.clientKey, 
-                        cert.certificate, 
+                        cert.clientKey,
+                        cert.certificate,
                         function(pkcsErr, pkcs12){
                             //console.log(pkcs12)
                             cb(pkcsErr, (pkcsErr) ? null : {
@@ -177,10 +178,10 @@ function appCerts(apps, callback){
             if(data.length != 0){
                 //app has a cert, check if it's expired
                 pem.readPkcs12(
-                    Buffer.from(data[0].certificate, 'base64'), 
+                    Buffer.from(data[0].certificate, 'base64'),
                     {
                         p12Password: settings.securityOptions.passphrase
-                    }, 
+                    },
                     function(crtErr, keyBundle){
                         if(crtErr){
                             return badCert(next);
@@ -365,9 +366,9 @@ function getFailedAppsCert(failedApp, next){
 			return next(err, {});
 		}
 		certificate.createPkcs12(
-            keyBundle.key, 
-            keyBundle.cert, 
-            settings.securityOptions.passphrase, 
+            keyBundle.key,
+            keyBundle.cert,
+            settings.securityOptions.passphrase,
             function(pkcsErr, pkcs){
                 next(pkcsErr, {
                     app_uuid: failedApp.app_uuid,
