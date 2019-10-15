@@ -13,3 +13,8 @@ dist/
 *.ntvs*
 *.njsproj
 *.sln
+
+
+*.cfg
+*.crt
+*.key*
