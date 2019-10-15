@@ -1,17 +1,20 @@
 const pem = require('pem');
 const settings = require('../../../settings.js');
 
-function createKeyCertBundle (clientKey, certificate) {
+function createKeyCertBundle (clientKey, certificate, cb) {
     return new Promise((resolve, reject) => {
         pem.createPkcs12(
-            clientKey, 
-            certificate, 
-            settings.certificateAuthority.passphrase, 
+            clientKey,
+            certificate,
+            settings.certificateAuthority.passphrase,
             function (err, pkcs12) {
+                if (cb) {
+                    return cb(err,pkcs12);
+                }
                 if (err) {
                     return reject(err);
                 }
-                return resolve(pkcs12);         
+                return resolve(pkcs12);
             }
         );
     });

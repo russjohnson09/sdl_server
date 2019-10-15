@@ -161,12 +161,10 @@ function appCerts(apps, callback){
                         // issues arose in creating certificate
                         return cb(crtErr, null);
                     }
-                    //console.log(cert)
-                    certificates.createPkcs12(
-                        cert.clientKey, 
-                        cert.certificate, 
+                    certUtil.createKeyCertBundle(
+                        cert.clientKey,
+                        cert.certificate,
                         function(pkcsErr, pkcs12){
-                            //console.log(pkcs12)
                             cb(pkcsErr, (pkcsErr) ? null : {
                                 app_uuid: app.uuid,
                                 certificate: pkcs12,
@@ -178,15 +176,17 @@ function appCerts(apps, callback){
             if(data.length != 0){
                 //app has a cert, check if it's expired
                 pem.readPkcs12(
-                    Buffer.from(data[0].certificate, 'base64'), 
+                    Buffer.from(data[0].certificate, 'base64'),
                     {
                         p12Password: settings.securityOptions.passphrase
-                    }, 
+                    },
                     function(crtErr, keyBundle){
+                        //cert exists for app but there is something wrong with it. create a new cert.
                         if(crtErr){
                             return badCert(next);
                         }
                         isCertificateExpired(keyBundle.cert, function(expErr, isValid){
+                            //app has expired cert. create a new cert.
                             if(expErr || !isValid){
                                 return badCert(next);
                             }
@@ -196,6 +196,7 @@ function appCerts(apps, callback){
                     }
                 );
             } else {
+                //no cert found for app, create new cert
                 badCert(next);
             }
         })
@@ -341,7 +342,7 @@ function attemptRetry(milliseconds, retryQueue){
     }, milliseconds);
 }
 
-function storeAppCertificates (insertObjs, next) {    
+function storeAppCertificates (insertObjs, next) {
 	app.locals.db.runAsTransaction(function (client, callback) {
 		async.mapSeries(insertObjs, function (insertObj, cb) {
 			app.locals.log.info("Updating certificate of " + insertObj.app_uuid);
@@ -366,9 +367,9 @@ function getFailedAppsCert(failedApp, next){
 			return next(err, {});
 		}
 		certificate.createPkcs12(
-            keyBundle.key, 
-            keyBundle.cert, 
-            settings.securityOptions.passphrase, 
+            keyBundle.key,
+            keyBundle.cert,
+            settings.securityOptions.passphrase,
             function(pkcsErr, pkcs){
                 next(pkcsErr, {
                     app_uuid: failedApp.app_uuid,
