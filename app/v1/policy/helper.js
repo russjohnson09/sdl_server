@@ -59,9 +59,12 @@ function generatePolicyTable (isProduction, useLongUuids = false, appPolicyObj, 
             const policyTableMakeFlow = flame.flow(makePolicyTable, {method: 'parallel', eventLoop: true});
             policyTableMakeFlow(function (err, data) {
                 cacheData.appPolicies = data.appPolicies;
-                cb(err, cacheData);
+                const certificateMatch = cacheData.moduleConfig && module_config && (cacheData.moduleConfig.certificate == module_config.certificate);
+                console.log({cacheData,module_config});
+                cb(err, certificateMatch, cacheData);
             });
         } else {
+            console.log({returnPreview});
             if (returnPreview) {
                 makePolicyTable.moduleConfig = setupModuleConfig(isProduction, useLongUuids);
                 makePolicyTable.functionalGroups = setupFunctionalGroups(isProduction);
@@ -71,6 +74,7 @@ function generatePolicyTable (isProduction, useLongUuids = false, appPolicyObj, 
             policyTableMakeFlow(function (err, data) {
                 cache.setCacheData(isProduction, app.locals.version, cache.policyTableKey, data);
                 const certificateMatch = data.moduleConfig && module_config && (data.moduleConfig.certificate == module_config.certificate);
+                console.log({data,module_config});
                 cb(err, certificateMatch, data);
             });
         }
