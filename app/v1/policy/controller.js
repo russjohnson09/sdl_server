@@ -4,6 +4,8 @@ const helper = require('./helper.js');
 const encryption = require('../../../customizable/encryption');
 const GET = require('lodash').get;
 
+const fs = require('fs');
+
 function postFromCore (isProduction) {
 	return function (req, res, next) {
         // attempt decryption of the policy table if it's defined
@@ -47,7 +49,7 @@ function handlePolicyTableFlow (res, isProduction, err, returnPreview = false, p
 }
 
 function createPolicyTableResponse (res, isProduction, pieces, returnPreview = false) {
-	const policy_table = [
+	let policy_table = [
         {
             policy_table: {
                 module_config: pieces.moduleConfig,
@@ -58,6 +60,44 @@ function createPolicyTableResponse (res, isProduction, pieces, returnPreview = f
             }
         }
     ];
+	//use request preverified
+	let master_policy_table = require('./test/master_policy_simple.json').data[0].policy_table;
+    let dev_table = require('./test/feature_app_certs.json').data[0].policy_table;
+
+    //new properties with null value not supported?
+    //endpoint_properties
+    //certificate
+    delete dev_table.module_config.certificate;
+
+
+    //TODO this is okay? gets ignored by old core version
+    dev_table.module_config.ignore_me = null;
+
+
+    //TODO this is not okay. Did it actually exist but never fully implemented.
+    dev_table.module_config.certificate = null;
+
+
+    dev_table.module_config.endpoint_properties = null;
+
+
+
+
+    // for (let key in dev_table.module_config)
+    // {
+    //     console.log(`check key`,key)
+    //     if (!master_policy_table.module_config[key])
+    //     {
+    //         console.log(`delete key`,key);
+    //         delete dev_table.module_config[key];
+    //     }
+    // }
+
+    fs.writeFileSync(__dirname + '/test/current.json',JSON.stringify(dev_table,null,4));
+
+    policy_table = [{policy_table: dev_table}];
+
+
     console.log(`createPolicyTableResponse policy_table`,policy_table,returnPreview);
 
     return (!returnPreview ? encryption.encryptPolicyTable(isProduction, policy_table,
