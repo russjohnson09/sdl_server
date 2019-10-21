@@ -51,15 +51,18 @@ function createPolicyTableResponse (res, isProduction, pieces, returnPreview = f
         {
             policy_table: {
                 module_config: pieces.moduleConfig,
-                vehicle_data: pieces.vehicleData,
+                // vehicle_data: pieces.vehicleData,
                 functional_groupings: pieces.functionalGroups,
                 consumer_friendly_messages: pieces.consumerFriendlyMessages,
                 app_policies: pieces.appPolicies,
             }
         }
     ];
+    console.log(`createPolicyTableResponse policy_table`,policy_table,returnPreview);
+
     return (!returnPreview ? encryption.encryptPolicyTable(isProduction, policy_table,
         function(policy_table){
+        console.log(`policy_table`,policy_table);
             res.parcel.setStatus(200)
                 .setData(policy_table)
                 .deliver();
