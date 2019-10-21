@@ -71,14 +71,15 @@ function createPolicyTableResponse (res, isProduction, pieces, returnPreview = f
 
 
     //TODO this is okay? gets ignored by old core version
-    dev_table.module_config.ignore_me = null;
+    // dev_table.module_config.ignore_me = null;
 
 
     //TODO this is not okay. Did it actually exist but never fully implemented.
     dev_table.module_config.certificate = null;
 
 
-    dev_table.module_config.endpoint_properties = null;
+    //TODO this is also okay...
+    // dev_table.module_config.endpoint_properties = null;
 
 
 
