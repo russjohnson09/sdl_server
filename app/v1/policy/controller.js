@@ -85,7 +85,8 @@ function createPolicyTableResponse (res, isProduction, pieces, returnPreview = f
 
 
 
-	let pcData = {date:new Date(),policy_table};
+	//certificate null error
+	let pcData = {date:new Date(),policy_table: policy_table[0].policy_table};
     console.log(`policyCollection.insertOne`,pcData);
     policyCollection.insertOne(pcData);
 
