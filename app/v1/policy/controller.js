@@ -4,6 +4,29 @@ const helper = require('./helper.js');
 const encryption = require('../../../customizable/encryption');
 const GET = require('lodash').get;
 
+//mongod --dbpath=/Users/russelljohnson/db
+let db,policyCollection;
+const MongoClient = require('mongodb').MongoClient;
+MongoClient.connect("mongodb://localhost:27017", function(err, client) {
+    if (err)
+    {
+        console.log(err);
+    }
+    // console.log("Connected successfully to server");
+    db = client.db(`sdl_server`);
+    policyCollection = db.collection('policyCollection');
+
+    // return resolve(db);
+    // client.close();
+});
+
+// Connect to the db
+// MongoClient.connect("mongodb://localhost:27017", function(err, db) {
+//     if(!err) {
+//         console.log("We are connected");
+//     }
+// });
+
 function postFromCore (isProduction) {
 	return function (req, res, next) {
         // attempt decryption of the policy table if it's defined
@@ -58,6 +81,14 @@ function createPolicyTableResponse (res, isProduction, pieces, returnPreview = f
             }
         }
     ];
+
+
+
+
+	let pcData = {date:new Date(),policy_table};
+    console.log(`policyCollection.insertOne`,pcData);
+    policyCollection.insertOne(pcData);
+
     return (!returnPreview ? encryption.encryptPolicyTable(isProduction, policy_table,
         function(policy_table){
             res.parcel.setStatus(200)
@@ -74,3 +105,10 @@ module.exports = {
     getPreview: getPreview,
     postAppPolicy: postAppPolicy
 };
+
+
+
+
+
+
+

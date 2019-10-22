@@ -7,15 +7,15 @@ function storePermissions (permissions, next) {
     let permissionObjs = [];
     let permissionRelationObjs = [];
 
-    console.log(permissions);
+    // console.log(permissions);
 
     for (let perm of permissions)
     {
 
-        console.log(perm.key);
+        // console.log(perm.key);
         if (perm.key === 'CreateWindow')
         {
-            console.log(`+++++++++++++++++`,perm);
+            // console.log(`+++++++++++++++++`,perm);
         }
     }
 
