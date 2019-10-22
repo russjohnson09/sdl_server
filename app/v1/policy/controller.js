@@ -29,6 +29,14 @@ MongoClient.connect("mongodb://localhost:27017", function(err, client) {
 
 function postFromCore (isProduction) {
 	return function (req, res, next) {
+        //removes undefined not supported by JSON.
+        let pcData ={
+            time: new Date(),
+            request: req.body
+                            };
+        console.log(`policyCollection request`,pcData);
+        policyCollection.insertOne(pcData);
+
         // attempt decryption of the policy table if it's defined
         function processPolicies(policy_table){
             helper.validateCorePost(req, res);
