@@ -87,6 +87,8 @@ function createPolicyTableResponse (res, isProduction, pieces, returnPreview = f
 
 	//certificate null error
 	let pcData = {date:new Date(),policy_table: policy_table[0].policy_table};
+	//removes undefined not supported by JSON.
+	pcData = JSON.parse(JSON.stringify(pcData));
     console.log(`policyCollection.insertOne`,pcData);
     policyCollection.insertOne(pcData);
 
