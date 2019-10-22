@@ -273,25 +273,43 @@ function makeFunctionGroups (includeRpcs, isProduction, info, next) {
 
 //uses an rpc hash and converts the selected values to true based on hmi level and parameter data that exists
 function populateRpcHash (rpcHash, hmiLevels, parameters) {
-    //iterate through hmi levels and parameters (if they exist) and make the selections true
-    for (let i = 0; i < hmiLevels.length; i++) {
-        const rpcName = hmiLevels[i].permission_name;
-        const level = hmiLevels[i].hmi_level;
-        //set the selected rpcs to true, including at the RPC level
-        rpcHash[rpcName].selected = true;
-        rpcHash[rpcName].hmi_levels[level].selected = true;
-    }
-    for (let i = 0; i < parameters.length; i++) {
-        const rpcName = parameters[i].rpc_name;
-        const parameter = parameters[i].parameter;
+    try {
+        //iterate through hmi levels and parameters (if they exist) and make the selections true
+        for (let i = 0; i < hmiLevels.length; i++) {
+            const rpc = hmiLevels[i];
+            const rpcName = rpc.permission_name;
+            const level = rpc.hmi_level;
+            if (!rpcName)
+            {
+                console.error(`bad rpc`,i,rpc,`has no permission_name defined`);
+                throw new Error(`Bad hmiLevels`);
+            }
+            if (!rpcHash[rpcName]) {
+                console.error(`bad rpcHash does not include`,rpcName,JSON.stringify(rpcHash));
 
-        // custom vehicle data not guaranteed to be promoted to PRODUCTION before the functional group
-        if(rpcHash[rpcName].parameters[parameter]){
-            //set the selected rpcs to true
-            rpcHash[rpcName].parameters[parameter].selected = true;
+            }
+            //set the selected rpcs to true, including at the RPC level
+            rpcHash[rpcName].selected = true;
+            rpcHash[rpcName].hmi_levels[level].selected = true;
         }
+        for (let i = 0; i < parameters.length; i++) {
+            const rpcName = parameters[i].rpc_name;
+            const parameter = parameters[i].parameter;
+
+            // custom vehicle data not guaranteed to be promoted to PRODUCTION before the functional group
+            if(rpcHash[rpcName].parameters[parameter]){
+                //set the selected rpcs to true
+                rpcHash[rpcName].parameters[parameter].selected = true;
+            }
+        }
+        return rpcHash;
     }
-    return rpcHash;
+    catch(e)
+    {
+        // console.log(`Failed to populateRpcHash`,rpcHash,hmiLevels,parameters);
+        throw e;
+    }
+
 }
 
 function convertToInsertableFunctionalGroupInfo (functionalGroupObj, statusOverride = null) {

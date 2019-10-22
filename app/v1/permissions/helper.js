@@ -7,6 +7,18 @@ function storePermissions (permissions, next) {
     let permissionObjs = [];
     let permissionRelationObjs = [];
 
+    console.log(permissions);
+
+    for (let perm of permissions)
+    {
+
+        console.log(perm.key);
+        if (perm.key === 'CreateWindow')
+        {
+            console.log(`+++++++++++++++++`,perm);
+        }
+    }
+
     flame.async.map(permissions, function (perm, next) {
         permissionObjs.push({ //add permission
             "name": perm.key,
