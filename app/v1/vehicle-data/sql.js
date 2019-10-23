@@ -147,14 +147,14 @@ function insertCustomVehicleData(obj, isProduction = true) {
         name: obj.name,
         type: obj.type,
         key: obj.key,
-        mandatory: obj.mandatory,
+        mandatory: (obj.mandatory + '') == 'true' ? 'true' : 'false', //accept either a boolean or string.
         min_length: obj.min_length,
         max_length: obj.max_length,
         min_size: obj.min_size,
         max_size: obj.max_size,
         min_value: obj.min_value,
         max_value: obj.max_value,
-        array: obj.array === true,
+        array: (obj.array + '') == 'true' ? 'true' : 'false', //accept either a boolean or string.
         is_deleted: obj.is_deleted === true
     };
     if (isProduction) {
