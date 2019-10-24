@@ -302,6 +302,7 @@ function transformRpcVehicleData (rpcTypes = [], rpcParams = [], isForPolicyTabl
                 vehicleDataItem.type = "Struct";
                 vehicleDataItem.params = paramBuilder(paramsByTypeId[paramType.id]);
             }
+            vehicleDataItem.key = `${vehicleDataItem.name}`;
 
             results.push(vehicleDataItem);
         }
