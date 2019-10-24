@@ -284,6 +284,7 @@ function transformRpcVehicleData (rpcTypes = [], rpcParams = [], isForPolicyTabl
             && _.get(typeById[param.rpc_spec_type_id], "name") == "GetVehicleData"
             && _.get(typeById[param.rpc_spec_type_id], "message_type") == "response"
         ) {
+            param.key = `${param.name}`;
             vehicleDataParams.push(param);
         }
     }
@@ -301,6 +302,7 @@ function transformRpcVehicleData (rpcTypes = [], rpcParams = [], isForPolicyTabl
                 vehicleDataItem.type = "Struct";
                 vehicleDataItem.params = paramBuilder(paramsByTypeId[paramType.id]);
             }
+            vehicleDataItem.key = `${vehicleDataItem.name}`;
 
             results.push(vehicleDataItem);
         }
@@ -330,7 +332,9 @@ function transformVehicleData (isProduction, info, next) {
     }, function(err, transformations){
         if(!err){
             vehicleData.schema_items = _.uniqBy(
-                _.concat(transformations.rpcVehicleData, transformations.customVehicleData),
+                _.concat(
+                    transformations.rpcVehicleData,
+                         transformations.customVehicleData),
                 function(item){
                     return item.name;
                 }
