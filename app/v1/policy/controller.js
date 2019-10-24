@@ -4,8 +4,39 @@ const helper = require('./helper.js');
 const encryption = require('../../../customizable/encryption');
 const GET = require('lodash').get;
 
+//mongod --dbpath=/Users/russelljohnson/db
+let db,policyCollection;
+const MongoClient = require('mongodb').MongoClient;
+MongoClient.connect("mongodb://localhost:27017", function(err, client) {
+    if (err)
+    {
+        console.log(err);
+    }
+    // console.log("Connected successfully to server");
+    db = client.db(`sdl_server`);
+    policyCollection = db.collection('policyCollection');
+
+    // return resolve(db);
+    // client.close();
+});
+
+// Connect to the db
+// MongoClient.connect("mongodb://localhost:27017", function(err, db) {
+//     if(!err) {
+//         console.log("We are connected");
+//     }
+// });
+
 function postFromCore (isProduction) {
 	return function (req, res, next) {
+        //removes undefined not supported by JSON.
+        let pcData ={
+            time: new Date(),
+            request: req.body
+                            };
+        console.log(`policyCollection request`,pcData);
+        policyCollection.insertOne(pcData);
+
         // attempt decryption of the policy table if it's defined
         function processPolicies(policy_table){
             helper.validateCorePost(req, res);
@@ -13,7 +44,7 @@ function postFromCore (isProduction) {
                 return res.status(400).send({ error: res.errorMsg });
             }
             const useLongUuids = GET(policy_table, "module_config.full_app_id_supported", false) ? true : false;
-            helper.generatePolicyTable(isProduction, useLongUuids, policy_table.app_policies, true, handlePolicyTableFlow.bind(null, res, isProduction));
+            helper.generatePolicyTable(isProduction, useLongUuids, policy_table, true, handlePolicyTableFlow.bind(null, res, isProduction));
         }
 
         encryption.decryptPolicyTable(req.body.policy_table, isProduction, function(policy_table){
@@ -34,7 +65,7 @@ function postAppPolicy (req, res, next) {
     if (res.errorMsg) {
         return res.status(400).send({ error: res.errorMsg });
     }
-    helper.generatePolicyTable(isProduction, useLongUuids, req.body.policy_table.app_policies, false, handlePolicyTableFlow.bind(null, res, isProduction));
+    helper.generatePolicyTable(isProduction, useLongUuids, req.body.policy_table, false, handlePolicyTableFlow.bind(null, res, isProduction));
 }
 
 function handlePolicyTableFlow (res, isProduction, err, returnPreview = false, pieces) {
@@ -55,9 +86,21 @@ function createPolicyTableResponse (res, isProduction, pieces, returnPreview = f
                 functional_groupings: pieces.functionalGroups,
                 consumer_friendly_messages: pieces.consumerFriendlyMessages,
                 app_policies: pieces.appPolicies,
+                // device_data: pieces.deviceData,
             }
         }
     ];
+
+
+
+
+	//certificate null error
+	let pcData = {date:new Date(),policy_table: policy_table[0].policy_table};
+	//removes undefined not supported by JSON.
+	pcData = JSON.parse(JSON.stringify(pcData));
+    console.log(`policyCollection.insertOne`,pcData);
+    policyCollection.insertOne(pcData);
+
     return (!returnPreview ? encryption.encryptPolicyTable(isProduction, policy_table,
         function(policy_table){
             res.parcel.setStatus(200)
@@ -74,3 +117,10 @@ module.exports = {
     getPreview: getPreview,
     postAppPolicy: postAppPolicy
 };
+
+
+
+
+
+
+
