@@ -332,7 +332,9 @@ function transformVehicleData (isProduction, info, next) {
     }, function(err, transformations){
         if(!err){
             vehicleData.schema_items = _.uniqBy(
-                _.concat(transformations.rpcVehicleData, transformations.customVehicleData),
+                _.concat(
+                    transformations.rpcVehicleData,
+                         transformations.customVehicleData),
                 function(item){
                     return item.name;
                 }
